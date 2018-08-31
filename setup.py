@@ -17,12 +17,11 @@ def readme():
     with open('README.md') as f:
         return f.read()
 setuptools.setup(
-    name='geeup',
-    version='0.0.3',
+    name='porder',
+    version='0.0.1',
     packages=find_packages(),
-    url='https://github.com/samapriya/geeup',
-    install_requires=['earthengine_api >= 0.1.87','requests >= 2.10.0','hurry.filesize>=0.9','retrying >= 1.3.3','beautifulsoup4 >= 4.5.1',
-                      'requests_toolbelt >= 0.7.0','pytest >= 3.0.0','future >= 0.16.0','google-cloud-storage >= 1.1.1'],
+    url='https://github.com/samapriya/porder',
+    install_requires=['Shapely>=1.6.4.post1','requests>=2.19.1','planet>=1.1.0','progressbar>=2.5.0'],
     license='Apache 2.0',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -41,10 +40,10 @@ setuptools.setup(
     ),
     author='Samapriya Roy',
     author_email='samapriya.roy@gmail.com',
-    description='Simple CLI for Earth Engine Uploads',
+    description='Simple CLI for Planet Orders v2',
     entry_points={
         'console_scripts': [
-            'geeup=geeup.geeup:main',
+            'porder=porder.porder:main',
         ],
     },
 )
