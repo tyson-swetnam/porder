@@ -76,7 +76,7 @@ def main(args=None):
     optional_named.add_argument('--projection', help='Projection for reproject operation of type "EPSG:4326"',default=None)
     optional_named.add_argument('--kernel', help='Resampling kernel used "near", "bilinear", "cubic", "cubicspline", "lanczos", "average" and "mode"',default=None)
     optional_named.add_argument('--compression', help='Compression type used for tiff_optimize tool, "lzw"|"deflate"',default=None)
-    optional_named.add_argument('--op', nargs='+',help="Add operations clip|toar|composite",default=None)
+    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|composite|zip|email",default=None)
 
     parser_order.set_defaults(func=order_from_parser)
 
