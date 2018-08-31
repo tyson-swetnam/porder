@@ -3,13 +3,7 @@ import argparse
 from geojson2id import idl
 from text_split import idsplit
 from order_now import order
-# from idlst import idl
-# from csv_splitter import split
-# from csv_merge import csvmerge
-# from orders_cli import orderzip
-# from orders_cli_batch import orderzipb
-# from download_zip_linklist import ordersziplink
-# from print_redirect_link import redir
+from downloader import download
 
 #Create ID List with structured JSON
 def idlist_from_parser(args):
@@ -22,14 +16,13 @@ def idlist_from_parser(args):
         cmin=args.cmin,
         cmax=args.cmax,
         outfile=args.outfile)
-# #Incase you want to merge multiple orders
-# def csvmerge(args):
-#     csvmerge(folder=args.folder,outfile=args.combined)
 
 #Offcourse all good merge sometimes needs a split
 def idsplit_from_parser(args):
     idsplit(infile=args.idlist,linenum=args.lines,
         output=args.local)
+
+#Place the order
 def order_from_parser(args):
     order(name=args.name,
         idlist=args.idlist,
@@ -40,27 +33,12 @@ def order_from_parser(args):
         projection=args.projection,
         kernel=args.kernel,
         compression=args.compression)
-# #Send an ordered Zip point to an idlist
-# def orderzip_from_parser(args):
-#     orderzip(idlist=args.idlist,item=args.item,asset=args.asset)
 
-# #Send an ordered Zip point to an idlist can handle a whole folder to create a text file with multiple orders
-# def orderzipb_from_parser(args):
-#     orderzipb(idlist=args.folder,item=args.item,asset=args.asset,stagger=args.wait)
-
-
-# #Now Get the link list to all zipped orders that have completed
-# def ordersziplink_from_parser(args):
-#     ordersziplink(orderslist=args.orderlist,linklist=args.linklist)
-
-# #To avoid mutli auth steps get redirect links
-# def redir_from_parser(args):
-#     redir(fname=args.linklist)
-
-# #Download zipped files with multiprocessing enabled
-# def download_multiprocessing_from_parser(args):
-#     local=args.local
-#     subprocess.call('python sm-down.py '+'"'+local+'"',shell=False)
+#Download the order
+def download_from_parser(args):
+    download(url=args.url,
+        local=args.local,
+        errorlog=args.errorlog)
 
 spacing="                               "
 
@@ -101,6 +79,12 @@ def main(args=None):
     optional_named.add_argument('--op', nargs='+',help="Add operations clip|toar|composite",default=None)
 
     parser_order.set_defaults(func=order_from_parser)
+
+    parser_download = subparsers.add_parser('download',help='Downloads all files in your order')
+    parser_download.add_argument('--url',help='order url you got for your order')
+    parser_download.add_argument('--local',help='Output folder where ordered files will be exported')
+    parser_download.add_argument('--errorlog',help='Filenames with error downloading')
+    parser_download.set_defaults(func=download_from_parser)
 
     args = parser.parse_args()
 

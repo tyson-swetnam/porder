@@ -1,7 +1,8 @@
 import csv
 import json
 import requests
-
+from planet.api.utils import read_planet_json
+from planet.api.auth import find_api_key
 ##Setup for bundles
 dbundle = {'name': [], 'products': [{'item_ids': [], 'item_type': [],'product_bundle': []}],'tools':[]}
 dclip = {"clip": {"aoi": {"type": "Polygon","coordinates": []}}}
@@ -10,9 +11,13 @@ dzip = {"delivery":{"archive_filename":"{{name}}.zip","archive_type":"zip"}}
 dcomposite ={"composite":{}}
 dreproject={"reproject": {"projection": [],"kernel":[]}}
 dtiff={"tiff_optimize": {"compression": []}}
+demail={'notifications':{'email': True}}
 
-from planet.api.utils import read_planet_json
-PL_API_KEY = read_planet_json()['key']
+try:
+    PL_API_KEY = find_api_key()
+except:
+    print('Failed to get Planet Key')
+    sys.exit()
 url = 'https://api.planet.com/compute/ops/orders/v2'
 
 def order(**kwargs):
@@ -25,6 +30,8 @@ def order(**kwargs):
                     dbundle['tools'].append(dtoar)
                 elif items=='zip':
                     dbundle.update(dzip)
+                elif items=='email':
+                    dbundle.update(demail)
                 elif items=='composite':
                     dbundle['tools'].append(dcomposite)
                 elif items=='reproject':

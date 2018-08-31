@@ -1,2 +1,4 @@
+Shapely>=1.6.4.post1
 requests>=2.19.1
-arrow>=0.12.1
+planet>=1.1.0
+progressbar>=2.5.0
