@@ -60,12 +60,14 @@ def download(url,local,errorlog):
                             f.write(chunk)
                     f.close()
                 else:
-                    print("File already exists or Encountered error with code: Skipping " + str(result.status_code))
                     if int(result.status_code)!=200:
+                        print("Encountered error with code: " + str(result.status_code)+' for '+str(os.path.split(items['name'])[-1]))
                         with open(errorlog,'a') as csvfile:
                             writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
                             writer.writerow([str(os.path.split(items['name'])[-1])])
                         csvfile.close()
+                    elif int(result.status_code)==200:
+                        print("File already exists SKIPPING: "+str(os.path.split(items['name'])[-1]))
     elif response['state']=='failed':
         print('Order Failed')
 # download(url="https://api.planet.com/compute/ops/orders/v2/0ee9e923-59fc-4c31-8632-9882cb342708",
