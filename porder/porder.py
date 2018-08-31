@@ -1,10 +1,12 @@
 import subprocess
+import os
 import argparse
 from geojson2id import idl
 from text_split import idsplit
 from order_now import order
 from downloader import download
-
+from async_downloader import asyncdownload
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 #Create ID List with structured JSON
 def idlist_from_parser(args):
     idl(infile=args.input,
@@ -37,6 +39,12 @@ def order_from_parser(args):
 #Download the order
 def download_from_parser(args):
     download(url=args.url,
+        local=args.local,
+        errorlog=args.errorlog)
+
+#Multithreaded downloader
+def asyncdownload_from_parser(args):
+    asyncdownload(url=args.url,
         local=args.local,
         errorlog=args.errorlog)
 
@@ -85,6 +93,12 @@ def main(args=None):
     parser_download.add_argument('--local',help='Output folder where ordered files will be exported')
     parser_download.add_argument('--errorlog',help='Filenames with error downloading')
     parser_download.set_defaults(func=download_from_parser)
+
+    parser_asyncdownload = subparsers.add_parser('asyncdownload',help='Uses multithreaded download for all files in your order')
+    parser_asyncdownload.add_argument('--url',help='order url you got for your order')
+    parser_asyncdownload.add_argument('--local',help='Output folder where ordered files will be exported')
+    parser_asyncdownload.add_argument('--errorlog',help='Filenames with error downloading')
+    parser_asyncdownload.set_defaults(func=asyncdownload_from_parser)
 
     args = parser.parse_args()
 
