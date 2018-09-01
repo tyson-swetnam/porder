@@ -67,7 +67,7 @@ def asyncdownload(url,local,errorlog):
                         csvfile.close()
                     elif int(result.status_code)==200:
                         print("File already exists SKIPPING: "+str(os.path.split(items['name'])[-1]))
-    elif response['state']=='failed':
-        print('Order Failed')
+    else:
+        print('Order Failed with state: '+str(response['state']))
 ##download(url="https://api.planet.com/compute/ops/orders/v2/0ee9e923-59fc-4c31-8632-9882cb342708",
 ##         local=r"C:\planet_demo\terra",errorlog=r"C:\planet_demo\errorlog.csv")
