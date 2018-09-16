@@ -7,6 +7,16 @@ from order_now import order
 from downloader import download
 from async_downloader import asyncdownload
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
+#Get quota for your account
+def planet_quota():
+    try:
+        subprocess.call('python planet_quota.py',shell=True)
+    except Exception as e:
+        print(e)
+def planet_quota_from_parser(args):
+    planet_quota()
+
 #Create ID List with structured JSON
 def idlist_from_parser(args):
     idl(infile=args.input,
@@ -53,6 +63,9 @@ spacing="                               "
 def main(args=None):
     parser = argparse.ArgumentParser(description='Ordersv2 Simple Client')
     subparsers = parser.add_subparsers()
+    parser_planet_quota = subparsers.add_parser('quota', help='Prints your Planet Quota Details')
+    parser_planet_quota.set_defaults(func=planet_quota_from_parser)
+
     parser_idlist = subparsers.add_parser('idlist', help='Get idlist using geometry & filters')
     required_named = parser_idlist.add_argument_group('Required named arguments.')
     required_named.add_argument('--input', help='Input geometry file for now geojson/json/kml', required=True)

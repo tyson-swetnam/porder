@@ -1,18 +1,16 @@
-# porder
-Simple CLI for Planet ordersV2 API
-
-Ordersv2 is the
+# porder: Simple CLI for Planet ordersV2 API
+Ordersv2 is the next iteration of Planet's advance in getting Analysis Ready Data delivered to you, and the orders v2 allows you to improved functionality in this domain, including capability to submit an number of images in a batch order, and perform operations such as top of atmospheric reflectance, compression, coregistration and also enhanced notifications such as email and webhooks. Based on your access you can use this tool to chain together a sequence of operations.
 
 ## Table of contents
 * [Installation](#installation)
 * [Getting started](#getting-started)
-* [porder Simple CLI for Earth Engine Uploads](#geeup-simple-cli-for-earth-engine-uploads)
-    * [gee Quota](#gee-quota)
-    * [gee Zipshape](#gee-zipshape)
-    * [gee upload](#gee-upload)
-    * [gee table upload](#gee-table-upload)
-    * [gee tasks](#gee-tasks)
-    * [gee delete](#gee-delete)
+* [porder Ordersv2 Simple Client](#porder-ordersv2-simple-client)
+    * [porder quota](#porder-quota)
+    * [idlist](#idlist)
+    * [idsplit](#idsplit)
+    * [order](#order)
+    * [download](#download)
+    * [async download](#async-download)
 
 ## Installation
 This assumes that you have native python & pip installed in your system, you can test this by going to the terminal (or windows command prompt) and trying
@@ -21,148 +19,166 @@ This assumes that you have native python & pip installed in your system, you can
 
 If you get no errors and you have python 2.7.14 or higher you should be good to go. Please note that I have tested this only on python 2.7.15 but it should run on python 3.
 
-**This also needs earthengine cli to be [installed and authenticated on your system](https://developers.google.com/earth-engine/python_install_manual) and earthengine to be callable in your command line or terminal**
+To install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
 
-To install **geeup: Simple CLI for Earth Engine Uploads** you can install using two methods
-
-```pip install geeup```
+```pip install porder```
 
 or you can also try
 
 ```
-git clone https://github.com/samapriya/geeup.git
-cd geeup
+git clone https://github.com/samapriya/porder.git
+cd porder
 python setup.py install
 ```
 For linux use sudo.
 
-Installation is an optional step; the application can be also run directly by executing geeup.py script. The advantage of having it installed is being able to execute ppipe as any command line tool. I recommend installation within virtual environment. If you don't want to install, browse into the geeup folder and try ```python geeup.py``` to get to the same result.
+Installation is an optional step; the application can be also run directly by executing porder.py script. The advantage of having it installed is being able to execute porder as any command line tool. I recommend installation within virtual environment. If you don't want to install, browse into the porder folder and try ```python porder.py``` to get to the same result.
 
 
 ## Getting started
 
-As usual, to print help:
+Make sure you initialized planet client by typing ```planet init``` or ```export``` or ```set PL_API_KEY=Your API Key``` As usual, to print help:
 
 ```
-usage: geeup [-h] {quota,zipshape,upload,tabup,tasks,delete} ...
+usage: porder [-h] {quota,idlist,idsplit,order,download,asyncdownload} ...
 
-Simple Client for Earth Engine Uploads
+Ordersv2 Simple Client
 
 positional arguments:
-  {quota,zipshape,upload,tabup,tasks,delete}
-    quota               Print Earth Engine total quota and used quota
-    zipshape            Zips all shapefiles and subsidary files into
-                        individual zip files
-    upload              Batch Asset Uploader.
-    tabup               Batch Table Uploader.
-    tasks               Queries current task status
-                        [completed,running,ready,failed,cancelled]
-    delete              Deletes collection and all items inside. Supports
-                        Unix-like wildcards.
+  {quota,idlist,idsplit,order,download,asyncdownload}
+    quota               Prints your Planet Quota Details
+    idlist              Get idlist using geometry & filters
+    idsplit             Splits ID list incase you want to run them in small
+                        batches
+    order               Place an order & get order url currently supports
+                        "toar","clip","composite","reproject","compression"
+    download            Downloads all files in your order
+    asyncdownload       Uses multithreaded download for all files in your
+                        order
 
 optional arguments:
   -h, --help            show this help message and exit
 ```
 
-To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `geeup dropinfo -h`. If you didn't install geeup, then you can run it just by going to *geeup* directory and running `python geeup.py [arguments go here]`
+To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `porder idlist -h`. If you didn't install porder, then you can run it just by going to *porder* directory and running `python porder.py [arguments go here]`
 
-## geeup Simple CLI for Earth Engine Uploads
-The tool is designed to handle batch uploading of images and tables(shapefiles). While there are image collection where you can batch upload imagery,for vector or shapefiles you have to batch upload them to a folder.
+## porder Simple CLI for Planet ordersv2 API
+The tool is designed to simplify using the ordersv2 API and allows the user to chain together tools and operations for multiple item and asset types and perform these operation and download the assets locally.
 
-### gee Quota
-Just a simple tool to print your earth engine quota quickly.
+### porder quota
+Just a simple tool to print your planet subscription quota quickly.
 
 ```
-usage: geeup quota [-h]
+usage: porder quota [-h]
 
 optional arguments:
   -h, --help  show this help message and exit
 ```
 
-### gee Zipshape
-So here's how table upload in Google Earth Engine works, you can either upload the component files shp, shx, prj and dbf or you can zip these files together and upload it as a single file. The pros for this is that it reduces the overall size of the shapefile after zipping them together, this tool looks for the shp file and finds the subsidary files and zips them ready for upload. It also helps when your have limited upload bandwith. Cons you have to create a replicate structure of the file system, but it saves on bandwidth and auto arranges your files so you don't have to look for each additional file.
+### idlist
+Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file.
 
 ```
-usage: geeup zipshape [-h] --input INPUT --output OUTPUT
+usage: porder idlist [-h] --input INPUT --start START --end END --item ITEM
+                     --asset ASSET --number NUMBER --outfile OUTFILE
+                     [--cmin CMIN] [--cmax CMAX]
+
+optional arguments:
+  -h, --help         show this help message and exit
+
+Required named arguments.:
+  --input INPUT      Input geometry file for now geojson/json/kml
+  --start START      Start date in format YYYY-MM-DD
+  --end END          End date in format YYYY-MM-DD
+  --item ITEM        Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc
+  --asset ASSET      Asset Type analytic, analytic_sr,visual etc
+  --number NUMBER    Total number of assets, give a large number if you are
+                     not sure
+  --outfile OUTFILE  Output csv file, written as csv as well as text file
+
+Optional named arguments:
+  --cmin CMIN        Minimum cloud cover
+  --cmax CMAX        Maximum cloud cover
+```
+
+A simple setup would be
+```
+porder idlist --input "C:\johndoe\geometry.geojson" --start "2017-01-01" --end "2018-12-31" --item "PSScene4Band" --asset "analytic_sr" --number 800 --outfile "C:\johndoe\orderlist.csv"
+```
+
+### idsplit
+This allows you to split your idlist into small csv files incase you wanted to created batches of orders.
+
+```
+usage: porder idsplit [-h] [--idlist IDLIST] [--lines LINES] [--local LOCAL]
 
 optional arguments:
   -h, --help       show this help message and exit
-
-Required named arguments.:
-  --input INPUT    Path to the input directory with all shape files
-  --output OUTPUT  Destination folder Full path where shp, shx, prj and dbf
-                   files if present in input will be zipped and stored
+  --idlist IDLIST  Idlist file to split
+  --lines LINES    Maximum number of lines in each split files
+  --local LOCAL    Output folder where split files will be exported
 ```
 
-### gee upload
-The script creates an Image Collection from GeoTIFFs in your local directory. By default, the collection name is the same as the local directory name; with optional parameter you can provide a different name.
+A simple setup would be
+```
+porder idsplit --idlist "C:\johndone\orderlist.csv" --lines "100" --local "C:\johndoe\split"
+```
+
+### order
+This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status.
 
 ```
-usage: geeup upload [-h] --source SOURCE --dest DEST [-m METADATA]
-                       [--large] [--nodata NODATA] [--bands BANDS] [-u USER]
-                       [-b BUCKET]
+usage: porder order [-h] --name NAME --idlist IDLIST --item ITEM --asset ASSET
+                    [--boundary BOUNDARY] [--projection PROJECTION]
+                    [--kernel KERNEL] [--compression COMPRESSION]
+                    [--op OP [OP ...]]
 
 optional arguments:
   -h, --help            show this help message and exit
 
 Required named arguments.:
-  --source SOURCE       Path to the directory with images for upload.
-  --dest DEST           Destination. Full path for upload to Google Earth
-                        Engine, e.g. users/pinkiepie/myponycollection
-  -u USER, --user USER  Google account name (gmail address).
+  --name NAME           Order Name to be Submitted
+  --idlist IDLIST       IDlist of file IDs
+  --item ITEM           Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc
+  --asset ASSET         Asset Type analytic, analytic_sr,visual etc
 
 Optional named arguments:
-  -m METADATA, --metadata METADATA
-                        Path to CSV with metadata.
-  --large               (Advanced) Use multipart upload. Might help if upload
-                        of large files is failing on some systems. Might cause
-                        other issues.
-  --nodata NODATA       The value to burn into the raster as NoData (missing
-                        data)
-  --bands BANDS         Comma-separated list of names to use for the image
-                        bands. Spacesor other special characters are not
-                        allowed.
-  -b BUCKET, --bucket BUCKET
-                        Google Cloud Storage bucket name.
+  --boundary BOUNDARY   Boundary/geometry for clip operation geojson|json|kml
+  --projection PROJECTION
+                        Projection for reproject operation of type "EPSG:4326"
+  --kernel KERNEL       Resampling kernel used "near", "bilinear", "cubic",
+                        "cubicspline", "lanczos", "average" and "mode"
+  --compression COMPRESSION
+                        Compression type used for tiff_optimize tool,
+                        "lzw"|"deflate"
+  --op OP [OP ...]      Add operations, delivery & notification
+                        clip|toar|composite|zip|email
 
 ```
 
-### gee table upload
-This tool allows you to batch download tables/shapefiles to a folder. It uses a modified version of the image upload and a wrapper around the earthengine upload cli to achieve this while creating folders if they don't exist and reporting on assets and checking on uploads. This only requires a source, destination and your ee authenticated email address.
+### download
+The allows you to download the files in your order, to a local folder. It uses the order url generated using the orders tool to access and download the files.
 
 ```
-usage: geeup tabup [-h] --source SOURCE --dest DEST [-u USER]
+usage: porder download [-h] [--url URL] [--local LOCAL] [--errorlog ERRORLOG]
 
 optional arguments:
-  -h, --help            show this help message and exit
-
-Required named arguments.:
-  --source SOURCE       Path to the directory with zipped folder for upload.
-  --dest DEST           Destination. Full path for upload to Google Earth
-                        Engine, e.g. users/pinkiepie/myponycollection
-  -u USER, --user USER  Google account name (gmail address).
+  -h, --help           show this help message and exit
+  --url URL            order url you got for your order
+  --local LOCAL        Output folder where ordered files will be exported
+  --errorlog ERRORLOG  Filenames with error downloading
 ```
 
-### gee tasks
-This script counts all currently running,ready,completed,failed and cancelled tasks along with failed tasks. This is linked to the account you initialized with your google earth engine account. This takes no argument.
+### async download
+The allows you to download the files in your order, this uses a multithreaded downloader to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files.
 
 ```
-usage: geeup tasks [-h]
+usage: porder asyncdownload [-h] [--url URL] [--local LOCAL]
+                            [--errorlog ERRORLOG]
 
 optional arguments:
-  -h, --help  show this help message and exit
-```
-
-### gee delete
-The delete is recursive, meaning it will delete also all children assets: images, collections and folders. Use with caution!
-
-```
-usage: geeup delete [-h] id
-
-positional arguments:
-  id          Full path to asset for deletion. Recursively removes all
-              folders, collections and images.
-
-optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help           show this help message and exit
+  --url URL            order url you got for your order
+  --local LOCAL        Output folder where ordered files will be exported
+  --errorlog ERRORLOG  Filenames with error downloading
 ```

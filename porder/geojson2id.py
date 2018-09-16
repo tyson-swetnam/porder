@@ -137,7 +137,7 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile):
         page = SESSION.get(page_url).json()
         ids = handle_page(page,asset,num,outfile)
     num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.txt')))
-    print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.txt')+' ===> '+str(num_lines)))
+    print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
 ##idl(infile=r"C:\Users\samapriya\Box Sync\IUB\Pycodes\Applications and Tools\Earth Engine Codes\EE_Manifests\aoi\bart_aoi.json",
 ##     item="PSScene4Band",asset="analytic",start='2018-01-01',end='2018-08-01',num=312,outfile=r'C:\planet_demo\idtest.csv',
 ##     cmin=None,cmax=0.3)
