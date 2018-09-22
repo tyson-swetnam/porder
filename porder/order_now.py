@@ -1,6 +1,7 @@
 import csv
 import json
 import requests
+import clipboard
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
 ##Setup for bundles
@@ -101,6 +102,7 @@ def order(**kwargs):
                                 auth=(PL_API_KEY, ''))
     if response.status_code==202:
         content = response.json()
-        print 'Order created at '+str(url) + '/' + str(content['id'])
+        clipboard.copy(str(url) + '/' + str(content['id']))
+        print 'Order created at '+str(url) + '/' + str(content['id']+' and copied to clipboard')
     else:
         print(response.text)

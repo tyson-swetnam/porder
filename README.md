@@ -10,7 +10,7 @@ Ordersv2 is the next iteration of Planet's advance in getting Analysis Ready Dat
     * [idsplit](#idsplit)
     * [order](#order)
     * [download](#download)
-    * [async download](#async-download)
+    * [multipart download](#multipart-download)
 
 ## Installation
 This assumes that you have native python & pip installed in your system, you can test this by going to the terminal (or windows command prompt) and trying
@@ -53,7 +53,7 @@ positional arguments:
     order               Place an order & get order url currently supports
                         "toar","clip","composite","reproject","compression"
     download            Downloads all files in your order
-    asyncdownload       Uses multithreaded download for all files in your
+    multipart           Uses multiprocessing to download for all files in your
                         order
 
 optional arguments:
@@ -169,11 +169,11 @@ optional arguments:
   --errorlog ERRORLOG  Filenames with error downloading
 ```
 
-### async download
-The allows you to download the files in your order, this uses a multithreaded downloader to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files.
+### multipart download
+The allows you to multipart download the files in your order, this uses a multiprocessing downloader to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files.
 
 ```
-usage: porder asyncdownload [-h] [--url URL] [--local LOCAL]
+usage: porder multipart [-h] [--url URL] [--local LOCAL]
                             [--errorlog ERRORLOG]
 
 optional arguments:
