@@ -138,7 +138,7 @@ optional arguments:
 
 Required named arguments.:
   --name NAME           Order Name to be Submitted
-  --idlist IDLIST       IDlist of file IDs
+  --idlist IDLIST       CSV idlist with item IDs
   --item ITEM           Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc
   --asset ASSET         Asset Type analytic, analytic_sr,visual etc
 
