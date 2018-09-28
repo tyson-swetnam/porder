@@ -89,7 +89,7 @@ def main(args=None):
     parser_order = subparsers.add_parser('order', help='Place an order & get order url currently supports "toar","clip","composite","reproject","compression"')
     required_named = parser_order.add_argument_group('Required named arguments.')
     required_named.add_argument('--name', help='Order Name to be Submitted', required=True)
-    required_named.add_argument('--idlist', help='IDlist of file IDs', required=True)
+    required_named.add_argument('--idlist', help='CSV idlist with item IDs', required=True)
     required_named.add_argument('--item', help='Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc', required=True)
     required_named.add_argument('--asset', help='Asset Type analytic, analytic_sr,visual etc', required=True)
     optional_named = parser_order.add_argument_group('Optional named arguments')
