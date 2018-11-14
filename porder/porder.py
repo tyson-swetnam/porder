@@ -5,6 +5,7 @@ from geojson2id import idl
 from text_split import idsplit
 from order_now import order
 from downloader import download
+from diffcheck import checker
 from async_downloader import asyncdownload
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
@@ -28,6 +29,12 @@ def idlist_from_parser(args):
         cmin=args.cmin,
         cmax=args.cmax,
         outfile=args.outfile)
+
+#Check difference from local filelist
+def difflist_from_parser(args):
+    checker(folder=args.folder,typ=args.typ,infile=args.input,
+    item=args.item,asset=args.asset,start=args.start,end=args.end,
+    cmin=args.cmin,cmax=args.cmax,outfile=args.outfile)
 
 #Offcourse all good merge sometimes needs a split
 def idsplit_from_parser(args):
@@ -80,8 +87,23 @@ def main(args=None):
     optional_named.add_argument('--cmax',help="Maximum cloud cover")
     parser_idlist.set_defaults(func=idlist_from_parser)
 
+    parser_difflist = subparsers.add_parser('difflist', help='Checks the difference between local files and available Planet assets')
+    required_named = parser_difflist.add_argument_group('Required named arguments.')
+    required_named.add_argument('--folder', help='local folder where image or metadata files are stored', required=True)
+    required_named.add_argument('--typ', help='File type image or metadata', required=True)
+    required_named.add_argument('--input', help='Input boundary to search (geojson, json)', required=True)
+    required_named.add_argument('--item', help='Planet Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc', required=True)
+    required_named.add_argument('--asset', help='Asset Type analytic, analytic_sr,visual etc', required=True)
+    required_named.add_argument('--start', help='Start Date YYYY-MM-DD', required=True)
+    required_named.add_argument('--end', help='End Date YYYY-MM-DD', required=True)
+    required_named.add_argument('--outfile', help='Full path to text file with difference ID list', required=True)
+    optional_named = parser_difflist.add_argument_group('Optional named arguments')
+    optional_named.add_argument('--cmin', help="Minimum cloud cover")
+    optional_named.add_argument('--cmax',help="Maximum cloud cover")
+    parser_difflist.set_defaults(func=difflist_from_parser)
+
     parser_idsplit = subparsers.add_parser('idsplit',help='Splits ID list incase you want to run them in small batches')
-    parser_idsplit.add_argument('--idlist',help='Idlist file to split')
+    parser_idsplit.add_argument('--idlist',help='Idlist txt file to split')
     parser_idsplit.add_argument('--lines',help='Maximum number of lines in each split files')
     parser_idsplit.add_argument('--local',help='Output folder where split files will be exported')
     parser_idsplit.set_defaults(func=idsplit_from_parser)
@@ -89,7 +111,7 @@ def main(args=None):
     parser_order = subparsers.add_parser('order', help='Place an order & get order url currently supports "toar","clip","composite","reproject","compression"')
     required_named = parser_order.add_argument_group('Required named arguments.')
     required_named.add_argument('--name', help='Order Name to be Submitted', required=True)
-    required_named.add_argument('--idlist', help='CSV idlist with item IDs', required=True)
+    required_named.add_argument('--idlist', help='CSV or text idlist with item IDs', required=True)
     required_named.add_argument('--item', help='Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc', required=True)
     required_named.add_argument('--asset', help='Asset Type analytic, analytic_sr,visual etc', required=True)
     optional_named = parser_order.add_argument_group('Optional named arguments')

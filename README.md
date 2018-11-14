@@ -1,5 +1,5 @@
 # porder: Simple CLI for Planet ordersV2 API
-Ordersv2 is the next iteration of Planet's advance in getting Analysis Ready Data delivered to you, and the orders v2 allows you to improved functionality in this domain, including capability to submit an number of images in a batch order, and perform operations such as top of atmospheric reflectance, compression, coregistration and also enhanced notifications such as email and webhooks. Based on your access you can use this tool to chain together a sequence of operations.
+Ordersv2 is the next iteration of Planet's API in getting Analysis Ready Data (ARD) delivered to you. Orders v2 allows you to improved functionality in this domain, including capability to submit an number of images in a batch order, and perform operations such as top of atmospheric reflectance, compression, coregistration and also enhanced notifications such as email and webhooks. Based on your access you can use this tool to chain together a sequence of operations. This tool is a command line interface that allows you to interact with the ordersv2 API along with place orders and download orders as needed. The tool also allows you to chain multiple processes together and additional functionalities will be added as needed.
 
 ## Table of contents
 * [Installation](#installation)
@@ -7,6 +7,7 @@ Ordersv2 is the next iteration of Planet's advance in getting Analysis Ready Dat
 * [porder Ordersv2 Simple Client](#porder-ordersv2-simple-client)
     * [porder quota](#porder-quota)
     * [idlist](#idlist)
+    * [difflist](#difflist)
     * [idsplit](#idsplit)
     * [order](#order)
     * [download](#download)
@@ -63,7 +64,7 @@ optional arguments:
 To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `porder idlist -h`. If you didn't install porder, then you can run it just by going to *porder* directory and running `python porder.py [arguments go here]`
 
 ## porder Simple CLI for Planet ordersv2 API
-The tool is designed to simplify using the ordersv2 API and allows the user to chain together tools and operations for multiple item and asset types and perform these operation and download the assets locally.
+The tool is designed to simplify using the ordersv2 API and allows the user to chain together tools and operations for multiple item and asset types and perform these operations and download the assets locally.
 
 ### porder quota
 Just a simple tool to print your planet subscription quota quickly.
@@ -106,6 +107,44 @@ A simple setup would be
 porder idlist --input "C:\johndoe\geometry.geojson" --start "2017-01-01" --end "2018-12-31" --item "PSScene4Band" --asset "analytic_sr" --number 800 --outfile "C:\johndoe\orderlist.csv"
 ```
 
+### difflist
+It is possible you already downloaded some images or metadata files, and your you want a difference idlist to create orders for only assets and item types you do not have. It takes in your local folder path, type image or metadata and some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file.
+
+```
+usage: porder difflist [-h] --folder FOLDER --typ TYP --input INPUT --item
+                          ITEM --asset ASSET --start START --end END --outfile
+                          OUTFILE [--cmin CMIN] [--cmax CMAX]
+
+optional arguments:
+  -h, --help         show this help message and exit
+
+Required named arguments.:
+  --folder FOLDER    local folder where image or metadata files are stored
+  --typ TYP          File type image or metadata
+  --input INPUT      Input boundary to search (geojson, json)
+  --item ITEM        Planet Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc
+  --asset ASSET      Asset Type analytic, analytic_sr,visual etc
+  --start START      Start Date YYYY-MM-DD
+  --end END          End Date YYYY-MM-DD
+  --outfile OUTFILE  Full path to text file with difference ID list
+
+Optional named arguments:
+  --cmin CMIN        Minimum cloud cover
+  --cmax CMAX        Maximum cloud cover
+
+```
+
+A simple setup would be
+```
+porder diffcheck --folder "F:\johndoe\ps4b_xml" --typ "metadata" --input "F:\johndoe\grid.geojson" --item "PSScene4Band" --asset "analytic_sr" --start "2018-06-01" --end "2018-08-01" --cmin 0 --cmax 0.9 --outfile "F:\johndoe\diff.txt"
+```
+
+or without the cloud filter
+
+```
+porder diffcheck --folder "F:\johndoe\ps4b_xml" --typ "metadata" --input "F:\johndoe\grid.geojson" --item "PSScene4Band" --asset "analytic_sr" --start "2018-06-01" --end "2018-08-01" --outfile "F:\johndoe\diff.txt"
+```
+
 ### idsplit
 This allows you to split your idlist into small csv files incase you wanted to created batches of orders.
 
@@ -138,7 +177,7 @@ optional arguments:
 
 Required named arguments.:
   --name NAME           Order Name to be Submitted
-  --idlist IDLIST       CSV idlist with item IDs
+  --idlist IDLIST       CSV or text idlist with item IDs
   --item ITEM           Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc
   --asset ASSET         Asset Type analytic, analytic_sr,visual etc
 
