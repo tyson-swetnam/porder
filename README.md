@@ -31,6 +31,10 @@ To install **porder: Simple CLI for Planet ordersv2 API** you can install using 
 
 ```pip install porder```
 
+on Ubuntu I found it helps to specify the pip type and use sudo
+
+```sudo pip2 install porder or sudo pip3 install porder```
+
 or you can also try
 
 ```
