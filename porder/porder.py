@@ -1,5 +1,6 @@
 import subprocess
 import os
+import sys
 import argparse
 from geojson2id import idl
 from text_split import idsplit
@@ -8,6 +9,8 @@ from downloader import download
 from diffcheck import checker
 from async_downloader import asyncdownload
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
+lpath=os.path.dirname(os.path.realpath(__file__))
+sys.path.append(lpath)
 
 #Get quota for your account
 def planet_quota():

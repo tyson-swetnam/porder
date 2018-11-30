@@ -227,3 +227,8 @@ optional arguments:
   --local LOCAL        Output folder where ordered files will be exported
   --errorlog ERRORLOG  Filenames with error downloading
 ```
+
+## Changelog
+
+### v0.0.2
+- Fixed issues with import modules

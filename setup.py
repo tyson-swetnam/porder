@@ -18,7 +18,7 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.0.1',
+    version='0.0.2',
     packages=find_packages(),
     url='https://github.com/samapriya/porder',
     install_requires=['Shapely>=1.6.4.post1','requests>=2.19.1','planet>=1.1.0',
