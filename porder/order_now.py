@@ -103,6 +103,6 @@ def order(**kwargs):
     if response.status_code==202:
         content = response.json()
         clipboard.copy(str(url) + '/' + str(content['id']))
-        print 'Order created at '+str(url) + '/' + str(content['id']+' and url copied to clipboard')
+        print('Order created at '+str(url) + '/' + str(content['id']+' and url copied to clipboard'))
     else:
         print(response.text)
