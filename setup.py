@@ -18,10 +18,10 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.0.2',
+    version='0.0.3',
     packages=find_packages(),
     url='https://github.com/samapriya/porder',
-    install_requires=['Shapely>=1.6.4.post1','requests>=2.19.1','planet>=1.1.0',
+    install_requires=['requests>=2.19.1','planet>=1.1.0',
                       'progressbar>=2.5.0','pySmartDL>=1.2.5','clipboard>=0.0.4'],
     license='Apache 2.0',
     long_description=open('README.md').read(),

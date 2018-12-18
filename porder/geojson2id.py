@@ -6,12 +6,14 @@ import json
 import os
 import csv
 import sys
-from kml2ee import kml2coord
+from shapely.geometry import shape
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 pathway=os.path.dirname(os.path.realpath(__file__))
 
+#Create an empty geojson template
+temp={"coordinates":[],"type":"Polygon"}
 try:
     PL_API_KEY = find_api_key()
 except:
@@ -21,7 +23,7 @@ SESSION = requests.Session()
 SESSION.auth = (PL_API_KEY, '')
 
 
-def handle_page(page,asset,num,outfile):
+def handle_page(page,asset,num,outfile,gmain,ovp):
     num=int(num)
     [head,tail]=os.path.split(outfile)
     if num<250:
@@ -35,13 +37,19 @@ def handle_page(page,asset,num,outfile):
                 for itm in items['_permissions']:
                     if itm.split(':')[0]=="assets."+asset and n<num:
                         it=items.get('id')
-                        #print(it)
-                        n=n+1
-                        with open(outfile,'a') as csvfile:
-                            writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                            writer.writerow([it])
-                        with open(os.path.join(head,tail.split('.')[0]+'.txt'), 'a') as the_file:
-                            the_file.write(it+'\n')
+                        if items['geometry']['type']=="Polygon":
+                            bounds=items['geometry']['coordinates']
+                            temp['coordinates']=bounds
+                            geom2=shape(temp)
+                            intersect=gmain.intersection(geom2)
+                            if (intersect.area/geom2.area)*100>=ovp:
+                                # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
+                                n=n+1
+                                with open(outfile,'a') as csvfile:
+                                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                                    writer.writerow([it])
+                                with open(os.path.join(head,tail.split('.')[0]+'.txt'), 'a') as the_file:
+                                    the_file.write(it+'\n')
             num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.txt')))
             print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.txt')+' ===> '+str(num_lines)))
             sys.exit()
@@ -54,11 +62,17 @@ def handle_page(page,asset,num,outfile):
                 for itm in items['_permissions']:
                     if itm.split(':')[0]=="assets."+asset and n<num:
                         it=items.get('id')
-                        #print(it)
-                        n=n+1
-                        with open(outfile,'a') as csvfile:
-                            writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                            writer.writerow([it])
+                        if items['geometry']['type']=="Polygon":
+                            bounds=items['geometry']['coordinates']
+                            temp['coordinates']=bounds
+                            geom2=shape(temp)
+                            intersect=gmain.intersection(geom2)
+                            if (intersect.area/geom2.area)*100>=ovp:
+                                # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
+                                n=n+1
+                                with open(outfile,'a') as csvfile:
+                                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                                    writer.writerow([it])
             data=csv.reader(open(outfile).readlines()[1: num+1])
 
             with open(outfile, "wb") as f:
@@ -72,12 +86,14 @@ def handle_page(page,asset,num,outfile):
                     the_file.write(row)
         except Exception as e:
             print(e)
-def idl(infile,start,end,item,asset,num,cmin,cmax,outfile):
+def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
     [head,tail]=os.path.split(outfile)
     if cmin==None:
         cmin=0
     if cmax==None:
         cmax=1
+    if ovp==None:
+        ovp=1
     with open(outfile,'wb') as csvfile:
         writer=csv.DictWriter(csvfile,fieldnames=["id"], delimiter=',')
         writer.writeheader()
@@ -125,19 +141,17 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile):
     data['filter']['config'][1]['config'][0]['config'][0]['config'] = [item]
     data['item_types'] = [item]
     data = str(data).replace("'", '"')
-
+    temp['coordinates']=aoi_geom
+    gmain=shape(temp)
 ## Send post request
     result = requests.post('https://api.planet.com/data/v1/quick-search',
                            headers=headers, data=data,
                            auth=(PL_API_KEY, ''))
     page=result.json()
-    final_list = handle_page(page,asset,num,outfile)
+    final_list = handle_page(page,asset,num,outfile,gmain,ovp)
     while page['_links'].get('_next') is not None:
         page_url = page['_links'].get('_next')
         page = SESSION.get(page_url).json()
-        ids = handle_page(page,asset,num,outfile)
+        ids = handle_page(page,asset,num,outfile,gmain,ovp)
     num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.txt')))
-    print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
-##idl(infile=r"C:\Users\samapriya\Box Sync\IUB\Pycodes\Applications and Tools\Earth Engine Codes\EE_Manifests\aoi\bart_aoi.json",
-##     item="PSScene4Band",asset="analytic",start='2018-01-01',end='2018-08-01',num=312,outfile=r'C:\planet_demo\idtest.csv',
-##     cmin=None,cmax=0.3)
+    print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.txt')+' ===> '+str(num_lines)))

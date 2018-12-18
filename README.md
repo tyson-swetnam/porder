@@ -19,6 +19,7 @@
     * [order](#order)
     * [download](#download)
     * [multipart download](#multipart-download)
+    * [multiprocessing download](#multiprocessing-download)
 
 ## Installation
 This assumes that you have native python & pip installed in your system, you can test this by going to the terminal (or windows command prompt) and trying
@@ -27,7 +28,13 @@ This assumes that you have native python & pip installed in your system, you can
 
 If you get no errors and you have python 2.7.14 or higher you should be good to go. Please note that I have tested this only on python 2.7.15 but it should run on python 3.
 
-To install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
+Shapely is notoriously difficult as a library to install on windows machines so follow the steps mentioned from [Shapely’s PyPI package page](https://pypi.org/project/Shapely/). You can download and install from the [Unofficial Wheel files from here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely) download depending on the python version you have. You will get a wheel file or a file ending with .whl. You can now simply browse to the folder or migrate to it in your command prompt , for example in my case I was running Python 2.7.15 and win32 version so the command was
+
+```pip install Shapely-1.6.4.post1-cp27-cp27m-win32.whl```
+
+Or you can use [anaconda to install](https://conda-forge.github.io/). Again, both of these options are mentioned on [Shapely’s Official PyPI page](https://pypi.org/project/Shapely/)
+
+Once you have shapely configured. To install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
 
 ```pip install porder```
 
@@ -88,7 +95,7 @@ optional arguments:
 ```
 
 ### idlist
-Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file.
+Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip)
 
 ```
 usage: porder idlist [-h] --input INPUT --start START --end END --item ITEM
@@ -111,6 +118,8 @@ Required named arguments.:
 Optional named arguments:
   --cmin CMIN        Minimum cloud cover
   --cmax CMAX        Maximum cloud cover
+  --overlap OVERLAP  Percentage overlap of image with search area range
+                     between 0 to 100
 ```
 
 A simple setup would be
@@ -233,7 +242,30 @@ optional arguments:
   --errorlog ERRORLOG  Filenames with error downloading
 ```
 
+### multiprocessing download
+The uses the multiprocessing library to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files and includes an expotential rate limiting function to handle too many requests. To save on time it uses an extension filter so for example if you are using the zip operation you can use ".zip" and if you are downloading only images, udm and xml you can use ".tif" or ".xml" accordingly.
+
+```
+porder multiproc -h
+usage: porder multiproc [-h] [--url URL] [--local LOCAL] [--ext EXT]
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --url URL      Ordersv2 order link
+  --local LOCAL  Local Path to save files
+  --ext EXT      Extension of file to be downloaded
+```
+
+A simple setup would be
+
+```porder multiproc --url "https://api.planet.com/compute/ops/orders/v2/b498ed28-f6c1-4f77-ae2b-f8a6ba325431" --local "C:\planet_demo\ps" --ext ".xml"```
+
 ## Changelog
+
+### v0.0.3
+- Added overlap function to idlist
+- Added multiprocessing downloader with rate limit and extension filter
+- General overall improvements
 
 ### v0.0.2
 - Fixed issues with import modules

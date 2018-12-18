@@ -31,6 +31,7 @@ def idlist_from_parser(args):
         num=args.number,
         cmin=args.cmin,
         cmax=args.cmax,
+        ovp=int(args.overlap),
         outfile=args.outfile)
 
 #Check difference from local filelist
@@ -67,6 +68,8 @@ def asyncdownload_from_parser(args):
     asyncdownload(url=args.url,
         local=args.local,
         errorlog=args.errorlog)
+def multiproc_from_parser(args):
+    subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" "+args.ext,shell=True)
 
 spacing="                               "
 
@@ -88,6 +91,7 @@ def main(args=None):
     optional_named = parser_idlist.add_argument_group('Optional named arguments')
     optional_named.add_argument('--cmin', help="Minimum cloud cover")
     optional_named.add_argument('--cmax',help="Maximum cloud cover")
+    optional_named.add_argument('--overlap', help="Percentage overlap of image with search area range between 0 to 100")
     parser_idlist.set_defaults(func=idlist_from_parser)
 
     parser_difflist = subparsers.add_parser('difflist', help='Checks the difference between local files and available Planet assets')
@@ -138,6 +142,11 @@ def main(args=None):
     parser_asyncdownload.add_argument('--errorlog',help='Filenames with error downloading')
     parser_asyncdownload.set_defaults(func=asyncdownload_from_parser)
 
+    parser_multiproc = subparsers.add_parser('multiproc',help='''Multiprocess based downloader based on satlist''')
+    parser_multiproc.add_argument('--url',help='Ordersv2 order link')
+    parser_multiproc.add_argument('--local',help='Local Path to save files')
+    parser_multiproc.add_argument('--ext',help='Extension of file to be downloaded')
+    parser_multiproc.set_defaults(func=multiproc_from_parser)
     args = parser.parse_args()
 
     args.func(args)
