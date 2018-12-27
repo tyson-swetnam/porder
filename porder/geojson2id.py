@@ -41,9 +41,9 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
                             geom2=shape(temp)
-                            intersect=min(geommain,geom2).intersection(max(geommain,geom2))
+                            intersect=min(gmain,geom2).intersection(max(gmain,geom2))
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
-                            if (intersect.area/geommain.area)*100>=ovp:
+                            if (intersect.area/gmain.area)*100>=ovp:
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
                                 n=n+1
                                 with open(outfile,'a') as csvfile:
@@ -67,9 +67,9 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
                             geom2=shape(temp)
-                            intersect=min(geommain,geom2).intersection(max(geommain,geom2))
+                            intersect=min(gmain,geom2).intersection(max(gmain,geom2))
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
-                            if (intersect.area/geommain.area)*100>=ovp:
+                            if (intersect.area/gmain.area)*100>=ovp:
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
                                 n=n+1
                                 with open(outfile,'a') as csvfile:

@@ -262,6 +262,11 @@ A simple setup would be
 
 ## Changelog
 
+### v0.0.4
+- Created strict geoinstersection to avoid orders to fail
+- Improvements to overlap function
+- General overall improvements
+
 ### v0.0.3
 - Added overlap function to idlist
 - Added multiprocessing downloader with rate limit and extension filter
