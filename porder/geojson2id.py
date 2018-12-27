@@ -41,8 +41,9 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
                             geom2=shape(temp)
-                            intersect=gmain.intersection(geom2)
-                            if (intersect.area/geom2.area)*100>=ovp:
+                            intersect=min(geommain,geom2).intersection(max(geommain,geom2))
+                            #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
+                            if (intersect.area/geommain.area)*100>=ovp:
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
                                 n=n+1
                                 with open(outfile,'a') as csvfile:
@@ -66,8 +67,9 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
                             geom2=shape(temp)
-                            intersect=gmain.intersection(geom2)
-                            if (intersect.area/geom2.area)*100>=ovp:
+                            intersect=min(geommain,geom2).intersection(max(geommain,geom2))
+                            #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
+                            if (intersect.area/geommain.area)*100>=ovp:
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
                                 n=n+1
                                 with open(outfile,'a') as csvfile:
@@ -144,8 +146,9 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
     temp['coordinates']=aoi_geom
     gmain=shape(temp)
 ## Send post request
+    querystring = {"strict":"true"}
     result = requests.post('https://api.planet.com/data/v1/quick-search',
-                           headers=headers, data=data,
+                           headers=headers, data=data, params=querystring,
                            auth=(PL_API_KEY, ''))
     page=result.json()
     final_list = handle_page(page,asset,num,outfile,gmain,ovp)
