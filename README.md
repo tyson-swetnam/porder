@@ -262,6 +262,13 @@ A simple setup would be
 
 ## Changelog
 
+### v0.0.6
+- Merged contribution by David Shean
+- Fixed issues with op equals None
+- Fixed issues with relative import
+- Improved Py3 compatability
+- General improvements
+
 ### v0.0.5
 - Added exponential backoff for pydl
 - Fixed issues with dependency

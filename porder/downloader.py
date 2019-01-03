@@ -1,3 +1,23 @@
+__copyright__ = """
+
+    Copyright 2019 Samapriya Roy
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+"""
+__license__ = "Apache 2.0"
+
+
 import requests
 import time
 import progressbar
@@ -5,6 +25,7 @@ import json
 import os
 import sys
 import csv
+from retrying import retry
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
 
@@ -18,6 +39,9 @@ SESSION = requests.Session()
 SESSION.auth = (PL_API_KEY, '')
 
 # To get redirect link
+@retry(
+    wait_exponential_multiplier=1000,
+    wait_exponential_max=10000)
 def check_for_redirects(url):
     try:
         r = SESSION.get(url, allow_redirects=False, timeout=0.5)

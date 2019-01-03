@@ -18,8 +18,8 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.0.5',
-    packages=find_packages(),
+    version='0.0.6',
+    packages=['porder'],
     url='https://github.com/samapriya/porder',
     install_requires=['requests>=2.19.1','planet>=1.2.1','retrying>=1.3.3',
                       'progressbar2>=3.38.0','pySmartDL>=1.2.5','clipboard>=0.0.4'],
@@ -35,7 +35,6 @@ setuptools.setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Operating System :: OS Independent',
         'Topic :: Scientific/Engineering :: GIS',
     ),
@@ -43,8 +42,6 @@ setuptools.setup(
     author_email='samapriya.roy@gmail.com',
     description='Simple CLI for Planet Orders v2',
     entry_points={
-        'console_scripts': [
-            'porder=porder.porder:main',
-        ],
+        "console_scripts": ["porder=porder.porder:main"]
     },
 )
