@@ -76,7 +76,7 @@ class MultiProcDownloader(object):
                 os.makedirs(head)
             os.chdir(head)
             if not os.path.isfile(fullpath):
-                print msg, multiprocessing.current_process().name
+                print(msg, multiprocessing.current_process().name)
                 r = requests.get(urlcheck)
                 with open(fullpath, "wb") as f:
                     f.write(r.content)
@@ -89,10 +89,10 @@ class MultiProcDownloader(object):
 def funct(url,final,ext):
     if not os.path.exists(final):
         os.makedirs(final)
-    os.chdir(final)
+    final = os.path.abspath(final)
     urls=[]
     response=SESSION.get(url).json()
-    print("Polling .with exponential backoff..")
+    print("Polling with exponential backoff..")
     while response['state']=='running' or response['state']=='starting':
         bar = progressbar.ProgressBar()
         for z in bar(range(60)):
