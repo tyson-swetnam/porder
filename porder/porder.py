@@ -73,7 +73,8 @@ spacing="                               "
 
 def main(args=None):
     parser = argparse.ArgumentParser(description='Ordersv2 Simple Client')
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(dest='cmd')
+    subparsers.required = True
     parser_planet_quota = subparsers.add_parser('quota', help='Prints your Planet Quota Details')
     parser_planet_quota.set_defaults(func=planet_quota_from_parser)
 
