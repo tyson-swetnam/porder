@@ -9,8 +9,6 @@ import sys
 from shapely.geometry import shape
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
-pathway=os.path.dirname(os.path.realpath(__file__))
 
 #Create an empty geojson template
 temp={"coordinates":[],"type":"Polygon"}

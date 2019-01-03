@@ -9,7 +9,6 @@ from retrying import retry
 from pySmartDL import SmartDL
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 #Get Planet API and Authenticate SESSION
 try:
