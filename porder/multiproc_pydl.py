@@ -78,7 +78,7 @@ class MultiProcDownloader(object):
             if not os.path.isfile(fullpath):
                 print(msg, multiprocessing.current_process().name)
                 r = requests.get(urlcheck)
-                with open(fullpath, "wb") as f:
+                with open(fullpath, "w") as f:
                     f.write(r.content)
             else:
                 print("File already exists skipping "+str(tail))

@@ -32,7 +32,7 @@ def check_for_redirects(url):
 
 #Get the redirects and download
 def download(url,local,errorlog):
-    with open(errorlog,'wb') as csvfile:
+    with open(errorlog,'w') as csvfile:
         writer=csv.DictWriter(csvfile,fieldnames=["id_no"], delimiter=',')
         writer.writeheader()
     response=SESSION.get(url).json()
@@ -53,7 +53,7 @@ def download(url,local,errorlog):
                 result=SESSION.get(redirect_url)
                 if not os.path.exists(local_path) and result.status_code==200:
                     print("Downloading: " + str(local_path))
-                    f = open(local_path, 'wb')
+                    f = open(local_path, 'w')
                     for chunk in result.iter_content(chunk_size=512 * 1024):
                         if chunk:
                             f.write(chunk)

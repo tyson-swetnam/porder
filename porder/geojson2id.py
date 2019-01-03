@@ -27,7 +27,7 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
     if num<250:
         try:
             n=0
-            with open(outfile,'wb') as csvfile:
+            with open(outfile,'w') as csvfile:
                 writer=csv.DictWriter(csvfile,fieldnames=["id"], delimiter=',')
                 writer.writeheader()
             open(os.path.join(head,tail.split('.')[0]+'.txt'),'w')
@@ -75,7 +75,7 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                                     writer.writerow([it])
             data=csv.reader(open(outfile).readlines()[1: num+1])
 
-            with open(outfile, "wb") as f:
+            with open(outfile, "w") as f:
                 writer = csv.writer(f)
                 for row in data:
                     writer.writerow(row)
@@ -94,7 +94,7 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
         cmax=1
     if ovp==None:
         ovp=1
-    with open(outfile,'wb') as csvfile:
+    with open(outfile,'w') as csvfile:
         writer=csv.DictWriter(csvfile,fieldnames=["id"], delimiter=',')
         writer.writeheader()
     open(outfile, 'w')

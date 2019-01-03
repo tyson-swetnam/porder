@@ -36,7 +36,7 @@ def check_for_redirects(url):
 
 #Get the redirects and download
 def asyncdownload(url,local,errorlog):
-    with open(errorlog,'wb') as csvfile:
+    with open(errorlog,'w') as csvfile:
         writer=csv.DictWriter(csvfile,fieldnames=["id_no"], delimiter=',')
         writer.writeheader()
     response=SESSION.get(url).json()
