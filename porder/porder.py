@@ -2,15 +2,12 @@ import subprocess
 import os
 import sys
 import argparse
-from geojson2id import idl
-from text_split import idsplit
-from order_now import order
-from downloader import download
-from diffcheck import checker
-from async_downloader import asyncdownload
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
-lpath=os.path.dirname(os.path.realpath(__file__))
-sys.path.append(lpath)
+from porder.geojson2id import idl
+from porder.text_split import idsplit
+from porder.order_now import order
+from porder.downloader import download
+from porder.diffcheck import checker
+from porder.async_downloader import asyncdownload
 
 #Get quota for your account
 def planet_quota():

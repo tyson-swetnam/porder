@@ -7,8 +7,6 @@ import os
 import glob
 import sys
 from planet.api.auth import find_api_key
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
-pathway = os.path.dirname(os.path.realpath(__file__))
 
 # Get API key and authenticate session
 try:
