@@ -1,13 +1,36 @@
+__copyright__ = """
+
+    Copyright 2019 Samapriya Roy
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+"""
+__license__ = "Apache 2.0"
+
 import subprocess
+import argparse
 import os
 import sys
-import argparse
-from porder.geojson2id import idl
-from porder.text_split import idsplit
-from porder.order_now import order
-from porder.downloader import download
-from porder.diffcheck import checker
-from porder.async_downloader import asyncdownload
+from .geojson2id import idl
+from .text_split import idsplit
+from .order_now import order
+from .downloader import download
+from .diffcheck import checker
+from .async_downloader import asyncdownload
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+lpath=os.path.dirname(os.path.realpath(__file__))
+sys.path.append(lpath)
+
 
 #Get quota for your account
 def planet_quota():
