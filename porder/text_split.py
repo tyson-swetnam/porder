@@ -1,5 +1,7 @@
 import os
 def idsplit(infile,linenum,output):
+    if not os.path.exists(output):
+        os.makedirs(output)
     lines_per_file = int(linenum)
     smallfile = None
     with open(infile) as bigfile:
