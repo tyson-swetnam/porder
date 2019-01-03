@@ -22,23 +22,7 @@ except:
 url = 'https://api.planet.com/compute/ops/orders/v2'
 
 def order(**kwargs):
-    for key,value in kwargs.iteritems():
-        if key=='op':
-            for items in value:
-                if items=='clip':
-                    dbundle['tools'].append(dclip)
-                elif items=='toar':
-                    dbundle['tools'].append(dtoar)
-                elif items=='zip':
-                    dbundle.update(dzip)
-                elif items=='email':
-                    dbundle.update(demail)
-                elif items=='composite':
-                    dbundle['tools'].append(dcomposite)
-                elif items=='reproject':
-                    dbundle['tools'].append(dreproject)
-                elif items=='compression':
-                    dbundle['tools'].append(dtiff)
+    for key,value in kwargs.items():
         if key=='name':
             dbundle['name']=value
         if key=='item':
@@ -61,7 +45,23 @@ def order(**kwargs):
                         l.append(item_id)
             dbundle['products'][0]['item_ids'] = l
     k=dbundle
-    for key,value in kwargs.iteritems():
+    for key,value in kwargs.items():
+        if key=='op' and value!=None:
+            for items in value:
+                if items=='clip':
+                    dbundle['tools'].append(dclip)
+                elif items=='toar':
+                    dbundle['tools'].append(dtoar)
+                elif items=='zip':
+                    dbundle.update(dzip)
+                elif items=='email':
+                    dbundle.update(demail)
+                elif items=='composite':
+                    dbundle['tools'].append(dcomposite)
+                elif items=='reproject':
+                    dbundle['tools'].append(dreproject)
+                elif items=='compression':
+                    dbundle['tools'].append(dtiff)
         if key=='boundary' and value!=None:
                 for items in k['tools']:
                     if items.get('clip'):
