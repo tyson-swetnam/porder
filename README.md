@@ -262,6 +262,11 @@ A simple setup would be
 
 ## Changelog
 
+### v0.0.5
+- Added exponential backoff for pydl
+- Fixed issues with dependency
+- General overall improvements
+
 ### v0.0.4
 - Created strict geoinstersection to avoid orders to fail
 - Improvements to overlap function
