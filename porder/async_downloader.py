@@ -54,10 +54,7 @@ def check_for_redirects(url):
         return '[connection error]'
 
 #Get the redirects and download
-def asyncdownload(url,local,errorlog):
-    with open(errorlog,'wb') as csvfile:
-        writer=csv.DictWriter(csvfile,fieldnames=["id_no"], delimiter=',')
-        writer.writeheader()
+def asyncdownload(url,local,ext):
     response=SESSION.get(url).json()
     print("Polling ...")
     while response['state']=='running' or response['state']=='starting':
@@ -75,17 +72,20 @@ def asyncdownload(url,local,errorlog):
                 local_path=os.path.join(local,str(os.path.split(items['name'])[-1]))
                 result=SESSION.get(redirect_url)
                 if not os.path.exists(local_path) and result.status_code==200:
-                    print("Downloading: " + str(local_path))
-                    obj = SmartDL(redirect_url, local_path)
-                    obj.start()
-                    path = obj.get_dest()
+                    if ext is not None:
+                        if local_path.endswith(ext):
+                            print("Downloading: " + str(local_path))
+                            obj = SmartDL(redirect_url, local_path)
+                            obj.start()
+                            path = obj.get_dest()
+                    elif ext is None:
+                            print("Downloading: " + str(local_path))
+                            obj = SmartDL(redirect_url, local_path)
+                            obj.start()
+                            path = obj.get_dest()
                 else:
                     if int(result.status_code)!=200:
                         print("Encountered error with code: " + str(result.status_code)+' for '+str(os.path.split(items['name'])[-1]))
-                        with open(errorlog,'a') as csvfile:
-                            writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                            writer.writerow([str(os.path.split(items['name'])[-1])])
-                        csvfile.close()
                     elif int(result.status_code)==200:
                         print("File already exists SKIPPING: "+str(os.path.split(items['name'])[-1]))
     else:

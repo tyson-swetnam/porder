@@ -112,7 +112,7 @@ def funct(url,final,ext):
     os.chdir(final)
     urls=[]
     response=SESSION.get(url).json()
-    print("Polling .with exponential backoff..")
+    print("Polling with exponential backoff..")
     while response['state']=='running' or response['state']=='starting':
         bar = progressbar.ProgressBar()
         for z in bar(range(60)):
@@ -125,8 +125,11 @@ def funct(url,final,ext):
             redirect_url = check_for_redirects(url_to_check)
             if redirect_url.startswith('https'):
                 local_path=os.path.join(final,str(os.path.split(items['name'])[-1]))
-                if local_path.endswith(ext):
+                if ext is None:
                     urls.append(str(redirect_url)+'|'+local_path)
+                elif ext is not None:
+                    if local_path.endswith(ext):
+                        urls.append(str(redirect_url)+'|'+local_path)
     else:
         print('Order Failed with state: '+str(response['state']))
     downloader = MultiProcDownloader(urls)

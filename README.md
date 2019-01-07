@@ -219,13 +219,15 @@ Optional named arguments:
 The allows you to download the files in your order, to a local folder. It uses the order url generated using the orders tool to access and download the files.
 
 ```
-usage: porder download [-h] [--url URL] [--local LOCAL] [--errorlog ERRORLOG]
+usage: porder download [-h] [--url URL] [--local LOCAL] [--ext EXT]
 
 optional arguments:
-  -h, --help           show this help message and exit
-  --url URL            order url you got for your order
-  --local LOCAL        Output folder where ordered files will be exported
-  --errorlog ERRORLOG  Filenames with error downloading
+  -h, --help     show this help message and exit
+  --url URL      order url you got for your order
+  --local LOCAL  Output folder where ordered files will be exported
+
+Optional named arguments:
+  --ext EXT      File Extension to download
 ```
 
 ### multipart download
@@ -239,21 +241,25 @@ optional arguments:
   -h, --help           show this help message and exit
   --url URL            order url you got for your order
   --local LOCAL        Output folder where ordered files will be exported
-  --errorlog ERRORLOG  Filenames with error downloading
+
+Optional named arguments:
+  --ext EXT      File Extension to download
 ```
 
 ### multiprocessing download
 The uses the multiprocessing library to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files and includes an expotential rate limiting function to handle too many requests. To save on time it uses an extension filter so for example if you are using the zip operation you can use ".zip" and if you are downloading only images, udm and xml you can use ".tif" or ".xml" accordingly.
 
 ```
-porder multiproc -h
 usage: porder multiproc [-h] [--url URL] [--local LOCAL] [--ext EXT]
 
 optional arguments:
   -h, --help     show this help message and exit
   --url URL      Ordersv2 order link
   --local LOCAL  Local Path to save files
-  --ext EXT      Extension of file to be downloaded
+
+Optional named arguments:
+  --ext EXT      File Extension to download
+
 ```
 
 A simple setup would be
@@ -261,6 +267,11 @@ A simple setup would be
 ```porder multiproc --url "https://api.planet.com/compute/ops/orders/v2/b498ed28-f6c1-4f77-ae2b-f8a6ba325431" --local "C:\planet_demo\ps" --ext ".xml"```
 
 ## Changelog
+
+### v0.0.7
+- Now allows for all downloads or download using extension
+- Polling for order to complete and automatically download
+- General improvements
 
 ### v0.0.6
 - Merged contribution by David Shean

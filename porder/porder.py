@@ -81,13 +81,13 @@ def order_from_parser(args):
 def download_from_parser(args):
     download(url=args.url,
         local=args.local,
-        errorlog=args.errorlog)
+        ext=args.ext)
 
 #Multithreaded downloader
 def asyncdownload_from_parser(args):
     asyncdownload(url=args.url,
         local=args.local,
-        errorlog=args.errorlog)
+        ext=args.ext)
 def multiproc_from_parser(args):
     subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" "+args.ext,shell=True)
 
@@ -153,19 +153,22 @@ def main(args=None):
     parser_download = subparsers.add_parser('download',help='Downloads all files in your order')
     parser_download.add_argument('--url',help='order url you got for your order')
     parser_download.add_argument('--local',help='Output folder where ordered files will be exported')
-    parser_download.add_argument('--errorlog',help='Filenames with error downloading')
+    optional_named = parser_download.add_argument_group('Optional named arguments')
+    optional_named.add_argument('--ext', help="File Extension to download",default=None)
     parser_download.set_defaults(func=download_from_parser)
 
     parser_asyncdownload = subparsers.add_parser('multipart',help='Uses multiprocessing to download for all files in your order')
     parser_asyncdownload.add_argument('--url',help='order url you got for your order')
     parser_asyncdownload.add_argument('--local',help='Output folder where ordered files will be exported')
-    parser_asyncdownload.add_argument('--errorlog',help='Filenames with error downloading')
+    optional_named = parser_asyncdownload.add_argument_group('Optional named arguments')
+    optional_named.add_argument('--ext', help="File Extension to download",default=None)
     parser_asyncdownload.set_defaults(func=asyncdownload_from_parser)
 
     parser_multiproc = subparsers.add_parser('multiproc',help='''Multiprocess based downloader based on satlist''')
     parser_multiproc.add_argument('--url',help='Ordersv2 order link')
     parser_multiproc.add_argument('--local',help='Local Path to save files')
-    parser_multiproc.add_argument('--ext',help='Extension of file to be downloaded')
+    optional_named = parser_multiproc.add_argument_group('Optional named arguments')
+    optional_named.add_argument('--ext', help="File Extension to download",default=None)
     parser_multiproc.set_defaults(func=multiproc_from_parser)
     args = parser.parse_args()
 
