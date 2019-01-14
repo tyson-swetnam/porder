@@ -1,0 +1,6 @@
+azure:
+    account: "foo-bucket"
+    container: "as2ekhskah13"
+    sas_token: "as2ekhskah13access"
+    storage_endpoint_suffix: "folder1"
+    path_prefix: "path_prefix"

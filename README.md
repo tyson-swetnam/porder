@@ -6,13 +6,14 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-[Ordersv2 is the next iteration of Planet's API](https://planet-platform.readme.io/docs) in getting Analysis Ready Data (ARD) delivered to you. Orders v2 allows you to improved functionality in this domain, including capability to submit an number of images in a batch order, and perform operations such as top of atmospheric reflectance, compression, coregistration and also enhanced notifications such as email and webhooks. Based on your access you can use this tool to chain together a sequence of operations. This tool is a command line interface that allows you to interact with the ordersv2 API along with place orders and download orders as needed. The tool also allows you to chain multiple processes together and additional functionalities will be added as needed.
+[Ordersv2 is the next iteration of Planet's API](https://planet-platform.readme.io/docs) in getting Analysis Ready Data (ARD) delivered to you. Orders v2 allows you to improved functionality in this domain, including capability to submit an number of images in a batch order, and perform operations such as top of atmospheric reflectance, compression, coregistration and also enhanced notifications such as email and webhooks. Based on your access you can use this tool to chain together a sequence of operations. This tool is a command line interface that allows you to interact with the ordersv2 API along with place orders and download orders as needed. The tool also allows you to chain multiple processes together and additional functionalities will be added as needed. For exporting to cloud storages release 0.0.8 onwards has a configuration folder with config yml structures to be used with this tool. Simply replaces the fields as needed.
 
 ## Table of contents
 * [Installation](#installation)
 * [Getting started](#getting-started)
 * [porder Ordersv2 Simple Client](#porder-ordersv2-simple-client)
     * [porder quota](#porder-quota)
+    * [base64](#base64)
     * [idlist](#idlist)
     * [difflist](#difflist)
     * [idsplit](#idsplit)
@@ -59,14 +60,19 @@ Installation is an optional step; the application can be also run directly by ex
 Make sure you initialized planet client by typing ```planet init``` or ```export``` or ```set PL_API_KEY=Your API Key``` As usual, to print help:
 
 ```
-usage: porder [-h] {quota,idlist,idsplit,order,download,asyncdownload} ...
+usage: porder [-h]
+                 {quota,base64,idlist,difflist,idsplit,order,download,multipart,multiproc}
+                 ...
 
 Ordersv2 Simple Client
 
 positional arguments:
-  {quota,idlist,idsplit,order,download,asyncdownload}
+  {quota,base64,idlist,difflist,idsplit,order,download,multipart,multiproc}
     quota               Prints your Planet Quota Details
+    base64              Base 64 encode a JSON file
     idlist              Get idlist using geometry & filters
+    difflist            Checks the difference between local files and
+                        available Planet assets
     idsplit             Splits ID list incase you want to run them in small
                         batches
     order               Place an order & get order url currently supports
@@ -74,6 +80,7 @@ positional arguments:
     download            Downloads all files in your order
     multipart           Uses multiprocessing to download for all files in your
                         order
+    multiproc           Multiprocess based downloader based on satlist
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -92,6 +99,19 @@ usage: porder quota [-h]
 
 optional arguments:
   -h, --help  show this help message and exit
+```
+
+### base64
+This does exactly as it sounds, it encodes your credential files to base64 for use with gcs.
+
+```
+usage: porder.py base64 [-h] --cred CRED
+
+optional arguments:
+  -h, --help   show this help message and exit
+
+Required named arguments.:
+  --cred CRED  Path to GCS credential file
 ```
 
 ### idlist
@@ -187,10 +207,11 @@ porder idsplit --idlist "C:\johndone\orderlist.csv" --lines "100" --local "C:\jo
 This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status.
 
 ```
-usage: porder order [-h] --name NAME --idlist IDLIST --item ITEM --asset ASSET
-                    [--boundary BOUNDARY] [--projection PROJECTION]
-                    [--kernel KERNEL] [--compression COMPRESSION]
-                    [--op OP [OP ...]]
+usage: porder order [-h] --name NAME --idlist IDLIST --item ITEM --asset
+                       ASSET [--boundary BOUNDARY] [--projection PROJECTION]
+                       [--kernel KERNEL] [--compression COMPRESSION]
+                       [--aws AWS] [--azure AZURE] [--gcs GCS]
+                       [--op OP [OP ...]]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -210,9 +231,11 @@ Optional named arguments:
   --compression COMPRESSION
                         Compression type used for tiff_optimize tool,
                         "lzw"|"deflate"
-  --op OP [OP ...]      Add operations, delivery & notification
-                        clip|toar|composite|zip|email
-
+  --aws AWS             AWS cloud credentials config yml file
+  --azure AZURE         Azure cloud credentials config yml file
+  --gcs GCS             GCS cloud credentials config yml file
+  --op OP [OP ...]      Add operations, delivery & notification clip|toar|comp
+                        osite|zip|compression|projection|kernel|aws|azure|gcs|email
 ```
 
 ### download
@@ -267,6 +290,12 @@ A simple setup would be
 ```porder multiproc --url "https://api.planet.com/compute/ops/orders/v2/b498ed28-f6c1-4f77-ae2b-f8a6ba325431" --local "C:\planet_demo\ps" --ext ".xml"```
 
 ## Changelog
+
+### v0.0.8
+- Improvements to operations in order tool
+- Now supports export to gcs/azure/aws along with kernel, projection and compression
+- base64 encoding tool for encoding gcs credentials
+- Overall general improvements to the tool
 
 ### v0.0.7
 - Now allows for all downloads or download using extension

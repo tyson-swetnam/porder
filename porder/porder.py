@@ -21,6 +21,9 @@ import subprocess
 import argparse
 import os
 import sys
+import json
+import base64
+import clipboard
 from .geojson2id import idl
 from .text_split import idsplit
 from .order_now import order
@@ -40,6 +43,18 @@ def planet_quota():
         print(e)
 def planet_quota_from_parser(args):
     planet_quota()
+
+#base64 encoding for GCS credentials
+def gcs_cred(cred):
+    with open (cred) as file:
+        aoi_resp=json.load(file)
+        filestr=json.dumps(aoi_resp)
+        print('')
+        print('base64 encoding copied to clipboard')
+        #print(base64.b64encode(filestr))
+        clipboard.copy(base64.b64encode(filestr))
+def gcs_cred_from_parser(args):
+    gcs_cred(cred=args.cred)
 
 #Create ID List with structured JSON
 def idlist_from_parser(args):
@@ -75,7 +90,10 @@ def order_from_parser(args):
         boundary=args.boundary,
         projection=args.projection,
         kernel=args.kernel,
-        compression=args.compression)
+        compression=args.compression,
+        aws=args.aws,
+        azure=args.azure,
+        gcs=args.gcs)
 
 #Download the order
 def download_from_parser(args):
@@ -98,6 +116,11 @@ def main(args=None):
     subparsers = parser.add_subparsers()
     parser_planet_quota = subparsers.add_parser('quota', help='Prints your Planet Quota Details')
     parser_planet_quota.set_defaults(func=planet_quota_from_parser)
+
+    parser_gcs_cred = subparsers.add_parser('base64', help='Base 64 encode a JSON file')
+    required_named = parser_gcs_cred.add_argument_group('Required named arguments.')
+    required_named.add_argument('--cred', help='Path to GCS credential file', required=True)
+    parser_gcs_cred.set_defaults(func=gcs_cred_from_parser)
 
     parser_idlist = subparsers.add_parser('idlist', help='Get idlist using geometry & filters')
     required_named = parser_idlist.add_argument_group('Required named arguments.')
@@ -146,7 +169,10 @@ def main(args=None):
     optional_named.add_argument('--projection', help='Projection for reproject operation of type "EPSG:4326"',default=None)
     optional_named.add_argument('--kernel', help='Resampling kernel used "near", "bilinear", "cubic", "cubicspline", "lanczos", "average" and "mode"',default=None)
     optional_named.add_argument('--compression', help='Compression type used for tiff_optimize tool, "lzw"|"deflate"',default=None)
-    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|composite|zip|email",default=None)
+    optional_named.add_argument('--aws', help='AWS cloud credentials config yml file',default=None)
+    optional_named.add_argument('--azure', help='Azure cloud credentials config yml file',default=None)
+    optional_named.add_argument('--gcs', help='GCS cloud credentials config yml file',default=None)
+    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|composite|zip|compression|projection|kernel|aws|azure|gcs|email",default=None)
 
     parser_order.set_defaults(func=order_from_parser)
 

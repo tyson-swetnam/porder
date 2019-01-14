@@ -1,0 +1,6 @@
+amazon_s3:
+    bucket: "foo-bucket"
+    aws_region: "us-east-2"
+    aws_access_key_id: "as2ekhskah13"
+    aws_secret_access_key: "as2ekhskah13access"
+    path_prefix: "folder1"

@@ -19,12 +19,13 @@ __license__ = "Apache 2.0"
 
 import csv
 import json
+import yaml
 import requests
 import clipboard
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
 ##Setup for bundles
-dbundle = {'name': [], 'products': [{'item_ids': [], 'item_type': [],'product_bundle': []}],'tools':[]}
+dbundle = {'name': [], 'order_type': 'partial', 'products': [{'item_ids': [], 'item_type': [],'product_bundle': []}],'tools':[]}
 dclip = {"clip": {"aoi": {"type": "Polygon","coordinates": []}}}
 dtoar = {'toar': {'scale_factor': 10000}}
 dzip = {"delivery":{"archive_filename":"{{name}}.zip","archive_type":"zip"}}
@@ -32,6 +33,9 @@ dcomposite ={"composite":{}}
 dreproject={"reproject": {"projection": [],"kernel":[]}}
 dtiff={"tiff_optimize": {"compression": []}}
 demail={'notifications':{'email': True}}
+daws= {"delivery":{"amazon_s3":{"bucket":[],"aws_region":[],"aws_access_key_id":[],"aws_secret_access_key":[],"path_prefix":[]}}}
+dazure={"delivery":{"azure_blob_storage":{"account":[],"container":[],"sas_token":[],"storage_endpoint_suffix":[],"path_prefix":[]}}}
+dgcs={"delivery": {"google_cloud_storage": {"bucket": [],"credentials": [],"path_prefix": []}}}
 
 try:
     PL_API_KEY = find_api_key()
@@ -75,12 +79,19 @@ def order(**kwargs):
                     dbundle.update(dzip)
                 elif items=='email':
                     dbundle.update(demail)
+                elif items=='aws':
+                    dbundle.update(daws)
+                elif items=='azure':
+                    dbundle.update(dazure)
+                elif items=='gcs':
+                    dbundle.update(dgcs)
                 elif items=='composite':
                     dbundle['tools'].append(dcomposite)
                 elif items=='reproject':
                     dbundle['tools'].append(dreproject)
                 elif items=='compression':
                     dbundle['tools'].append(dtiff)
+
         if key=='boundary' and value!=None:
                 for items in k['tools']:
                     if items.get('clip'):
@@ -98,23 +109,55 @@ def order(**kwargs):
                                 items['clip']['aoi']['coordinates']=getcoord
                         except Exception as e:
                             print('Could not parse geometry')
-        if key=='projection' and value!=None:
-            for items in k['tools']:
-                if items.get('reproject'):
-                    items['reproject']['projection']=value
-        if key=='kernel' and value!=None:
-            for items in k['tools']:
-                if items.get('reproject'):
-                    items['reproject']['kernel']=value
+        #         #print(e)
+    for key,value in kwargs.items():
+        if key=='aws' and value!=None:
+            with open(value, 'r') as ymlfile:
+                cfg = yaml.load(ymlfile)
+                for section in cfg:
+                    k['delivery']['amazon_s3']['bucket']=cfg['amazon_s3']['bucket']
+                    k['delivery']['amazon_s3']['aws_region']=cfg['amazon_s3']['aws_region']
+                    k['delivery']['amazon_s3']['aws_access_key_id']=cfg['amazon_s3']['aws_access_key_id']
+                    k['delivery']['amazon_s3']['aws_secret_access_key']=cfg['amazon_s3']['aws_secret_access_key']
+                    k['delivery']['amazon_s3']['path_prefix']=cfg['amazon_s3']['path_prefix']
+    for key,value in kwargs.items():
+        if key=='azure' and value!=None:
+            with open(value, 'r') as ymlfile:
+                cfg = yaml.load(ymlfile)
+                for section in cfg:
+                    k['delivery']['azure_blob_storage']['account']=cfg['azure']['account']
+                    k['delivery']['azure_blob_storage']['container']=cfg['azure']['container']
+                    k['delivery']['azure_blob_storage']['sas_token']=cfg['azure']['sas_token']
+                    k['delivery']['azure_blob_storage']['storage_endpoint_suffix']=cfg['azure']['storage_endpoint_suffix']
+                    k['delivery']['azure_blob_storage']['path_prefix']=cfg['azure']['path_prefix']
+    for key,value in kwargs.items():
+        if key=='gcs' and value!=None:
+            with open(value, 'r') as ymlfile:
+                cfg = yaml.load(ymlfile)
+                for section in cfg:
+                    k['delivery']['google_cloud_storage']['bucket']=cfg['gcs']['bucket']
+                    k['delivery']['google_cloud_storage']['credentials']=cfg['gcs']['credentials']
+                    k['delivery']['google_cloud_storage']['path_prefix']=cfg['gcs']['path_prefix']
+    for key,value in kwargs.items():
         if key=='compression' and value!=None:
             for items in k['tools']:
                 if items.get('tiff_optimize'):
                     items['tiff_optimize']['compression']=value
-        #         #print(e)
+    for key,value in kwargs.items():
+        if key=='kernel' and value!=None:
+            for items in k['tools']:
+                if items.get('reproject'):
+                    items['reproject']['kernel']=value
+    for key,value in kwargs.items():
+        if key=='projection' and value!=None:
+            for items in k['tools']:
+                if items.get('reproject'):
+                    items['reproject']['projection']=value
 
     json_data = json.dumps(k)
     payload = json_data
-    #print(payload)
+    # print('')
+    # print(payload)
     headers = {'content-type': 'application/json',
                'cache-control': 'no-cache'}
     response = requests.request('POST', url, data=payload, headers=headers,
