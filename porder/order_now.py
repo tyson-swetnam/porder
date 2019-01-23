@@ -92,6 +92,7 @@ def order(**kwargs):
                 elif items=='compression':
                     dbundle['tools'].append(dtiff)
 
+    for key,value in kwargs.items():
         if key=='boundary' and value!=None:
                 for items in k['tools']:
                     if items.get('clip'):
