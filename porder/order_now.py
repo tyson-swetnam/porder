@@ -64,10 +64,11 @@ def order(**kwargs):
                                 l.append(item_id)
                     except Exception as e:
                         print('Issue with reading: '+str(value))
-            if value.endswith('.txt'):
+            elif value.endswith('.txt'):
                 with open(value) as f:
-                    item_id = f.readlines()[0]
-                    l.append(item_id)
+                    for line in f:
+                        item_id=line.strip()
+                        l.append(item_id)
             dbundle['products'][0]['item_ids'] = l
     k=dbundle
     for key,value in kwargs.items():
