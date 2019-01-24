@@ -54,18 +54,20 @@ def order(**kwargs):
             dbundle['products'][0]['product_bundle']=value
         if key=='idlist':
             l=[]
-            with open(value) as f:
-                reader = csv.reader(f)
-                first=next(reader)[0]
-                if str(first.isalpha())=='True':
-                    next(reader)
-                    for row in reader:
-                        item_id=row[0]
-                        l.append(item_id)
-                else:
-                     for row in reader:
-                        item_id=row[0]
-                        l.append(item_id)
+            if value.endswith('.csv'):
+                with open(value) as f:
+                    try:
+                        reader = csv.reader(f)
+                        for row in reader:
+                            item_id=row[0]
+                            if str(item_id.isalpha())=='False':
+                                l.append(item_id)
+                    except Exception as e:
+                        print('Issue with reading: '+str(value))
+            if value.endswith('.txt'):
+                with open(value) as f:
+                    item_id = f.readlines()[0]
+                    l.append(item_id)
             dbundle['products'][0]['item_ids'] = l
     k=dbundle
     for key,value in kwargs.items():

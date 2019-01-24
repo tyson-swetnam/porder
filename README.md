@@ -291,6 +291,11 @@ A simple setup would be
 
 ## Changelog
 
+### v0.1.0
+- Fixed issue and improved idlist and sort
+- Fixed issue with clip tool
+- Overall general improvements to the tool
+
 ### v0.0.8
 - Improvements to operations in order tool
 - Now supports export to gcs/azure/aws along with kernel, projection and compression
