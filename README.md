@@ -291,6 +291,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.1.2
+- Fixed issue and extension for multiprocessing downloader
+- Overall general improvements to the tool
+
 ### v0.1.0
 - Fixed issue and improved idlist and sort
 - Fixed issue with clip tool

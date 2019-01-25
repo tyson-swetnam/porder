@@ -137,7 +137,10 @@ def funct(url,final,ext):
 
 #----------------------------------------------------------------------
 if __name__ == "__main__":
-    funct(url=sys.argv[1],final=os.path.normpath(sys.argv[2]),ext=sys.argv[3])
+    if len(sys.argv)==4:
+        funct(url=sys.argv[1],final=os.path.normpath(sys.argv[2]),ext=sys.argv[3])
+    elif len(sys.argv)==3:
+        funct(url=sys.argv[1],final=os.path.normpath(sys.argv[2]),ext=None)
     # funct(url='https://api.planet.com/compute/ops/orders/v2/4ebfa89e-dc59-41cc-ad82-dbad2b5375b2',final=r'C:\planet_demo',ext='.zip')
     # downloader = MultiProcDownloader(urls)
     # downloader.run()

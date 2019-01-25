@@ -107,7 +107,10 @@ def asyncdownload_from_parser(args):
         local=args.local,
         ext=args.ext)
 def multiproc_from_parser(args):
-    subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" "+args.ext,shell=True)
+    if args.ext==None:
+        subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" ",shell=True)
+    else:
+        subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" "+args.ext,shell=True)
 
 spacing="                               "
 
