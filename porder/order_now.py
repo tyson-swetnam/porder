@@ -168,7 +168,10 @@ def order(**kwargs):
                                 auth=(PL_API_KEY, ''))
     if response.status_code==202:
         content = response.json()
-        clipboard.copy(str(url) + '/' + str(content['id']))
-        print('Order created at '+str(url) + '/' + str(content['id']+' and url copied to clipboard'))
+        try:
+            clipboard.copy(str(url) + '/' + str(content['id']))
+            print('Order created at '+str(url) + '/' + str(content['id']+' and url copied to clipboard'))
+        except Exception:
+            print('Headless Setup: Order created at '+str(url) + '/' + str(content['id']))
     else:
         print(response.text)

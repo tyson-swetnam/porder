@@ -291,6 +291,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.1.3
+- Fixed issue with clipboard access in headless setup
+
 ### v0.1.2
 - Fixed issue and extension for multiprocessing downloader
 - Overall general improvements to the tool
