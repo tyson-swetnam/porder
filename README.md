@@ -291,6 +291,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.1.4
+- Fixed issue with Python 3 CSV write compatability
+- Fixed issues with Shapely instance issue
+
 ### v0.1.3
 - Fixed issue with clipboard access in headless setup
 

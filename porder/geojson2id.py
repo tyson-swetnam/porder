@@ -46,7 +46,7 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
     if num<250:
         try:
             n=0
-            with open(outfile,'wb') as csvfile:
+            with open(outfile,'w') as csvfile:
                 writer=csv.DictWriter(csvfile,fieldnames=["id"], delimiter=',')
                 writer.writeheader()
             open(os.path.join(head,tail.split('.')[0]+'.txt'),'w')
@@ -58,7 +58,10 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
                             geom2=shape(temp)
-                            intersect=min(gmain,geom2).intersection(max(gmain,geom2))
+                            if gmain.area>geom2.area:
+                                intersect=(geom2).intersection(gmain)
+                            elif geom2.area>gmain.area:
+                                intersect=(gmain).intersection(geom2)
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
                             if (intersect.area/gmain.area)*100>=ovp:
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
@@ -84,7 +87,10 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
                             geom2=shape(temp)
-                            intersect=min(gmain,geom2).intersection(max(gmain,geom2))
+                            if gmain.area>geom2.area:
+                                intersect=(geom2).intersection(gmain)
+                            elif geom2.area>gmain.area:
+                                intersect=(gmain).intersection(geom2)
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
                             if (intersect.area/gmain.area)*100>=ovp:
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
@@ -94,7 +100,7 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                                     writer.writerow([it])
             data=csv.reader(open(outfile).readlines()[1: num+1])
 
-            with open(outfile, "wb") as f:
+            with open(outfile, "w") as f:
                 writer = csv.writer(f)
                 for row in data:
                     writer.writerow(row)
@@ -113,7 +119,7 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
         cmax=1
     if ovp==None:
         ovp=1
-    with open(outfile,'wb') as csvfile:
+    with open(outfile,'w') as csvfile:
         writer=csv.DictWriter(csvfile,fieldnames=["id"], delimiter=',')
         writer.writeheader()
     open(outfile, 'w')

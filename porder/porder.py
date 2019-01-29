@@ -135,9 +135,9 @@ def main(args=None):
     required_named.add_argument('--number', help='Total number of assets, give a large number if you are not sure', required=True)
     required_named.add_argument('--outfile', help='Output csv file, written as csv as well as text file', required=True)
     optional_named = parser_idlist.add_argument_group('Optional named arguments')
-    optional_named.add_argument('--cmin', help="Minimum cloud cover")
-    optional_named.add_argument('--cmax',help="Maximum cloud cover")
-    optional_named.add_argument('--overlap', help="Percentage overlap of image with search area range between 0 to 100")
+    optional_named.add_argument('--cmin', help="Minimum cloud cover", default=None)
+    optional_named.add_argument('--cmax', help="Maximum cloud cover", default=None)
+    optional_named.add_argument('--overlap', help="Percentage overlap of image with search area range between 0 to 100", default=None)
     parser_idlist.set_defaults(func=idlist_from_parser)
 
     parser_difflist = subparsers.add_parser('difflist', help='Checks the difference between local files and available Planet assets')
