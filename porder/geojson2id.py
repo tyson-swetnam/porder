@@ -119,6 +119,8 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
         cmax=1
     if ovp==None:
         ovp=1
+    if ovp is not None:
+        ovp=int(ovp)
     with open(outfile,'w') as csvfile:
         writer=csv.DictWriter(csvfile,fieldnames=["id"], delimiter=',')
         writer.writeheader()

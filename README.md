@@ -291,6 +291,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.1.5
+- General improvements and bug fixes
+
 ### v0.1.4
 - Fixed issue with Python 3 CSV write compatability
 - Fixed issues with Shapely instance issue

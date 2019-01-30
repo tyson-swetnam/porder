@@ -66,7 +66,7 @@ def idlist_from_parser(args):
         num=args.number,
         cmin=args.cmin,
         cmax=args.cmax,
-        ovp=int(args.overlap),
+        ovp=args.overlap,
         outfile=args.outfile)
 
 #Check difference from local filelist
