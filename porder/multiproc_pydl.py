@@ -96,15 +96,15 @@ class MultiProcDownloader(object):
                 os.makedirs(head)
             os.chdir(head)
             if not os.path.isfile(fullpath):
-                print msg, multiprocessing.current_process().name
+                print(msg, multiprocessing.current_process().name)
                 r = requests.get(urlcheck)
                 with open(fullpath, "wb") as f:
                     f.write(r.content)
             else:
-                print("File already exists skipping "+str(tail))
+                print(("File already exists skipping "+str(tail)))
         except Exception as e:
             print(e)
-            print('Issues with file: '+str(fullpath))
+            print(('Issues with file: '+str(fullpath)))
 
 def funct(url,final,ext):
     if not os.path.exists(final):

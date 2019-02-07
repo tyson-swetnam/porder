@@ -291,6 +291,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.1.6
+- Made fixes to have python 3.X compatability
+
 ### v0.1.5
 - General improvements and bug fixes
 
