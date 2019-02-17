@@ -25,6 +25,7 @@ Zenodo. http://doi.org/10.5281/zenodo.2567466
     * [difflist](#difflist)
     * [idsplit](#idsplit)
     * [order](#order)
+    * [ordersize](#ordersize)
     * [download](#download)
     * [multipart download](#multipart-download)
     * [multiprocessing download](#multiprocessing-download)
@@ -268,6 +269,23 @@ porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4B
 ```
 
 ![order](/images/placing_order.gif)
+
+### ordersize
+The tool now allows you to estimate the total download size for a specific order.
+
+```
+usage: porder ordersize [-h] [--url URL]
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --url URL   order url you got for your order
+```
+
+An example setup would be the following
+
+<center>
+![ordersize](/images/ordersize.png)
+</center>
 
 ### download
 The allows you to download the files in your order, to a local folder. It uses the order url generated using the orders tool to access and download the files.
