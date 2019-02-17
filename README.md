@@ -216,6 +216,8 @@ porder idsplit --idlist "C:\johndone\orderlist.csv" --lines "100" --local "C:\jo
 ### order
 This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. You can now add some predefined indices for PlanetScope 4 band items with a maximum of 5 indices for a single setup . This is experimental. The list of indices include
 
+<center>
+   
 Index             | Source                                                                        |
 ------------------|-------------------------------------------------------------------------------|
 Simple ratio (SR) | [Jordan 1969](https://esajournals.onlinelibrary.wiley.com/doi/abs/10.2307/1936256)
@@ -227,6 +229,7 @@ Optimized Soil Adjusted Vegetation Index (OSAVI) | [Rondeaux et al 1996](https:/
 Enhanced Vegetation Index (EVI2) | [Jian et al 2008](https://www.sciencedirect.com/science/article/abs/pii/S0034425708001971)
 Normalized Difference Water Index (NDWI) | [Gao 1996](https://www.sciencedirect.com/science/article/abs/pii/S0034425796000673)
 
+</center>
 
 ```
 usage: porder order [-h] --name NAME --idlist IDLIST --item ITEM --asset ASSET
