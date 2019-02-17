@@ -27,6 +27,7 @@ import clipboard
 from .geojson2id import idl
 from .text_split import idsplit
 from .order_now import order
+from .order_size import ordersize
 from .downloader import download
 from .diffcheck import checker
 from .async_downloader import asyncdownload
@@ -94,6 +95,10 @@ def order_from_parser(args):
         aws=args.aws,
         azure=args.azure,
         gcs=args.gcs)
+
+#Get size of order in human size
+def ordersize_from_parser(args):
+    ordersize(url=args.url)
 
 #Download the order
 def download_from_parser(args):
@@ -175,9 +180,13 @@ def main(args=None):
     optional_named.add_argument('--aws', help='AWS cloud credentials config yml file',default=None)
     optional_named.add_argument('--azure', help='Azure cloud credentials config yml file',default=None)
     optional_named.add_argument('--gcs', help='GCS cloud credentials config yml file',default=None)
-    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|composite|zip|compression|projection|kernel|aws|azure|gcs|email",default=None)
+    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|composite|zip|compression|projection|kernel|aws|azure|gcs|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|sr",default=None)
 
     parser_order.set_defaults(func=order_from_parser)
+
+    parser_ordersize = subparsers.add_parser('ordersize',help='Estimate total download size')
+    parser_ordersize.add_argument('--url',help='order url you got for your order')
+    parser_ordersize.set_defaults(func=ordersize_from_parser)
 
     parser_download = subparsers.add_parser('download',help='Downloads all files in your order')
     parser_download.add_argument('--url',help='order url you got for your order')

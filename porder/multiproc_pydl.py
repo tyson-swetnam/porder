@@ -48,16 +48,19 @@ SESSION.auth = (PL_API_KEY, '')
 def check_for_redirects(url):
     try:
         r = SESSION.get(url, allow_redirects=False, timeout=0.5)
-        if r.status_code == 429:
-            raise Exception("rate limit error")
         if 300 <= r.status_code < 400:
             return r.headers['location']
-        else:
-            return 'no redirect'
+        elif r.status_code==429:
+            raise Exception("rate limit error")
     except requests.exceptions.Timeout:
         return '[timeout]'
     except requests.exceptions.ConnectionError:
         return '[connection error]'
+    except requests.HTTPError as e:
+        print(r.status_code)
+        if r.status_code == 429:  # Too many requests
+            raise Exception("rate limit error")
+
 ########################################################################
 class MultiProcDownloader(object):
     """
@@ -123,6 +126,7 @@ def funct(url,final,ext):
             url=(items['location'])
             url_to_check = url if url.startswith('https') else "http://%s" % url
             redirect_url = check_for_redirects(url_to_check)
+
             if redirect_url.startswith('https'):
                 local_path=os.path.join(final,str(os.path.split(items['name'])[-1]))
                 if ext is None:

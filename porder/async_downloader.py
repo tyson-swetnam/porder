@@ -46,12 +46,15 @@ def check_for_redirects(url):
         r = SESSION.get(url, allow_redirects=False, timeout=0.5)
         if 300 <= r.status_code < 400:
             return r.headers['location']
-        else:
-            return 'no redirect'
+        elif r.status_code==429:
+            raise Exception("rate limit error")
     except requests.exceptions.Timeout:
         return '[timeout]'
     except requests.exceptions.ConnectionError:
         return '[connection error]'
+    except requests.HTTPError as e:
+        if r.status_code == 429:  # Too many requests
+            raise Exception("rate limit error")
 
 #Get the redirects and download
 def asyncdownload(url,local,ext):

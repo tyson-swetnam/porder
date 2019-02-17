@@ -18,12 +18,18 @@ __copyright__ = """
 __license__ = "Apache 2.0"
 
 import csv
+import sys
 import json
 import yaml
 import requests
 import clipboard
+from prettytable import PrettyTable
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
+
+
+x = PrettyTable()
+
 ##Setup for bundles
 dbundle = {'name': [], 'order_type': 'partial', 'products': [{'item_ids': [], 'item_type': [],'product_bundle': []}],'tools':[]}
 dclip = {"clip": {"aoi": {"type": "Polygon","coordinates": []}}}
@@ -36,6 +42,7 @@ demail={'notifications':{'email': True}}
 daws= {"delivery":{"amazon_s3":{"bucket":[],"aws_region":[],"aws_access_key_id":[],"aws_secret_access_key":[],"path_prefix":[]}}}
 dazure={"delivery":{"azure_blob_storage":{"account":[],"container":[],"sas_token":[],"storage_endpoint_suffix":[],"path_prefix":[]}}}
 dgcs={"delivery": {"google_cloud_storage": {"bucket": [],"credentials": [],"path_prefix": []}}}
+dbmath={"bandmath":{}}
 
 try:
     PL_API_KEY = find_api_key()
@@ -92,6 +99,30 @@ def order(**kwargs):
                     dbundle['tools'].append(dcomposite)
                 elif items=='reproject':
                     dbundle['tools'].append(dreproject)
+                elif items=='ndvi':
+                    dndvi={"pixel_type": "32R","ndvi": "(b4 - b3) / (b4+b3)"}
+                    dbmath['bandmath'].update(dndvi)
+                elif items=='gndvi':
+                    dgndvi={"pixel_type": "32R","gndvi": "(b4 - b2) / (b4+b2)"}
+                    dbmath['bandmath'].update(dgndvi)
+                elif items=='ndwi':
+                    dndwi={"pixel_type": "32R","ndwi": "(b2 - b4) / (b4+b2)"}
+                    dbmath['bandmath'].update(dndwi)
+                elif items=='bndvi':
+                    bndvi={"pixel_type": "32R","bndvi": "(b4-b1)/(b4+b1)"}
+                    dbmath['bandmath'].update(bndvi)
+                elif items=='tvi':
+                    dtvi={"pixel_type": "32R","tvi": "((b4-b3)/(b4+b3)+0.5) ** 0.5"}
+                    dbmath['bandmath'].update(dtvi)
+                elif items=='osavi':
+                    dosavi={"pixel_type": "32R","osavi": "1.16 * (b4-b3)/(b4+b3+0.16)"}
+                    dbmath['bandmath'].update(dosavi)
+                elif items=='evi2':
+                    devi2={"pixel_type": "32R","evi2": "2.5 * (b4 - b3) / ((b4 + (2.4* b3) + 1))"}
+                    dbmath['bandmath'].update(devi2)
+                elif items=='sr':
+                    dsr={"pixel_type": "32R","sr": "(b4/b3)"}
+                    dbmath['bandmath'].update(dsr)
                 elif items=='compression':
                     dbundle['tools'].append(dtiff)
 
@@ -158,10 +189,35 @@ def order(**kwargs):
                 if items.get('reproject'):
                     items['reproject']['projection']=value
 
+
+    # print('')
+    #print(dbmath)
+    bnames=[]
+    for items in dbmath['bandmath']:
+        if items !='pixel_type':
+            bnames.append(items)
+
+    rg=len(bnames)
+    if rg<6:
+        dck=['b'+str(el) for el in range(1,rg+1)] #get serialized bands
+        plist=[list(pair) for pair in zip(dck, bnames)]
+        x.field_names = ["Band Number", "Band Name"]
+        for items in plist:
+            i=items[0]
+            f=items[1]
+            x.add_row([i,f])
+            dbmath['bandmath'][i]=dbmath['bandmath'].pop(f)
+    else:
+        print('You can only use upto 5 bands')
+        sys.exit()
+    k['tools'].append(dbmath)
     json_data = json.dumps(k)
     payload = json_data
-    # print('')
-    # print(payload)
+    if len(bnames):
+        print('\n')
+        print(x)
+        print('\n')
+    #print(payload)
     headers = {'content-type': 'application/json',
                'cache-control': 'no-cache'}
     response = requests.request('POST', url, data=payload, headers=headers,

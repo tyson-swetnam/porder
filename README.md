@@ -61,13 +61,13 @@ Make sure you initialized planet client by typing ```planet init``` or ```export
 
 ```
 usage: porder [-h]
-                 {quota,base64,idlist,difflist,idsplit,order,download,multipart,multiproc}
-                 ...
+              {quota,base64,idlist,difflist,idsplit,order,ordersize,download,multipart,multiproc}
+              ...
 
 Ordersv2 Simple Client
 
 positional arguments:
-  {quota,base64,idlist,difflist,idsplit,order,download,multipart,multiproc}
+  {quota,base64,idlist,difflist,idsplit,order,ordersize,download,multipart,multiproc}
     quota               Prints your Planet Quota Details
     base64              Base 64 encode a JSON file
     idlist              Get idlist using geometry & filters
@@ -77,6 +77,7 @@ positional arguments:
                         batches
     order               Place an order & get order url currently supports
                         "toar","clip","composite","reproject","compression"
+    ordersize           Estimate total download size
     download            Downloads all files in your order
     multipart           Uses multiprocessing to download for all files in your
                         order
@@ -84,6 +85,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+
 ```
 
 To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `porder idlist -h`. If you didn't install porder, then you can run it just by going to *porder* directory and running `python porder.py [arguments go here]`
@@ -204,14 +206,25 @@ porder idsplit --idlist "C:\johndone\orderlist.csv" --lines "100" --local "C:\jo
 ```
 
 ### order
-This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status.
+This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. You can now add some predefined indices for PlanetScope 4 band items with a maximum of 5 indices for a single setup . This is experimental. The list of indices include
+
+Index             | Source                                                                        |
+------------------|-------------------------------------------------------------------------------|
+Simple ratio (SR) | [Jordan 1969](https://esajournals.onlinelibrary.wiley.com/doi/abs/10.2307/1936256)
+Normalized Difference Vegetation Index (NDVI) | [Rouse et al 1973](https://ntrs.nasa.gov/search.jsp?R=19740022614)
+Green Normalized Difference Index (GNDVI) | [Gitelson et al 1996](https://www.sciencedirect.com/science/article/abs/pii/S0034425796000727)
+Blue Normalized Difference Vegetation Index (BNDVI) | [Wang et al 2007](https://www.sciencedirect.com/science/article/pii/S1672630807600274)
+Transformed Vegetation Index (TVI) | [Broge and Leblanc 2000](https://www.sciencedirect.com/science/article/abs/pii/S0034425700001978)
+Optimized Soil Adjusted Vegetation Index (OSAVI) | [Rondeaux et al 1996](https://www.sciencedirect.com/science/article/abs/pii/0034425795001867)
+Enhanced Vegetation Index (EVI2) | [Jian et al 2008](https://www.sciencedirect.com/science/article/abs/pii/S0034425708001971)
+Normalized Difference Water Index (NDWI) | [Gao 1996](https://www.sciencedirect.com/science/article/abs/pii/S0034425796000673)
+
 
 ```
-usage: porder order [-h] --name NAME --idlist IDLIST --item ITEM --asset
-                       ASSET [--boundary BOUNDARY] [--projection PROJECTION]
-                       [--kernel KERNEL] [--compression COMPRESSION]
-                       [--aws AWS] [--azure AZURE] [--gcs GCS]
-                       [--op OP [OP ...]]
+usage: porder order [-h] --name NAME --idlist IDLIST --item ITEM --asset ASSET
+                    [--boundary BOUNDARY] [--projection PROJECTION]
+                    [--kernel KERNEL] [--compression COMPRESSION] [--aws AWS]
+                    [--azure AZURE] [--gcs GCS] [--op OP [OP ...]]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -235,8 +248,19 @@ Optional named arguments:
   --azure AZURE         Azure cloud credentials config yml file
   --gcs GCS             GCS cloud credentials config yml file
   --op OP [OP ...]      Add operations, delivery & notification clip|toar|comp
-                        osite|zip|compression|projection|kernel|aws|azure|gcs|email
+                        osite|zip|compression|projection|kernel|aws|azure|gcs|
+                        email <Choose indices from>:
+                        ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|sr
+
 ```
+
+A simple setup with Top of Atmospher reflectance and a few indices along with email notification would be
+
+```
+porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4Band" --asset "analytic" --op toar ndvi ndwi evi2
+```
+
+![order](/images/placing_order.gif)
 
 ### download
 The allows you to download the files in your order, to a local folder. It uses the order url generated using the orders tool to access and download the files.
@@ -290,6 +314,11 @@ A simple setup would be
 ```porder multiproc --url "https://api.planet.com/compute/ops/orders/v2/b498ed28-f6c1-4f77-ae2b-f8a6ba325431" --local "C:\planet_demo\ps" --ext ".xml"```
 
 ## Changelog
+
+### v0.1.7
+- Added band math indices for PlanetScope item
+- Fixed issues with retry for downloader
+- General improvements to the tool
 
 ### v0.1.6
 - Made fixes to have python 3.X compatability
