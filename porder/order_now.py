@@ -189,9 +189,6 @@ def order(**kwargs):
                 if items.get('reproject'):
                     items['reproject']['projection']=value
 
-
-    # print('')
-    #print(dbmath)
     bnames=[]
     for items in dbmath['bandmath']:
         if items !='pixel_type':
@@ -210,13 +207,19 @@ def order(**kwargs):
     else:
         print('You can only use upto 5 bands')
         sys.exit()
-    k['tools'].append(dbmath)
+
+    if len(dbmath['bandmath'])>0:
+        k['tools'].append(dbmath)
     json_data = json.dumps(k)
     payload = json_data
     if len(bnames):
         print('\n')
         print(x)
         print('\n')
+
+    # print('')
+    #print(dbmath)
+
     #print(payload)
     headers = {'content-type': 'application/json',
                'cache-control': 'no-cache'}
