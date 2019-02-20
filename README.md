@@ -110,7 +110,7 @@ This allows you to split your idlist into small csv files incase you wanted to c
 ![porder_idsplit](https://user-images.githubusercontent.com/28806922/53096932-4110ed80-34ee-11e9-8a9e-da4b6fc7c041.png)
 
 A simple setup would be
-![porder_idsplit_setup](https://user-images.githubusercontent.com/28806922/53096934-453d0b00-34ee-11e9-81d5-baba3d990b78.png)
+![porder_idsplit_setup](https://user-images.githubusercontent.com/28806922/53097536-b204d500-34ef-11e9-8a6c-e2d52986d90c.png)
 
 ### order
 This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. You can now add some predefined indices for PlanetScope 4 band items with a maximum of 5 indices for a single setup . This is experimental. The list of indices include
@@ -149,13 +149,7 @@ A simple setup with Top of Atmospher reflectance and a few indices along with em
 ### ordersize
 The tool now allows you to estimate the total download size for a specific order.
 
-```
-usage: porder ordersize [-h] [--url URL]
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --url URL   order url you got for your order
-```
+![porder_ordersize](https://user-images.githubusercontent.com/28806922/53097620-e4163700-34ef-11e9-893b-73551d485c83.png)
 
 An example setup look like the following
 
@@ -168,55 +162,27 @@ An example setup look like the following
 ### download
 The allows you to download the files in your order, to a local folder. It uses the order url generated using the orders tool to access and download the files.
 
-```
-usage: porder download [-h] [--url URL] [--local LOCAL] [--ext EXT]
-
-optional arguments:
-  -h, --help     show this help message and exit
-  --url URL      order url you got for your order
-  --local LOCAL  Output folder where ordered files will be exported
-
-Optional named arguments:
-  --ext EXT      File Extension to download
-```
+![porder_download](https://user-images.githubusercontent.com/28806922/53097694-11fb7b80-34f0-11e9-92bd-3b841ab8b3df.png)
 
 ### multipart download
 The allows you to multipart download the files in your order, this uses a multiprocessing downloader to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files.
 
-```
-usage: porder multipart [-h] [--url URL] [--local LOCAL]
-                            [--errorlog ERRORLOG]
-
-optional arguments:
-  -h, --help           show this help message and exit
-  --url URL            order url you got for your order
-  --local LOCAL        Output folder where ordered files will be exported
-
-Optional named arguments:
-  --ext EXT      File Extension to download
-```
+![porder_multipart](https://user-images.githubusercontent.com/28806922/53097736-2b042c80-34f0-11e9-9724-68e9ed356ab7.png)
 
 ### multiprocessing download
 The uses the multiprocessing library to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files and includes an expotential rate limiting function to handle too many requests. To save on time it uses an extension filter so for example if you are using the zip operation you can use ".zip" and if you are downloading only images, udm and xml you can use ".tif" or ".xml" accordingly.
 
-```
-usage: porder multiproc [-h] [--url URL] [--local LOCAL] [--ext EXT]
-
-optional arguments:
-  -h, --help     show this help message and exit
-  --url URL      Ordersv2 order link
-  --local LOCAL  Local Path to save files
-
-Optional named arguments:
-  --ext EXT      File Extension to download
-
-```
+![porder_multiprocessing](https://user-images.githubusercontent.com/28806922/53097786-4707ce00-34f0-11e9-9e79-78ba1d4ba27c.png)
 
 A simple setup would be
 
-```porder multiproc --url "https://api.planet.com/compute/ops/orders/v2/b498ed28-f6c1-4f77-ae2b-f8a6ba325431" --local "C:\planet_demo\ps" --ext ".xml"```
+![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.1.8
+- Fixed issues with empty JSON append
+- General improvements to the tool
 
 ### v0.1.7
 - Added band math indices for PlanetScope item
