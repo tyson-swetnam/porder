@@ -67,34 +67,7 @@ Installation is an optional step; the application can be also run directly by ex
 
 Make sure you initialized planet client by typing ```planet init``` or ```export``` or ```set PL_API_KEY=Your API Key``` As usual, to print help:
 
-```
-usage: porder [-h]
-              {quota,base64,idlist,difflist,idsplit,order,ordersize,download,multipart,multiproc}
-              ...
-
-Ordersv2 Simple Client
-
-positional arguments:
-  {quota,base64,idlist,difflist,idsplit,order,ordersize,download,multipart,multiproc}
-    quota               Prints your Planet Quota Details
-    base64              Base 64 encode a JSON file
-    idlist              Get idlist using geometry & filters
-    difflist            Checks the difference between local files and
-                        available Planet assets
-    idsplit             Splits ID list incase you want to run them in small
-                        batches
-    order               Place an order & get order url currently supports
-                        "toar","clip","composite","reproject","compression"
-    ordersize           Estimate total download size
-    download            Downloads all files in your order
-    multipart           Uses multiprocessing to download for all files in your
-                        order
-    multiproc           Multiprocess based downloader based on satlist
-
-optional arguments:
-  -h, --help            show this help message and exit
-
-```
+![porder_cli](https://user-images.githubusercontent.com/28806922/53095363-a1059500-34ea-11e9-840f-8e155e3d0ade.png)
 
 To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `porder idlist -h`. If you didn't install porder, then you can run it just by going to *porder* directory and running `python porder.py [arguments go here]`
 
@@ -104,58 +77,22 @@ The tool is designed to simplify using the ordersv2 API and allows the user to c
 ### porder quota
 Just a simple tool to print your planet subscription quota quickly.
 
-```
-usage: porder quota [-h]
+![porder_quota](https://user-images.githubusercontent.com/28806922/53095467-f2158900-34ea-11e9-85a7-b01e0eafb898.png)
 
-optional arguments:
-  -h, --help  show this help message and exit
-```
 
 ### base64
 This does exactly as it sounds, it encodes your credential files to base64 for use with gcs.
 
-```
-usage: porder.py base64 [-h] --cred CRED
-
-optional arguments:
-  -h, --help   show this help message and exit
-
-Required named arguments.:
-  --cred CRED  Path to GCS credential file
-```
+![porder_base64](https://user-images.githubusercontent.com/28806922/53095560-2c7f2600-34eb-11e9-8b69-e1a489aeae17.png)
 
 ### idlist
 Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip)
 
-```
-usage: porder idlist [-h] --input INPUT --start START --end END --item ITEM
-                     --asset ASSET --number NUMBER --outfile OUTFILE
-                     [--cmin CMIN] [--cmax CMAX]
+![porder_idlist](https://user-images.githubusercontent.com/28806922/53095651-63553c00-34eb-11e9-9e8a-0913b0075e57.png)
 
-optional arguments:
-  -h, --help         show this help message and exit
-
-Required named arguments.:
-  --input INPUT      Input geometry file for now geojson/json/kml
-  --start START      Start date in format YYYY-MM-DD
-  --end END          End date in format YYYY-MM-DD
-  --item ITEM        Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc
-  --asset ASSET      Asset Type analytic, analytic_sr,visual etc
-  --number NUMBER    Total number of assets, give a large number if you are
-                     not sure
-  --outfile OUTFILE  Output csv file, written as csv as well as text file
-
-Optional named arguments:
-  --cmin CMIN        Minimum cloud cover
-  --cmax CMAX        Maximum cloud cover
-  --overlap OVERLAP  Percentage overlap of image with search area range
-                     between 0 to 100
-```
 
 A simple setup would be
-```
-porder idlist --input "C:\johndoe\geometry.geojson" --start "2017-01-01" --end "2018-12-31" --item "PSScene4Band" --asset "analytic_sr" --number 800 --outfile "C:\johndoe\orderlist.csv" --overlap 1
-```
+![porder_idlist_setup](https://user-images.githubusercontent.com/28806922/53095858-c8a92d00-34eb-11e9-89a7-1d1e13081713.png)
 
 ### difflist
 It is possible you already downloaded some images or metadata files, and your you want a difference idlist to create orders for only assets and item types you do not have. It takes in your local folder path, type image or metadata and some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file.
@@ -217,7 +154,7 @@ porder idsplit --idlist "C:\johndone\orderlist.csv" --lines "100" --local "C:\jo
 This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. You can now add some predefined indices for PlanetScope 4 band items with a maximum of 5 indices for a single setup . This is experimental. The list of indices include
 
 <center>
-   
+
 Index             | Source                                                                        |
 ------------------|-------------------------------------------------------------------------------|
 Simple ratio (SR) | [Jordan 1969](https://esajournals.onlinelibrary.wiley.com/doi/abs/10.2307/1936256)
@@ -299,7 +236,7 @@ optional arguments:
 An example setup look like the following
 
 <center>
-   
+
 ![ordersize](/images/ordersize.png)
 
 </center>
