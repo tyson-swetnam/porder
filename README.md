@@ -77,8 +77,7 @@ The tool is designed to simplify using the ordersv2 API and allows the user to c
 ### porder quota
 Just a simple tool to print your planet subscription quota quickly.
 
-![porder_quota](https://user-images.githubusercontent.com/28806922/53095467-f2158900-34ea-11e9-85a7-b01e0eafb898.png)
-
+![porder_quota](https://user-images.githubusercontent.com/28806922/53096076-440ade80-34ec-11e9-96d6-5398eaec74a2.png)
 
 ### base64
 This does exactly as it sounds, it encodes your credential files to base64 for use with gcs.
@@ -88,49 +87,22 @@ This does exactly as it sounds, it encodes your credential files to base64 for u
 ### idlist
 Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip)
 
-![porder_idlist](https://user-images.githubusercontent.com/28806922/53095651-63553c00-34eb-11e9-9e8a-0913b0075e57.png)
-
+![porder_idlist](https://user-images.githubusercontent.com/28806922/53095983-16259a00-34ec-11e9-9f1b-066b535e3cbe.png)
 
 A simple setup would be
-![porder_idlist_setup](https://user-images.githubusercontent.com/28806922/53095858-c8a92d00-34eb-11e9-89a7-1d1e13081713.png)
+![porder_idlist_setup](https://user-images.githubusercontent.com/28806922/53096128-6e5c9c00-34ec-11e9-9ddd-767f96d603b0.png)
 
 ### difflist
 It is possible you already downloaded some images or metadata files, and your you want a difference idlist to create orders for only assets and item types you do not have. It takes in your local folder path, type image or metadata and some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file.
 
-```
-usage: porder difflist [-h] --folder FOLDER --typ TYP --input INPUT --item
-                          ITEM --asset ASSET --start START --end END --outfile
-                          OUTFILE [--cmin CMIN] [--cmax CMAX]
-
-optional arguments:
-  -h, --help         show this help message and exit
-
-Required named arguments.:
-  --folder FOLDER    local folder where image or metadata files are stored
-  --typ TYP          File type image or metadata
-  --input INPUT      Input boundary to search (geojson, json)
-  --item ITEM        Planet Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc
-  --asset ASSET      Asset Type analytic, analytic_sr,visual etc
-  --start START      Start Date YYYY-MM-DD
-  --end END          End Date YYYY-MM-DD
-  --outfile OUTFILE  Full path to text file with difference ID list
-
-Optional named arguments:
-  --cmin CMIN        Minimum cloud cover
-  --cmax CMAX        Maximum cloud cover
-
-```
+![porder_difflist](https://user-images.githubusercontent.com/28806922/53096272-bed3f980-34ec-11e9-8ef9-366eb6c2e887.png)
 
 A simple setup would be
-```
-porder diffcheck --folder "F:\johndoe\ps4b_xml" --typ "metadata" --input "F:\johndoe\grid.geojson" --item "PSScene4Band" --asset "analytic_sr" --start "2018-06-01" --end "2018-08-01" --cmin 0 --cmax 0.9 --outfile "F:\johndoe\diff.txt"
-```
+![porder_diffcheck_setup](https://user-images.githubusercontent.com/28806922/53096408-14100b00-34ed-11e9-8ee1-8c49e8145aef.png)
 
 or without the cloud filter
 
-```
-porder diffcheck --folder "F:\johndoe\ps4b_xml" --typ "metadata" --input "F:\johndoe\grid.geojson" --item "PSScene4Band" --asset "analytic_sr" --start "2018-06-01" --end "2018-08-01" --outfile "F:\johndoe\diff.txt"
-```
+![porder_diffcheck_nocloud_setup](https://user-images.githubusercontent.com/28806922/53096598-8a147200-34ed-11e9-8583-8ceaa93da65d.png)
 
 ### idsplit
 This allows you to split your idlist into small csv files incase you wanted to created batches of orders.
