@@ -265,10 +265,22 @@ Optional named arguments:
 
 ```
 
+A simple setup with image clip with email notification would be
+
+```
+porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4Band" --asset "analytic" --boundary "path to geojson file to clip" --op clip email
+```
+
+The same setup with delivery of each image, its metadata as a zip file would be. Note how we only added zip to the op list
+
+```
+porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4Band" --asset "analytic" --boundary "path to geojson file to clip" --op clip zip email
+```
+
 A simple setup with Top of Atmospher reflectance and a few indices along with email notification would be
 
 ```
-porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4Band" --asset "analytic" --op toar ndvi ndwi evi2
+porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4Band" --asset "analytic" --op toar ndvi ndwi evi2 email
 ```
 
 ![order](/images/placing_order.gif)
@@ -284,7 +296,7 @@ optional arguments:
   --url URL   order url you got for your order
 ```
 
-An example setup would be the following
+An example setup look like the following
 
 <center>
    
