@@ -77,12 +77,12 @@ The tool is designed to simplify using the ordersv2 API and allows the user to c
 ### porder quota
 Just a simple tool to print your planet subscription quota quickly.
 
-![porder_quota](https://user-images.githubusercontent.com/28806922/53096076-440ade80-34ec-11e9-96d6-5398eaec74a2.png)
+![porder_quota](https://user-images.githubusercontent.com/28806922/53096751-d19afe00-34ed-11e9-9e10-b2c894800cbe.png)
 
 ### base64
 This does exactly as it sounds, it encodes your credential files to base64 for use with gcs.
 
-![porder_base64](https://user-images.githubusercontent.com/28806922/53095560-2c7f2600-34eb-11e9-8b69-e1a489aeae17.png)
+![porder_base64](https://user-images.githubusercontent.com/28806922/53096754-d495ee80-34ed-11e9-980d-418601bc975a.png)
 
 ### idlist
 Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip)
@@ -107,20 +107,10 @@ or without the cloud filter
 ### idsplit
 This allows you to split your idlist into small csv files incase you wanted to created batches of orders.
 
-```
-usage: porder idsplit [-h] [--idlist IDLIST] [--lines LINES] [--local LOCAL]
-
-optional arguments:
-  -h, --help       show this help message and exit
-  --idlist IDLIST  Idlist file to split
-  --lines LINES    Maximum number of lines in each split files
-  --local LOCAL    Output folder where split files will be exported
-```
+![porder_idsplit](https://user-images.githubusercontent.com/28806922/53096932-4110ed80-34ee-11e9-8a9e-da4b6fc7c041.png)
 
 A simple setup would be
-```
-porder idsplit --idlist "C:\johndone\orderlist.csv" --lines "100" --local "C:\johndoe\split"
-```
+![porder_idsplit_setup](https://user-images.githubusercontent.com/28806922/53096934-453d0b00-34ee-11e9-81d5-baba3d990b78.png)
 
 ### order
 This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. You can now add some predefined indices for PlanetScope 4 band items with a maximum of 5 indices for a single setup . This is experimental. The list of indices include
@@ -140,57 +130,19 @@ Normalized Difference Water Index (NDWI) | [Gao 1996](https://www.sciencedirect.
 
 </center>
 
-```
-usage: porder order [-h] --name NAME --idlist IDLIST --item ITEM --asset ASSET
-                    [--boundary BOUNDARY] [--projection PROJECTION]
-                    [--kernel KERNEL] [--compression COMPRESSION] [--aws AWS]
-                    [--azure AZURE] [--gcs GCS] [--op OP [OP ...]]
-
-optional arguments:
-  -h, --help            show this help message and exit
-
-Required named arguments.:
-  --name NAME           Order Name to be Submitted
-  --idlist IDLIST       CSV or text idlist with item IDs
-  --item ITEM           Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc
-  --asset ASSET         Asset Type analytic, analytic_sr,visual etc
-
-Optional named arguments:
-  --boundary BOUNDARY   Boundary/geometry for clip operation geojson|json|kml
-  --projection PROJECTION
-                        Projection for reproject operation of type "EPSG:4326"
-  --kernel KERNEL       Resampling kernel used "near", "bilinear", "cubic",
-                        "cubicspline", "lanczos", "average" and "mode"
-  --compression COMPRESSION
-                        Compression type used for tiff_optimize tool,
-                        "lzw"|"deflate"
-  --aws AWS             AWS cloud credentials config yml file
-  --azure AZURE         Azure cloud credentials config yml file
-  --gcs GCS             GCS cloud credentials config yml file
-  --op OP [OP ...]      Add operations, delivery & notification clip|toar|comp
-                        osite|zip|compression|projection|kernel|aws|azure|gcs|
-                        email <Choose indices from>:
-                        ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|sr
-
-```
+![porder_order](https://user-images.githubusercontent.com/28806922/53097126-b7155480-34ee-11e9-8873-650f6d84e576.png)
 
 A simple setup with image clip with email notification would be
 
-```
-porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4Band" --asset "analytic" --boundary "path to geojson file to clip" --op clip email
-```
+![porder_clip_email](https://user-images.githubusercontent.com/28806922/53097227-f5ab0f00-34ee-11e9-88ce-fc3f776df2de.png)
 
 The same setup with delivery of each image, its metadata as a zip file would be. Note how we only added zip to the op list
 
-```
-porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4Band" --asset "analytic" --boundary "path to geojson file to clip" --op clip zip email
-```
+![porder_clip_zip_email](https://user-images.githubusercontent.com/28806922/53097313-29863480-34ef-11e9-9bf0-b4883b82f682.png)
 
 A simple setup with Top of Atmospher reflectance and a few indices along with email notification would be
 
-```
-porder order --name "test-order" --idlist "path to idlist.txt" --item "PSScene4Band" --asset "analytic" --op toar ndvi ndwi evi2 email
-```
+![porder_index_email](https://user-images.githubusercontent.com/28806922/53097451-7a962880-34ef-11e9-8dcf-2173174fb0cc.png)
 
 ![order](/images/placing_order.gif)
 
