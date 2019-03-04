@@ -180,7 +180,7 @@ def main(args=None):
     optional_named.add_argument('--aws', help='AWS cloud credentials config yml file',default=None)
     optional_named.add_argument('--azure', help='Azure cloud credentials config yml file',default=None)
     optional_named.add_argument('--gcs', help='GCS cloud credentials config yml file',default=None)
-    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|composite|zip|compression|projection|kernel|aws|azure|gcs|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|sr",default=None)
+    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|composite|zip|compression|projection|kernel|aws|azure|gcs|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|sr|msavi2",default=None)
 
     parser_order.set_defaults(func=order_from_parser)
 
