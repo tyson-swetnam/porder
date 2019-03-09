@@ -127,6 +127,7 @@ Transformed Vegetation Index (TVI) | [Broge and Leblanc 2000](https://www.scienc
 Optimized Soil Adjusted Vegetation Index (OSAVI) | [Rondeaux et al 1996](https://www.sciencedirect.com/science/article/abs/pii/0034425795001867)
 Enhanced Vegetation Index (EVI2) | [Jian et al 2008](https://www.sciencedirect.com/science/article/abs/pii/S0034425708001971)
 Normalized Difference Water Index (NDWI) | [Gao 1996](https://www.sciencedirect.com/science/article/abs/pii/S0034425796000673)
+Modified Soil-adjusted Vegetation Index v2 (MSAVI2) | [Qi 1994](https://www.sciencedirect.com/science/article/abs/pii/0034425794901341?via%3Dihub)
 
 </center>
 
@@ -179,6 +180,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.1.9
+- Added msavi
+- Fixed issues with GeoJSON read
 
 ### v0.1.8
 - Fixed issues with empty JSON append

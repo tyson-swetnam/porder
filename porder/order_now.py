@@ -123,6 +123,9 @@ def order(**kwargs):
                 elif items=='sr':
                     dsr={"pixel_type": "32R","sr": "(b4/b3)"}
                     dbmath['bandmath'].update(dsr)
+                elif items=='msavi2':
+                    dmsavi2={"pixel_type": "32R", "msavi2": "(2 * b4 - ((2 * b4 + 1) ** 2 - 8 * (b4 - b3)) ** 0.5) / 2"}
+                    dbmath['bandmath'].update(dmsavi2)
                 elif items=='compression':
                     dbundle['tools'].append(dtiff)
 
