@@ -133,7 +133,7 @@ def order(**kwargs):
                         try:
                             if value.endswith('.geojson'):
                                 with open(value) as aoi:
-                                    aoi_resp = json.load(aoi)
+                                    aoi_resp = json.loads(aoi.read())
                                     items['clip']['aoi']['coordinates']= aoi_resp['features'][0]['geometry']['coordinates']
                             elif value.endswith('.json'):
                                 with open (value) as aoi:
