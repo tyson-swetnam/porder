@@ -100,6 +100,15 @@ def order_from_parser(args):
 def ordersize_from_parser(args):
     ordersize(url=args.url)
 
+#Get concurrent orders that are running
+def concorder():
+    try:
+        subprocess.call('python concord.py',shell=True)
+    except Exception as e:
+        print(e)
+def concorder_from_parser(args):
+    concorder()
+
 #Download the order
 def download_from_parser(args):
     download(url=args.url,
@@ -187,6 +196,9 @@ def main(args=None):
     parser_ordersize = subparsers.add_parser('ordersize',help='Estimate total download size')
     parser_ordersize.add_argument('--url',help='order url you got for your order')
     parser_ordersize.set_defaults(func=ordersize_from_parser)
+
+    parser_concorder = subparsers.add_parser('concurrent', help='Prints number of orders running')
+    parser_concorder.set_defaults(func=concorder_from_parser)
 
     parser_download = subparsers.add_parser('download',help='Downloads all files in your order')
     parser_download.add_argument('--url',help='order url you got for your order')

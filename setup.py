@@ -13,16 +13,22 @@ if StrictVersion(setuptools_version) < StrictVersion('38.3.0'):
         'Please upgrade setuptools by running `pip install -U setuptools` '
         'and try again.'
     )
+
+
 def readme():
     with open('README.md') as f:
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.1.9',
+    version='0.2.0',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     install_requires=['requests>=2.19.1','planet>=1.2.1','retrying>=1.3.3',
-                      'progressbar2>=3.38.0','pySmartDL>=1.2.5','clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2'],
+                      'progressbar2>=3.38.0',
+                      'pySmartDL==1.2.5;python_version<"3.4"',
+                      'pySmartDL>=1.3.1;python_version>"3.4"',
+                      'shapely>=1.6.4;platform_system!="Windows"',
+                      'clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2'],
     license='Apache 2.0',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
