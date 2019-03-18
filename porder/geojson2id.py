@@ -46,10 +46,7 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
     if num<250:
         try:
             n=0
-            with open(outfile,'w') as csvfile:
-                writer=csv.DictWriter(csvfile,fieldnames=["id"], delimiter=',')
-                writer.writeheader()
-            open(os.path.join(head,tail.split('.')[0]+'.txt'),'w')
+            open(outfile,'w')
             for items in page['features']:
                 for itm in items['_permissions']:
                     if itm.split(':')[0]=="assets."+asset and n<num:
@@ -69,10 +66,8 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                                 with open(outfile,'a') as csvfile:
                                     writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
                                     writer.writerow([it])
-                                with open(os.path.join(head,tail.split('.')[0]+'.txt'), 'a') as the_file:
-                                    the_file.write(it+'\n')
-            num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.txt')))
-            print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.txt')+' ===> '+str(num_lines)))
+            num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
+            print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
             sys.exit()
         except Exception as e:
             print(e)
@@ -98,17 +93,12 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                                 with open(outfile,'a') as csvfile:
                                     writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
                                     writer.writerow([it])
-            data=csv.reader(open(outfile).readlines()[1: num+1])
+            data=csv.reader(open(outfile).readlines()[1: num+2])
 
             with open(outfile, "w") as f:
-                writer = csv.writer(f)
+                writer = csv.writer(f,delimiter=',',lineterminator='\n')
                 for row in data:
                     writer.writerow(row)
-            open(os.path.join(head,tail.split('.')[0]+'.txt'), 'w')
-            dat=open(outfile).readlines()
-            with open(os.path.join(head,tail.split('.')[0]+'.txt'), 'a') as the_file:
-                for row in dat:
-                    the_file.write(row)
         except Exception as e:
             print(e)
 def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
@@ -117,7 +107,7 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
         cmin=0
     if cmax==None:
         cmax=1
-    if ovp==None:
+    if ovp is None:
         ovp=1
     if ovp is not None:
         ovp=int(ovp)
@@ -181,5 +171,5 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
         page_url = page['_links'].get('_next')
         page = SESSION.get(page_url).json()
         ids = handle_page(page,asset,num,outfile,gmain,ovp)
-    num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.txt')))
-    print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.txt')+' ===> '+str(num_lines)))
+    num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
+    print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))

@@ -52,6 +52,7 @@ def conc():
     result = SESSION.get('https://api.planet.com/compute/ops/orders/v2')
     page=result.json()
     final_list=handle_page(page)
+    runlist.append(final_list)
     while page['_links'].get('next') is not None:
         try:
             page_url = page['_links'].get('next')
@@ -61,6 +62,6 @@ def conc():
             runlist.append(ids)
         except Exception as e:
             pass
-    print('Running '+str(sum(runlist))+' orders')
+    print('Number of orders running: '+str(sum(runlist)))
     return sum(runlist)
 conc()

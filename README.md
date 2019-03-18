@@ -86,17 +86,17 @@ This does exactly as it sounds, it encodes your credential files to base64 for u
 ![porder_base64](https://user-images.githubusercontent.com/28806922/53096754-d495ee80-34ed-11e9-980d-418601bc975a.png)
 
 ### idlist
-Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip)
+Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip)
 
-![porder_idlist](https://user-images.githubusercontent.com/28806922/53095983-16259a00-34ec-11e9-9f1b-066b535e3cbe.png)
+![porder_idlist](https://user-images.githubusercontent.com/25802584/54535650-5c441100-4965-11e9-87dd-f203ce6ed2c7.png)
 
 A simple setup would be
 ![porder_idlist_setup](https://user-images.githubusercontent.com/28806922/53096128-6e5c9c00-34ec-11e9-9ddd-767f96d603b0.png)
 
 ### difflist
-It is possible you already downloaded some images or metadata files, and your you want a difference idlist to create orders for only assets and item types you do not have. It takes in your local folder path, type image or metadata and some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file and an intermediate text file is also created with same idlist to help format the output csv file.
+It is possible you already downloaded some images or metadata files, and your you want a difference idlist to create orders for only assets and item types you do not have. It takes in your local folder path, type image or metadata and some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids.
 
-![porder_difflist](https://user-images.githubusercontent.com/28806922/53096272-bed3f980-34ec-11e9-8ef9-366eb6c2e887.png)
+![porder_difflist](https://user-images.githubusercontent.com/25802584/54535868-dc6a7680-4965-11e9-8047-250c568f10e1.png)
 
 A simple setup would be
 ![porder_diffcheck_setup](https://user-images.githubusercontent.com/28806922/53096408-14100b00-34ed-11e9-8ee1-8c49e8145aef.png)
@@ -108,7 +108,7 @@ or without the cloud filter
 ### idsplit
 This allows you to split your idlist into small csv files incase you wanted to created batches of orders.
 
-![porder_idsplit](https://user-images.githubusercontent.com/28806922/53096932-4110ed80-34ee-11e9-8a9e-da4b6fc7c041.png)
+![porder_idsplit](https://user-images.githubusercontent.com/25802584/54536155-877b3000-4966-11e9-9a32-9a4379eef0f7.png)
 
 A simple setup would be
 ![porder_idsplit_setup](https://user-images.githubusercontent.com/28806922/53097536-b204d500-34ef-11e9-8a6c-e2d52986d90c.png)
@@ -132,7 +132,7 @@ Modified Soil-adjusted Vegetation Index v2 (MSAVI2) | [Qi 1994](https://www.scie
 
 </center>
 
-![porder_order](https://user-images.githubusercontent.com/28806922/53097126-b7155480-34ee-11e9-8873-650f6d84e576.png)
+![porder_order](https://user-images.githubusercontent.com/25802584/54535982-25bac600-4966-11e9-9638-b3d9453119be.png)
 
 A simple setup with image clip with email notification would be
 
@@ -186,6 +186,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.2.1
+- Now exports only csv idlist
+- Fixed count with concurrency check
 
 ### v0.2.0
 - Fixed pysmartdl install issues
