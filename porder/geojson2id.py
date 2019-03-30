@@ -25,7 +25,10 @@ import json
 import os
 import csv
 import sys
+import pyproj
+from functools import partial
 from shapely.geometry import shape
+from shapely.ops import transform
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
 
@@ -39,7 +42,8 @@ except:
 SESSION = requests.Session()
 SESSION.auth = (PL_API_KEY, '')
 
-
+ar=[]
+far=[]
 def handle_page(page,asset,num,outfile,gmain,ovp):
     num=int(num)
     [head,tail]=os.path.split(outfile)
@@ -54,12 +58,18 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                         if items['geometry']['type']=="Polygon":
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
+                            epsgcode=items['properties']['epsg_code']
                             geom2=shape(temp)
                             if gmain.area>geom2.area:
                                 intersect=(geom2).intersection(gmain)
                             elif geom2.area>gmain.area:
                                 intersect=(gmain).intersection(geom2)
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
+                            #print(gmain.area)
+                            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
+                                pyproj.Proj(init='epsg:'+str(epsgcode)))
+                            ar.append(transform(proj,intersect).area/1000000)
+                            far.append(transform(proj,geom2).area/1000000)
                             if (intersect.area/gmain.area)*100>=ovp:
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
                                 n=n+1
@@ -68,6 +78,8 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                                     writer.writerow([it])
             num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
             print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
+            print('Total estimated cost to quota: '+str("{:,}".format(round(sum(far))))+' sqkm')
+            print('Total estimated cost to quota if clipped: '+str("{:,}".format(round(sum(ar))))+' sqkm')
             sys.exit()
         except Exception as e:
             print(e)
@@ -81,12 +93,17 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                         if items['geometry']['type']=="Polygon":
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
+                            epsgcode=items['properties']['epsg_code']
                             geom2=shape(temp)
                             if gmain.area>geom2.area:
                                 intersect=(geom2).intersection(gmain)
                             elif geom2.area>gmain.area:
                                 intersect=(gmain).intersection(geom2)
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
+                            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
+                                pyproj.Proj(init='epsg:'+str(epsgcode)))
+                            ar.append(transform(proj,intersect).area/1000000)
+                            far.append(transform(proj,geom2).area/1000000)
                             if (intersect.area/gmain.area)*100>=ovp:
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
                                 n=n+1
@@ -101,6 +118,7 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                     writer.writerow(row)
         except Exception as e:
             print(e)
+
 def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
     [head,tail]=os.path.split(outfile)
     if cmin==None:
@@ -173,3 +191,5 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
         ids = handle_page(page,asset,num,outfile,gmain,ovp)
     num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
     print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
+    print('Total estimated cost to quota: '+str("{:,}".format(round(sum(far))))+' sqkm')
+    print('Total estimated cost to quota if clipped: '+str("{:,}".format(round(sum(ar))))+' sqkm')

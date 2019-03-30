@@ -86,7 +86,7 @@ This does exactly as it sounds, it encodes your credential files to base64 for u
 ![porder_base64](https://user-images.githubusercontent.com/28806922/53096754-d495ee80-34ed-11e9-980d-418601bc975a.png)
 
 ### idlist
-Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip)
+Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip). The tool now also prints estimated area in Square kilometes for the download and estimated area if you clipped your area with the geometry you are searching (just estimates).
 
 ![porder_idlist](https://user-images.githubusercontent.com/25802584/54535650-5c441100-4965-11e9-87dd-f203ce6ed2c7.png)
 
@@ -186,6 +186,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.2.2
+- Now estimates area before and after clip when you run idlist
+- General improvements
 
 ### v0.2.1
 - Now exports only csv idlist

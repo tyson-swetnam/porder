@@ -20,7 +20,7 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.2.1',
+    version='0.2.2',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     install_requires=['requests>=2.19.1','planet>=1.2.1','retrying>=1.3.3',
@@ -28,7 +28,9 @@ setuptools.setup(
                       'pySmartDL==1.2.5;python_version<"3.4"',
                       'pySmartDL>=1.3.1;python_version>"3.4"',
                       'shapely>=1.6.4;platform_system!="Windows"',
-                      'clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2'],
+                      'clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2',
+                      'pyproj==1.9.5.1;python_version<"2.7"',
+                      'pyproj>=1.9.5.1;python_version>"3.4"',],
     license='Apache 2.0',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
