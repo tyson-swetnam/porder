@@ -29,7 +29,7 @@ setuptools.setup(
                       'pySmartDL>=1.3.1;python_version>"3.4"',
                       'shapely>=1.6.4;platform_system!="Windows"',
                       'clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2',
-                      'pyproj==1.9.5.1;python_version<"2.7"',
+                      'pyproj==1.9.5.1;python_version<"3.4"',
                       'pyproj>=1.9.5.1;python_version>"3.4"',],
     license='Apache 2.0',
     long_description=open('README.md').read(),
