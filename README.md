@@ -187,7 +187,7 @@ A simple setup would be
 
 ## Changelog
 
-### v0.2.2
+### v0.2.3
 - Now estimates area before and after clip when you run idlist
 - General improvements
 
