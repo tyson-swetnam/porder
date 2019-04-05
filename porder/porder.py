@@ -1,3 +1,4 @@
+from __future__ import print_function
 __copyright__ = """
 
     Copyright 2019 Samapriya Roy
@@ -59,6 +60,16 @@ def gcs_cred_from_parser(args):
 
 #Create ID List with structured JSON
 def idlist_from_parser(args):
+    print('')
+    if args.asset is None:
+        with open(os.path.join(lpath,'bundles.json')) as f:
+            r=json.load(f)
+            for key,value in r['bundles'].items():
+                mydict=r['bundles'][key]['assets']
+                for item_types in mydict:
+                    if args.item ==item_types:
+                        print('Assets for item '+str(args.item)+' of Bundle type '+str(key)+': '+str(', '.join(mydict[args.item])))
+        sys.exit()
     idl(infile=args.input,
         start=args.start,
         end=args.end,
@@ -145,12 +156,12 @@ def main(args=None):
     required_named.add_argument('--start', help='Start date in format YYYY-MM-DD', required=True)
     required_named.add_argument('--end', help='End date in format YYYY-MM-DD', required=True)
     required_named.add_argument('--item', help='Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc', required=True)
-    required_named.add_argument('--asset', help='Asset Type analytic, analytic_sr,visual etc', required=True)
-    required_named.add_argument('--number', help='Total number of assets, give a large number if you are not sure', required=True)
+    required_named.add_argument('--asset', help='Asset Type analytic, analytic_sr,visual etc', default=None)
     required_named.add_argument('--outfile', help='Output csv file', required=True)
     optional_named = parser_idlist.add_argument_group('Optional named arguments')
     optional_named.add_argument('--cmin', help="Minimum cloud cover", default=None)
     optional_named.add_argument('--cmax', help="Maximum cloud cover", default=None)
+    optional_named.add_argument('--number', help="Total number of assets, give a large number if you are not sure", default=None)
     optional_named.add_argument('--overlap', help="Percentage overlap of image with search area range between 0 to 100", default=None)
     parser_idlist.set_defaults(func=idlist_from_parser)
 

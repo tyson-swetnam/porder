@@ -88,7 +88,13 @@ This does exactly as it sounds, it encodes your credential files to base64 for u
 ### idlist
 Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip). The tool now also prints estimated area in Square kilometes for the download and estimated area if you clipped your area with the geometry you are searching (just estimates).
 
-![porder_idlist](https://user-images.githubusercontent.com/25802584/54535650-5c441100-4965-11e9-87dd-f203ce6ed2c7.png)
+**I have changed the setup to now do the following two things**
+
+* The number option is optional, so it can look for all images in the time range, but be careful if the area is too large, _use at own risk_. A better option is to supply the number.
+
+* It is possible to often forget about the different asset types, so you can now not pass an item and the script will return every possible type of asset for each item type depending on the bundle.
+
+![porder_idlist](https://user-images.githubusercontent.com/25802584/55653649-2e602880-57bd-11e9-9d43-3587d2021d6f.png)
 
 A simple setup would be
 ![porder_idlist_setup](https://user-images.githubusercontent.com/28806922/53096128-6e5c9c00-34ec-11e9-9ddd-767f96d603b0.png)
@@ -186,6 +192,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.2.4
+- Now functions without limit on the number of assets in the idlist
+- Parses possible asset types if only item type is supplied for idlist
 
 ### v0.2.3
 - Now estimates area before and after clip when you run idlist
