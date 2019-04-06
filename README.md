@@ -193,6 +193,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.2.5
+- Fixed issue with area calculation estimates
+- General improvements
+
 ### v0.2.4
 - Now functions without limit on the number of assets in the idlist
 - Parses possible asset types if only item type is supplied for idlist

@@ -24,6 +24,7 @@ import requests
 import json
 import os
 import csv
+import time
 import sys
 import pyproj
 from retrying import retry
@@ -45,9 +46,10 @@ SESSION.auth = (PL_API_KEY, '')
 
 ar=[]
 far=[]
-
+n=0
 
 def handle_page(page,asset,num,outfile,gmain,ovp):
+    global n
     if num is None:
         [head,tail]=os.path.split(outfile)
         try:
@@ -67,9 +69,9 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
                             proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
                                 pyproj.Proj(init='epsg:'+str(epsgcode)))
-                            ar.append(transform(proj,intersect).area/1000000)
-                            far.append(transform(proj,geom2).area/1000000)
                             if (intersect.area/gmain.area)*100>=ovp:
+                                ar.append(transform(proj,intersect).area/1000000)
+                                far.append(transform(proj,geom2).area/1000000)
                                 # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
                                 with open(outfile,'a') as csvfile:
                                     writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
@@ -79,77 +81,40 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
     elif num is not None:
         num=int(num)
         [head,tail]=os.path.split(outfile)
-        if num<250:
-            try:
-                n=0
-                open(outfile,'w')
-                for items in page['features']:
-                    for itm in items['_permissions']:
-                        if itm.split(':')[0]=="assets."+asset and n<num:
-                            it=items.get('id')
-                            if items['geometry']['type']=="Polygon":
-                                bounds=items['geometry']['coordinates']
-                                temp['coordinates']=bounds
-                                epsgcode=items['properties']['epsg_code']
-                                geom2=shape(temp)
-                                if gmain.area>geom2.area:
-                                    intersect=(geom2).intersection(gmain)
-                                elif geom2.area>gmain.area:
-                                    intersect=(gmain).intersection(geom2)
-                                #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
-                                #print(gmain.area)
-                                proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
-                                    pyproj.Proj(init='epsg:'+str(epsgcode)))
+        try:
+            for items in page['features']:
+                for itm in items['_permissions']:
+                    if itm.split(':')[0]=="assets."+asset and n<num:
+                        it=items.get('id')
+                        if items['geometry']['type']=="Polygon":
+                            bounds=items['geometry']['coordinates']
+                            temp['coordinates']=bounds
+                            epsgcode=items['properties']['epsg_code']
+                            geom2=shape(temp)
+                            if gmain.area>geom2.area:
+                                intersect=(geom2).intersection(gmain)
+                            elif geom2.area>gmain.area:
+                                intersect=(gmain).intersection(geom2)
+                            #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
+                            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
+                                pyproj.Proj(init='epsg:'+str(epsgcode)))
+                            if (intersect.area/gmain.area)*100>=ovp:
                                 ar.append(transform(proj,intersect).area/1000000)
                                 far.append(transform(proj,geom2).area/1000000)
-                                if (intersect.area/gmain.area)*100>=ovp:
-                                    # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
-                                    n=n+1
-                                    with open(outfile,'a') as csvfile:
-                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                                        writer.writerow([it])
-                num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
-                print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
-                print('Total estimated cost to quota: '+str("{:,}".format(round(sum(far))))+' sqkm')
-                print('Total estimated cost to quota if clipped: '+str("{:,}".format(round(sum(ar))))+' sqkm')
-                sys.exit()
-            except Exception as e:
-                print(e)
-        else:
-            try:
-                n=0
-                for items in page['features']:
-                    for itm in items['_permissions']:
-                        if itm.split(':')[0]=="assets."+asset and n<num:
-                            it=items.get('id')
-                            if items['geometry']['type']=="Polygon":
-                                bounds=items['geometry']['coordinates']
-                                temp['coordinates']=bounds
-                                epsgcode=items['properties']['epsg_code']
-                                geom2=shape(temp)
-                                if gmain.area>geom2.area:
-                                    intersect=(geom2).intersection(gmain)
-                                elif geom2.area>gmain.area:
-                                    intersect=(gmain).intersection(geom2)
-                                #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
-                                proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
-                                    pyproj.Proj(init='epsg:'+str(epsgcode)))
-                                ar.append(transform(proj,intersect).area/1000000)
-                                far.append(transform(proj,geom2).area/1000000)
-                                if (intersect.area/gmain.area)*100>=ovp:
-                                    # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
-                                    n=n+1
-                                    with open(outfile,'a') as csvfile:
-                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                                        writer.writerow([it])
-                data=csv.reader(open(outfile).readlines()[1: num+2])
+                                # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
+                                n=n+1
+                                #print(n)
+                                with open(outfile,'a') as csvfile:
+                                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                                    writer.writerow([it])
+            data=csv.reader(open(outfile).readlines()[0: num])
 
-                with open(outfile, "w") as f:
-                    writer = csv.writer(f,delimiter=',',lineterminator='\n')
-                    for row in data:
-                        writer.writerow(row)
-            except Exception as e:
-                print(e)
+            with open(outfile, "w") as f:
+                writer = csv.writer(f,delimiter=',',lineterminator='\n')
+                for row in data:
+                    writer.writerow(row)
+        except Exception as e:
+            print(e)
 
 @retry(
     wait_exponential_multiplier=1000,
@@ -226,6 +191,8 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
             r = SESSION.get(page_url)
             page=r.json()
             ids = handle_page(page,asset,num,outfile,gmain,ovp)
+    except SystemExit:
+        sys.exit()
     except requests.exceptions.Timeout:
         return '[timeout]'
     except requests.exceptions.ConnectionError:
@@ -234,6 +201,8 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
         if r.status_code == 429:  # Too many requests
             raise Exception("rate limit error")
     num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
+    #print(len(ar),len(far))
+    #print(ar)
     print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
     print('Total estimated cost to quota: '+str("{:,}".format(round(sum(far))))+' sqkm')
     print('Total estimated cost to quota if clipped: '+str("{:,}".format(round(sum(ar))))+' sqkm')
