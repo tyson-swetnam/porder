@@ -48,7 +48,7 @@ ar=[]
 far=[]
 n=0
 
-def handle_page(page,asset,num,outfile,gmain,ovp):
+def handle_page(page,item,asset,num,outfile,gmain,ovp):
     global n
     if num is None:
         [head,tail]=os.path.split(outfile)
@@ -60,11 +60,15 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                         if items['geometry']['type']=="Polygon":
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
-                            epsgcode=items['properties']['epsg_code']
+                            #https://stackoverflow.com/questions/51554602/how-do-i-get-the-area-of-a-geojson-polygon-with-python
+                            if item.startswith('SkySat'):
+                                epsgcode='3857'
+                            else:
+                                epsgcode=items['properties']['epsg_code']
                             geom2=shape(temp)
                             if gmain.area>geom2.area:
                                 intersect=(geom2).intersection(gmain)
-                            elif geom2.area>gmain.area:
+                            elif geom2.area>=gmain.area:
                                 intersect=(gmain).intersection(geom2)
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
                             proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
@@ -89,11 +93,15 @@ def handle_page(page,asset,num,outfile,gmain,ovp):
                         if items['geometry']['type']=="Polygon":
                             bounds=items['geometry']['coordinates']
                             temp['coordinates']=bounds
-                            epsgcode=items['properties']['epsg_code']
+                            #https://stackoverflow.com/questions/51554602/how-do-i-get-the-area-of-a-geojson-polygon-with-python
+                            if item.startswith('SkySat'):
+                                epsgcode='3857'
+                            else:
+                                epsgcode=items['properties']['epsg_code']
                             geom2=shape(temp)
                             if gmain.area>geom2.area:
                                 intersect=(geom2).intersection(gmain)
-                            elif geom2.area>gmain.area:
+                            elif geom2.area>=gmain.area:
                                 intersect=(gmain).intersection(geom2)
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
                             proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
@@ -184,13 +192,13 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
                            headers=headers, data=data, params=querystring,
                            auth=(PL_API_KEY, ''))
     page=result.json()
-    final_list = handle_page(page,asset,num,outfile,gmain,ovp)
+    final_list = handle_page(page,item,asset,num,outfile,gmain,ovp)
     try:
         while page['_links'].get('_next') is not None:
             page_url = page['_links'].get('_next')
             r = SESSION.get(page_url)
             page=r.json()
-            ids = handle_page(page,asset,num,outfile,gmain,ovp)
+            ids = handle_page(page,item,asset,num,outfile,gmain,ovp)
     except SystemExit:
         sys.exit()
     except requests.exceptions.Timeout:

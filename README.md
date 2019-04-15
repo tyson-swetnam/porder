@@ -193,6 +193,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.2.6
+- Skysat area are calculated using EPSG:3857 to resolve metadata EPSG issue
+- General improvements
+
 ### v0.2.5
 - Fixed issue with area calculation estimates
 - General improvements
