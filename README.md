@@ -21,6 +21,7 @@ http://doi.org/10.5281/zenodo.2635407
 * [porder Ordersv2 Simple Client](#porder-ordersv2-simple-client)
     * [porder quota](#porder-quota)
     * [base64](#base64)
+    * [simplify](#simplify)
     * [idlist](#idlist)
     * [difflist](#difflist)
     * [idsplit](#idsplit)
@@ -42,7 +43,7 @@ Shapely is notoriously difficult as a library to install on windows machines so 
 
 ```pip install Shapely-1.6.4.post1-cp27-cp27m-win32.whl```
 
-Or you can use [anaconda to install](https://conda-forge.github.io/). Again, both of these options are mentioned on [Shapely’s Official PyPI page](https://pypi.org/project/Shapely/)
+Or you can use [anaconda to install](https://conda-forge.github.io/). Again, both of these options are mentioned on [Shapely’s Official PyPI page](https://pypi.org/project/Shapely/). **Fiona** is a recommended install used by the simplify tool, but it is not necessary. You can find installation instructions [here](https://pypi.org/project/Fiona/1.8.6/#description)
 
 Once you have shapely configured. To install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
 
@@ -68,7 +69,7 @@ Installation is an optional step; the application can be also run directly by ex
 
 Make sure you initialized planet client by typing ```planet init``` or ```export``` or ```set PL_API_KEY=Your API Key``` As usual, to print help:
 
-![porder_cli](https://user-images.githubusercontent.com/28806922/53095363-a1059500-34ea-11e9-840f-8e155e3d0ade.png)
+![porder_cli](https://user-images.githubusercontent.com/6677629/56763897-75fd2300-6771-11e9-97b7-97a4780c81c9.png)
 
 To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `porder idlist -h`. If you didn't install porder, then you can run it just by going to *porder* directory and running `python porder.py [arguments go here]`
 
@@ -84,6 +85,11 @@ Just a simple tool to print your planet subscription quota quickly.
 This does exactly as it sounds, it encodes your credential files to base64 for use with gcs.
 
 ![porder_base64](https://user-images.githubusercontent.com/28806922/53096754-d495ee80-34ed-11e9-980d-418601bc975a.png)
+
+### simplify
+This reduces the number of vertices for a multi vertex and complex GeoJSON. Extremely high vertex count (over 500) seem to fail and hence this tool allows you to export a new geojson with reduced vertices. It uses an implementation of the Visvalingam-Wyatt line simplification algorithm. This tool does work with and without Fiona, but Fiona installation is recommended.
+
+![porder simplify](https://user-images.githubusercontent.com/6677629/56763793-36ced200-6771-11e9-8b61-8f94b1f61152.png)
 
 ### idlist
 Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip). The tool now also prints estimated area in Square kilometes for the download and estimated area if you clipped your area with the geometry you are searching (just estimates).
@@ -192,6 +198,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.2.7
+- Improved overlap calculations for larger geometries
+- Added a geometry simplification tool to reduce number of vertices
 
 ### v0.2.6
 - Skysat area are calculated using EPSG:3857 to resolve metadata EPSG issue

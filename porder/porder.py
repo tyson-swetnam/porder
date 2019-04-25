@@ -25,6 +25,7 @@ import sys
 import json
 import base64
 import clipboard
+from .geojson_simplify import geosimple
 from .geojson2id import idl
 from .text_split import idsplit
 from .order_now import order
@@ -57,6 +58,10 @@ def gcs_cred(cred):
         clipboard.copy(base64.b64encode(filestr))
 def gcs_cred_from_parser(args):
     gcs_cred(cred=args.cred)
+
+# Simplify geojson by vertex count
+def simplify_from_parser(args):
+    geosimple(inp=args.input, output=args.output, num=args.number)
 
 #Create ID List with structured JSON
 def idlist_from_parser(args):
@@ -149,6 +154,12 @@ def main(args=None):
     required_named = parser_gcs_cred.add_argument_group('Required named arguments.')
     required_named.add_argument('--cred', help='Path to GCS credential file', required=True)
     parser_gcs_cred.set_defaults(func=gcs_cred_from_parser)
+
+    parser_simplify = subparsers.add_parser('simplify',help='Simplifies geometry to number of vertices specified using Visvalingam-Wyatt line simplification algorithm')
+    parser_simplify.add_argument('--input',help='Input GeoJSON file')
+    parser_simplify.add_argument('--output',help='Output simplified GeoJSON file')
+    parser_simplify.add_argument('--number',help='Total number of vertices in output GeoJSON')
+    parser_simplify.set_defaults(func=simplify_from_parser)
 
     parser_idlist = subparsers.add_parser('idlist', help='Get idlist using geometry & filters')
     required_named = parser_idlist.add_argument_group('Required named arguments.')

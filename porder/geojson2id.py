@@ -48,6 +48,15 @@ ar=[]
 far=[]
 n=0
 
+#get coordinates list depth
+def list_depth(dic, level = 1):
+    counter=0
+    str_dic = str(dic)
+    if "[[[[" in str_dic:
+        counter += 1
+    return(counter)
+
+
 def handle_page(page,item,asset,num,outfile,gmain,ovp):
     global n
     if num is None:
@@ -73,13 +82,20 @@ def handle_page(page,item,asset,num,outfile,gmain,ovp):
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
                             proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
                                 pyproj.Proj(init='epsg:'+str(epsgcode)))
-                            if (intersect.area/gmain.area)*100>=ovp:
-                                ar.append(transform(proj,intersect).area/1000000)
-                                far.append(transform(proj,geom2).area/1000000)
-                                # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
-                                with open(outfile,'a') as csvfile:
-                                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                                    writer.writerow([it])
+                            if transform(proj,gmain).area>transform(proj,geom2).area:
+                                if (transform(proj,intersect).area/transform(proj,geom2).area*100)>=ovp:
+                                    ar.append(transform(proj,intersect).area/1000000)
+                                    far.append(transform(proj,geom2).area/1000000)
+                                    with open(outfile,'a') as csvfile:
+                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                                        writer.writerow([it])
+                            elif transform(proj,geom2).area>transform(proj,gmain).area:
+                                if (transform(proj,intersect).area/transform(proj,gmain).area*100)>=ovp:
+                                    ar.append(transform(proj,intersect).area/1000000)
+                                    far.append(transform(proj,geom2).area/1000000)
+                                    with open(outfile,'a') as csvfile:
+                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                                        writer.writerow([it])
         except Exception as e:
             print(e)
     elif num is not None:
@@ -106,15 +122,26 @@ def handle_page(page,item,asset,num,outfile,gmain,ovp):
                             #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
                             proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
                                 pyproj.Proj(init='epsg:'+str(epsgcode)))
-                            if (intersect.area/gmain.area)*100>=ovp:
-                                ar.append(transform(proj,intersect).area/1000000)
-                                far.append(transform(proj,geom2).area/1000000)
-                                # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
-                                n=n+1
-                                #print(n)
-                                with open(outfile,'a') as csvfile:
-                                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                                    writer.writerow([it])
+                            if transform(proj,gmain).area>transform(proj,geom2).area:
+                                if (transform(proj,intersect).area/transform(proj,geom2).area*100)>=ovp:
+                                    ar.append(transform(proj,intersect).area/1000000)
+                                    far.append(transform(proj,geom2).area/1000000)
+                                    # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
+                                    n=n+1
+                                    #print(n)
+                                    with open(outfile,'a') as csvfile:
+                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                                        writer.writerow([it])
+                            elif transform(proj,geom2).area>transform(proj,gmain).area:
+                                if (transform(proj,intersect).area/transform(proj,gmain).area*100)>=ovp:
+                                    ar.append(transform(proj,intersect).area/1000000)
+                                    far.append(transform(proj,geom2).area/1000000)
+                                    # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
+                                    n=n+1
+                                    #print(n)
+                                    with open(outfile,'a') as csvfile:
+                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                                        writer.writerow([it])
             data=csv.reader(open(outfile).readlines()[0: num])
 
             with open(outfile, "w") as f:
@@ -149,7 +176,12 @@ def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
         if infile.endswith('.geojson'):
             with open(infile) as aoi:
                 aoi_resp = json.load(aoi)
-                aoi_geom = aoi_resp['features'][0]['geometry']['coordinates']
+                if list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==0:
+                    aoi_geom = aoi_resp['features'][0]['geometry']['coordinates']
+                elif list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==1:
+                    aoi_geom = aoi_resp['features'][0]['geometry']['coordinates'][0]
+                else:
+                    print('Please check GeoJSON: Could not parse coordinates')
         elif infile.endswith('.json'):
             with open (infile) as aoi:
                 aoi_resp=json.load(aoi)
