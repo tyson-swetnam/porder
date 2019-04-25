@@ -1,6 +1,6 @@
 # porder: Simple CLI for Planet ordersV2 API &nbsp; [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Use%20porder%20CLI%20with%20@planetlabs%20new%20ordersv2%20API&url=https://github.com/samapriya/porder)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2635407.svg)](https://doi.org/10.5281/zenodo.2635407)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2651390.svg)](https://doi.org/10.5281/zenodo.2651390)
 [![PyPI version](https://badge.fury.io/py/porder.svg)](https://badge.fury.io/py/porder)
 ![Build Status](https://img.shields.io/badge/dynamic/json.svg?label=downloads&url=https%3A%2F%2Fpypistats.org%2Fapi%2Fpackages%2Fporder%2Frecent%3Fperiod%3Dmonth&query=%24.data.last_month&colorB=blue&suffix=%2fmonth)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -11,8 +11,8 @@
 If you find this tool useful, star and cite it as below
 
 ```
-Samapriya Roy. (2019, April 10). samapriya/porder: porder: Simple CLI for Planet ordersV2 API (Version 0.2.5). Zenodo.
-http://doi.org/10.5281/zenodo.2635407
+Samapriya Roy. (2019, April 25). samapriya/porder: porder: Simple CLI for Planet ordersV2 API (Version 0.2.7). Zenodo.
+http://doi.org/10.5281/zenodo.2651390
 ```
 
 ## Table of contents
