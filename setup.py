@@ -20,12 +20,13 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.2.7',
+    version='0.2.8',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},
     install_requires=['requests>=2.19.1','planet>=1.2.1','retrying>=1.3.3',
                       'progressbar2>=3.38.0',
+                      'geopandas>=0.5.0',
                       'visvalingamwyatt>=0.1.2',
                       'pySmartDL==1.2.5;python_version<"3.4"',
                       'pySmartDL>=1.3.1;python_version>"3.4"',
