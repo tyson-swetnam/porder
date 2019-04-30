@@ -35,7 +35,7 @@
           "analytic_sr",
           "analytic_xml",
           "udm",
-          "udm2"
+          "analytic_sr_udm2"
         ],
         "REOrthoTile": [
           "analytic",
