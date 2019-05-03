@@ -205,6 +205,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.3.0
+- Enhances idlist to execute faster search and return using Planet CLI
+- Included better error handling while placing order.
+
 ### v0.2.8
 - Added tool to convert folder with shapefiles to GeoJSONs
 

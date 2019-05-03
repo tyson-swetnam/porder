@@ -20,229 +20,176 @@ __license__ = "Apache 2.0"
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import requests
-import json
-import os
-import csv
-import time
 import sys
+import json
+import csv
+import os
 import pyproj
-from retrying import retry
 from functools import partial
+from planet import api
+from planet.api import filters
+from planet.api.auth import find_api_key
 from shapely.geometry import shape
 from shapely.ops import transform
-from planet.api.utils import read_planet_json
-from planet.api.auth import find_api_key
 
-#Create an empty geojson template
-temp={"coordinates":[],"type":"Polygon"}
+
 try:
     PL_API_KEY = find_api_key()
-except:
+except Exception as e:
     print('Failed to get Planet Key')
     sys.exit()
-SESSION = requests.Session()
-SESSION.auth = (PL_API_KEY, '')
 
-ar=[]
-far=[]
-n=0
+client = api.ClientV1(PL_API_KEY)
 
-#get coordinates list depth
+
+temp={"coordinates":[],"type":"Polygon"}
+aoi = {
+  "type": "Polygon",
+  "coordinates": []
+}
+
+# Area lists
+ar = []
+far = []
+
+# get coordinates list depth
 def list_depth(dic, level = 1):
-    counter=0
+    counter = 0
     str_dic = str(dic)
     if "[[[[" in str_dic:
         counter += 1
     return(counter)
 
 
-def handle_page(page,item,asset,num,outfile,gmain,ovp):
-    global n
-    if num is None:
-        [head,tail]=os.path.split(outfile)
-        try:
-            for items in page['features']:
-                for itm in items['_permissions']:
-                    if itm.split(':')[0]=="assets."+asset:
-                        it=items.get('id')
-                        if items['geometry']['type']=="Polygon":
-                            bounds=items['geometry']['coordinates']
-                            temp['coordinates']=bounds
-                            #https://stackoverflow.com/questions/51554602/how-do-i-get-the-area-of-a-geojson-polygon-with-python
-                            if item.startswith('SkySat'):
-                                epsgcode='3857'
-                            else:
-                                epsgcode=items['properties']['epsg_code']
-                            geom2=shape(temp)
-                            if gmain.area>geom2.area:
-                                intersect=(geom2).intersection(gmain)
-                            elif geom2.area>=gmain.area:
-                                intersect=(gmain).intersection(geom2)
-                            #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
-                            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
-                                pyproj.Proj(init='epsg:'+str(epsgcode)))
-                            if transform(proj,gmain).area>transform(proj,geom2).area:
-                                if (transform(proj,intersect).area/transform(proj,geom2).area*100)>=ovp:
-                                    ar.append(transform(proj,intersect).area/1000000)
-                                    far.append(transform(proj,geom2).area/1000000)
-                                    with open(outfile,'a') as csvfile:
-                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                                        writer.writerow([it])
-                            elif transform(proj,geom2).area>transform(proj,gmain).area:
-                                if (transform(proj,intersect).area/transform(proj,gmain).area*100)>=ovp:
-                                    ar.append(transform(proj,intersect).area/1000000)
-                                    far.append(transform(proj,geom2).area/1000000)
-                                    with open(outfile,'a') as csvfile:
-                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                                        writer.writerow([it])
-        except Exception as e:
-            print(e)
-    elif num is not None:
-        num=int(num)
-        [head,tail]=os.path.split(outfile)
-        try:
-            for items in page['features']:
-                for itm in items['_permissions']:
-                    if itm.split(':')[0]=="assets."+asset and n<num:
-                        it=items.get('id')
-                        if items['geometry']['type']=="Polygon":
-                            bounds=items['geometry']['coordinates']
-                            temp['coordinates']=bounds
-                            #https://stackoverflow.com/questions/51554602/how-do-i-get-the-area-of-a-geojson-polygon-with-python
-                            if item.startswith('SkySat'):
-                                epsgcode='3857'
-                            else:
-                                epsgcode=items['properties']['epsg_code']
-                            geom2=shape(temp)
-                            if gmain.area>geom2.area:
-                                intersect=(geom2).intersection(gmain)
-                            elif geom2.area>=gmain.area:
-                                intersect=(gmain).intersection(geom2)
-                            #print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geommain.area*100))
-                            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
-                                pyproj.Proj(init='epsg:'+str(epsgcode)))
-                            if transform(proj,gmain).area>transform(proj,geom2).area:
-                                if (transform(proj,intersect).area/transform(proj,geom2).area*100)>=ovp:
-                                    ar.append(transform(proj,intersect).area/1000000)
-                                    far.append(transform(proj,geom2).area/1000000)
-                                    # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
-                                    n=n+1
-                                    #print(n)
-                                    with open(outfile,'a') as csvfile:
-                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                                        writer.writerow([it])
-                            elif transform(proj,geom2).area>transform(proj,gmain).area:
-                                if (transform(proj,intersect).area/transform(proj,gmain).area*100)>=ovp:
-                                    ar.append(transform(proj,intersect).area/1000000)
-                                    far.append(transform(proj,geom2).area/1000000)
-                                    # print('ID '+str(it)+' has percentage overlap: '+str(intersect.area/geom2.area*100))
-                                    n=n+1
-                                    #print(n)
-                                    with open(outfile,'a') as csvfile:
-                                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                                        writer.writerow([it])
-            data=csv.reader(open(outfile).readlines()[0: num])
-
-            with open(outfile, "w") as f:
-                writer = csv.writer(f,delimiter=',',lineterminator='\n')
-                for row in data:
-                    writer.writerow(row)
-        except Exception as e:
-            print(e)
-
-@retry(
-    wait_exponential_multiplier=1000,
-    wait_exponential_max=10000)
-def idl(infile,start,end,item,asset,num,cmin,cmax,outfile,ovp):
+# Function to use the client and then search
+def idl(**kwargs):
+    for key,value in kwargs.items():
+        if key=='infile' and value is not None:
+            infile=value
+            try:
+                if infile.endswith('.geojson'):
+                    with open(infile) as aoi:
+                        aoi_resp = json.load(aoi)
+                        if list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==0:
+                            aoi_geom = aoi_resp['features'][0]['geometry']['coordinates']
+                        elif list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==1:
+                            aoi_geom = aoi_resp['features'][0]['geometry']['coordinates'][0]
+                        else:
+                            print('Please check GeoJSON: Could not parse coordinates')
+                elif infile.endswith('.json'):
+                    with open (infile) as aoi:
+                        aoi_resp=json.load(aoi)
+                        aoi_geom=aoi_resp['config'][0]['config']['coordinates']
+                elif infile.endswith('.kml'):
+                    getcoord=kml2coord(infile)
+                    aoi_geom=getcoord
+            except Exception as e:
+                print('Could not parse geometry')
+                print(e)
+        if key=='item' and value is not None:
+            try:
+                item=value
+            except Exception as e:
+                sys.exit(e)
+        if key=='start' and value is not None:
+            try:
+                start=value
+                st = filters.date_range('acquired', gte=start)
+            except Excpetion as e:
+                sys.exit(e)
+        if key=='end' and value is not None:
+            end=value
+            ed=filters.date_range('acquired', lte=end)
+        if key == 'asset' and value  is not None:
+            try:
+                asset=value
+            except Exception as e:
+                sys.exit(e)
+        if key == 'cmin':
+            if value ==None:
+                try:
+                    cmin=0
+                except Exception as e:
+                    print(e)
+            if value  is not None:
+                try:
+                    cmin=float(value)
+                except Exception as e:
+                    print(e)
+        if key == 'cmax':
+            if value ==None:
+                try:
+                    cmax=1
+                except Exception as e:
+                    print(e)
+            elif value  is not None:
+                try:
+                    cmax=float(value)
+                except Exception as e:
+                    print(e)
+        if key=='num':
+            if value is not None:
+                num=value
+            elif value==None:
+                num=1000000
+        if key == 'outfile' and value is not None:
+            outfile=value
+            try:
+                open(outfile, 'w')
+            except Exception as e:
+                sys.exit(e)
+        if key == 'ovp':
+            if value is not None:
+                ovp=int(value)
+            elif value == None:
+                ovp=1
+    #print(item,asset,cmin,cmax,start,end,int(num))
+    print('Running search for a maximum of: ' + str(num) + ' assets')
+    l=0
     [head,tail]=os.path.split(outfile)
-    if cmin==None:
-        cmin=0
-    if cmax==None:
-        cmax=1
-    if ovp is None:
-        ovp=1
-    if ovp is not None:
-        ovp=int(ovp)
-    with open(outfile,'w') as csvfile:
-        writer=csv.DictWriter(csvfile,fieldnames=["id"], delimiter=',')
-        writer.writeheader()
-    open(outfile, 'w')
-    headers = {'Content-Type': 'application/json'}
-    PL_API_KEY = read_planet_json()['key']
-
-##Parse Geometry
-    try:
-        if infile.endswith('.geojson'):
-            with open(infile) as aoi:
-                aoi_resp = json.load(aoi)
-                if list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==0:
-                    aoi_geom = aoi_resp['features'][0]['geometry']['coordinates']
-                elif list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==1:
-                    aoi_geom = aoi_resp['features'][0]['geometry']['coordinates'][0]
-                else:
-                    print('Please check GeoJSON: Could not parse coordinates')
-        elif infile.endswith('.json'):
-            with open (infile) as aoi:
-                aoi_resp=json.load(aoi)
-                aoi_geom=aoi_resp['config'][0]['config']['coordinates']
-        elif infile.endswith('.kml'):
-            getcoord=kml2coord(infile)
-            aoi_geom=getcoord
-    except Exception as e:
-        print('Could not parse geometry')
-        print(e)
-## Null payload structure
-    data = {'filter': {'type': 'AndFilter',
-            'config': [{'type': 'GeometryFilter', 'field_name': 'geometry',
-            'config': {'type': 'Polygon', 'coordinates': []}},
-            {'type': 'OrFilter', 'config': [{'type': 'AndFilter',
-            'config': [{'type': 'StringInFilter', 'field_name': 'item_type'
-            , 'config': []}, {'type': 'RangeFilter',
-            'field_name': 'cloud_cover', 'config': {'gte': [],
-            'lte': []}}, {'type': 'RangeFilter',
-            'field_name': 'sun_elevation', 'config': {'gte': 0,
-            'lte': 90}}]}]}, {'type': 'OrFilter',
-            'config': [{'type': 'DateRangeFilter', 'field_name': 'acquired'
-            , 'config': {'gte': [],
-            'lte': []}}]}]},
-            'item_types': []}
-## Configure search payload
-    data['filter']['config'][0]['config']['coordinates'] = aoi_geom
-    data['filter']['config'][2]['config'][0]['config']['gte'] = str(start)+'T04:00:00.000Z'
-    data['filter']['config'][2]['config'][0]['config']['lte'] = str(end)+'T03:59:59.999Z'
-    data['filter']['config'][1]['config'][0]['config'][1]['config']['gte'] = float(cmin)
-    data['filter']['config'][1]['config'][0]['config'][1]['config']['lte'] = float(cmax)
-    data['filter']['config'][1]['config'][0]['config'][0]['config'] = [item]
-    data['item_types'] = [item]
-    data = str(data).replace("'", '"')
     temp['coordinates']=aoi_geom
-    gmain=shape(temp)
-## Send post request
-    querystring = {"strict":"true"}
-    result = requests.post('https://api.planet.com/data/v1/quick-search',
-                           headers=headers, data=data, params=querystring,
-                           auth=(PL_API_KEY, ''))
-    page=result.json()
-    final_list = handle_page(page,item,asset,num,outfile,gmain,ovp)
-    try:
-        while page['_links'].get('_next') is not None:
-            page_url = page['_links'].get('_next')
-            r = SESSION.get(page_url)
-            page=r.json()
-            ids = handle_page(page,item,asset,num,outfile,gmain,ovp)
-    except SystemExit:
-        sys.exit()
-    except requests.exceptions.Timeout:
-        return '[timeout]'
-    except requests.exceptions.ConnectionError:
-        return '[connection error]'
-    except requests.HTTPError as e:
-        if r.status_code == 429:  # Too many requests
-            raise Exception("rate limit error")
+    sgeom=filters.geom_filter(temp)
+    aoi_shape = shape(temp)
+    date_filter = filters.date_range('acquired', gte=start,lte=end)
+    cloud_filter = filters.range_filter('cloud_cover', gte=cmin,lte=cmax)
+    asset_filter=filters.permission_filter('assets.'+str(asset)+':download')
+    and_filter = filters.and_filter(date_filter, cloud_filter,asset_filter,sgeom)
+    item_types = [item]
+    req = filters.build_search_request(and_filter, item_types)
+    res = client.quick_search(req)
+    for things in res.items_iter(1000000): # A large number as max number to check against
+        itemid=things['id']
+        footprint = things["geometry"]
+        s = shape(footprint)
+        if item.startswith('SkySat'):
+            epsgcode='3857'
+        else:
+            epsgcode=things['properties']['epsg_code']
+        if aoi_shape.area>s.area:
+            intersect=(s).intersection(aoi_shape)
+        elif s.area>=aoi_shape.area:
+            intersect=(aoi_shape).intersection(s)
+        proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
+            pyproj.Proj(init='epsg:'+str(epsgcode)))
+        if transform(proj,aoi_shape).area>transform(proj,s).area:
+            if (transform(proj,intersect).area/transform(proj,s).area*100)>=ovp:
+                ar.append(transform(proj,intersect).area/1000000)
+                far.append(transform(proj,s).area/1000000)
+                with open(outfile,'a') as csvfile:
+                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                    writer.writerow([itemid])
+        elif transform(proj,s).area>transform(proj,aoi_shape).area:
+            if (transform(proj,intersect).area/transform(proj,aoi_shape).area*100)>=ovp:
+                ar.append(transform(proj,intersect).area/1000000)
+                far.append(transform(proj,s).area/1000000)
+                with open(outfile,'a') as csvfile:
+                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                    writer.writerow([itemid])
+        if int(len(ar))==int(num):
+            break
     num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
-    #print(len(ar),len(far))
-    #print(ar)
     print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
-    print('Total estimated cost to quota: '+str("{:,}".format(round(sum(far))))+' sqkm')
-    print('Total estimated cost to quota if clipped: '+str("{:,}".format(round(sum(ar))))+' sqkm')
+    print('Total estimated cost to quota: ' + str("{:,}".format(round(sum(far)))) + ' sqkm')
+    print('Total estimated cost to quota if clipped: ' + str("{:,}".format(round(sum(ar)))) + ' sqkm')
+
+# idl(infile=r"C:\Users\samapriya\Downloads\vertex.geojson",item='PSScene4Band',asset='analytic',cmin=0.0,cmax=0.9,start='2018-01-01',end='2019-12-31',ovp=8,num=40,outfile=r'C:\planet_demo\vertexidl.csv')

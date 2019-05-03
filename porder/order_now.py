@@ -235,5 +235,11 @@ def order(**kwargs):
             print('Order created at '+str(url) + '/' + str(content['id']+' and url copied to clipboard'))
         except Exception:
             print('Headless Setup: Order created at '+str(url) + '/' + str(content['id']))
+    elif response.status_code==400:
+        print('Failed with response: Bad request')
+    elif response.status_code==401:
+        print('Failed with response: Forbidden')
+    elif response.status_code==409:
+        print('Failed with response: MaxConcurrency')
     else:
         print(response.text)
