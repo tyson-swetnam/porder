@@ -26,6 +26,7 @@ http://doi.org/10.5281/zenodo.2663254
     * [idlist](#idlist)
     * [difflist](#difflist)
     * [idsplit](#idsplit)
+    * [idcheck](#idcheck)
     * [order](#order)
     * [ordersize](#ordersize)
     * [concurrent](#concurrent)
