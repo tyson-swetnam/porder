@@ -111,6 +111,16 @@ Create an idlist for your geometry based on some basic filters,including geometr
 A simple setup would be
 ![porder_idlist_setup](https://user-images.githubusercontent.com/28806922/53096128-6e5c9c00-34ec-11e9-9ddd-767f96d603b0.png)
 
+To run an experiment to add additional filter, you can now pass an additional string or range filter or both flag for string and range filters, a setup would be. The additional filters are optional
+
+```
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
+
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" --number 20
+
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
+```
+
 ### difflist
 It is possible you already downloaded some images or metadata files, and your you want a difference idlist to create orders for only assets and item types you do not have. It takes in your local folder path, type image or metadata and some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids.
 
@@ -130,6 +140,14 @@ This allows you to split your idlist into small csv files incase you wanted to c
 
 A simple setup would be
 ![porder_idsplit_setup](https://user-images.githubusercontent.com/28806922/53097536-b204d500-34ef-11e9-8a6c-e2d52986d90c.png)
+
+### idcheck
+It is possible for you to modify the idlist, add or remove ids. Once done, this tool allows you to estimate the total area of images and area that intersect with your geometry or area if clipped.
+
+![porder_idcheck](https://user-images.githubusercontent.com/6677629/57543905-c05ed200-7323-11e9-9afb-09613ffffd06.png)
+
+A simple setup would be
+![porder_idcheck_setup](https://user-images.githubusercontent.com/6677629/57543933-d5d3fc00-7323-11e9-946f-200a4791f5e8.png)
 
 ### order
 This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. You can now add some predefined indices for PlanetScope 4 band items with a maximum of 5 indices for a single setup . This is experimental. The list of indices include
@@ -204,6 +222,11 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.3.1
+- Can now support an additional string and range filter
+- Check total area and clip area estimates from any idlist using idcheck.
+- General improvements to the tool.
 
 ### v0.3.0
 - Enhances idlist to execute faster search and return using Planet CLI

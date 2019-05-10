@@ -34,6 +34,7 @@ from .order_size import ordersize
 from .downloader import download
 from .diffcheck import checker
 from .async_downloader import asyncdownload
+from .idcheck import idc
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 lpath=os.path.dirname(os.path.realpath(__file__))
 sys.path.append(lpath)
@@ -89,7 +90,15 @@ def idlist_from_parser(args):
         cmin=args.cmin,
         cmax=args.cmax,
         ovp=args.overlap,
-        outfile=args.outfile)
+        outfile=args.outfile,
+        filters=args.filters)
+
+#Convert folder with multiple shapefiles to geojsons
+def idcheck_from_parser(args):
+    idc(idlist=args.idlist,
+        item=args.item,
+        asset=args.asset,
+        geometry=args.geometry)
 
 #Check difference from local filelist
 def difflist_from_parser(args):
@@ -184,6 +193,7 @@ def main(args=None):
     optional_named.add_argument('--cmax', help="Maximum cloud cover", default=None)
     optional_named.add_argument('--number', help="Total number of assets, give a large number if you are not sure", default=None)
     optional_named.add_argument('--overlap', help="Percentage overlap of image with search area range between 0 to 100", default=None)
+    optional_named.add_argument('--filters', nargs='+',help="Add an additional string or range filter", default=None)
     parser_idlist.set_defaults(func=idlist_from_parser)
 
     parser_difflist = subparsers.add_parser('difflist', help='Checks the difference between local files and available Planet assets')
@@ -206,6 +216,13 @@ def main(args=None):
     parser_idsplit.add_argument('--lines',help='Maximum number of lines in each split files')
     parser_idsplit.add_argument('--local',help='Output folder where split files will be exported')
     parser_idsplit.set_defaults(func=idsplit_from_parser)
+
+    parser_idcheck = subparsers.add_parser('idcheck',help='Check idlist for estimating clipped area')
+    parser_idcheck.add_argument('--idlist',help='Idlist csv file')
+    parser_idcheck.add_argument('--item',help='Item type')
+    parser_idcheck.add_argument('--asset',help='Asset type')
+    parser_idcheck.add_argument('--geometry',help='Geometry file for clip')
+    parser_idcheck.set_defaults(func=idcheck_from_parser)
 
     parser_order = subparsers.add_parser('order', help='Place an order & get order url currently supports "toar","clip","composite","reproject","compression"')
     required_named = parser_order.add_argument_group('Required named arguments.')

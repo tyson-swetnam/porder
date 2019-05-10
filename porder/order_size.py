@@ -9,6 +9,8 @@ from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
 
 
+sz=[]
+fname=[]
 suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 def humansize(nbytes):
     i = 0
@@ -33,9 +35,9 @@ SESSION.auth = (PL_API_KEY, '')
     wait_exponential_multiplier=1000,
     wait_exponential_max=10000)
 def parsesize(url):
-    result=SESSION.get(url)
     mfsize=[]
     mfname=[]
+    result=SESSION.get(url)
     if result.status_code==200:
         r=result.content
         inp=json.loads(r)
@@ -59,8 +61,6 @@ def ordersize(url):
         for z in bar(range(60)):
             time.sleep(1)
         response=SESSION.get(url).json()
-    sz=[]
-    fname=[]
     if response['state']=='success':
         for items in response['_links']['results']:
             if items['name'].endswith('manifest.json'):
@@ -74,7 +74,7 @@ def ordersize(url):
                     error_code=parsesize(url)
                     print('Order has expired or exited with error '+str(error_code))
                     sys.exit()
-        print('Total of '+str(sum(fname)/3)+' items has filesize of '+str(humansize(sum(sz))))
+        print('Total of '+str(len(fname))+' download objects with download size of '+str(humansize(sum(sz))))
 
     else:
         print('Order Failed with state: '+str(response['state']))

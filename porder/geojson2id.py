@@ -43,6 +43,8 @@ client = api.ClientV1(PL_API_KEY)
 
 
 temp={"coordinates":[],"type":"Polygon"}
+stbase={'config': [], 'field_name': [], 'type': 'StringInFilter'}
+rbase={'config': {'gte': [], 'lte': []},'field_name': [], 'type': 'RangeFilter'}
 aoi = {
   "type": "Polygon",
   "coordinates": []
@@ -143,7 +145,27 @@ def idl(**kwargs):
                 ovp=int(value)
             elif value == None:
                 ovp=1
-    #print(item,asset,cmin,cmax,start,end,int(num))
+        if key== 'filters' and value is not None:
+            for items in value:
+                ftype=items.split(':')[0]
+                if ftype=='string':
+                    try:
+                        fname=items.split(':')[1]
+                        fval=items.split(':')[2]
+                        #stbase={'config': [], 'field_name': [], 'type': 'StringInFilter'}
+                        stbase['config']=fval.split(',')#fval
+                        stbase['field_name']=fname
+                    except Exception as e:
+                        print(e)
+                elif ftype=='range':
+                    fname=items.split(':')[1]
+                    fgt=items.split(':')[2]
+                    flt=items.split(':')[3]
+                    #rbase={'config': {'gte': [], 'lte': []},'field_name': [], 'type': 'RangeFilter'}
+                    rbase['config']['gte']=int(fgt)
+                    rbase['config']['lte']=int(flt)
+                    rbase['field_name']=fname
+
     print('Running search for a maximum of: ' + str(num) + ' assets')
     l=0
     [head,tail]=os.path.split(outfile)
@@ -153,7 +175,16 @@ def idl(**kwargs):
     date_filter = filters.date_range('acquired', gte=start,lte=end)
     cloud_filter = filters.range_filter('cloud_cover', gte=cmin,lte=cmax)
     asset_filter=filters.permission_filter('assets.'+str(asset)+':download')
-    and_filter = filters.and_filter(date_filter, cloud_filter,asset_filter,sgeom)
+    # print(rbase)
+    # print(stbase)
+    if len(rbase['field_name']) !=0 and len(stbase['field_name']) !=0:
+        and_filter = filters.and_filter(date_filter, cloud_filter,asset_filter,sgeom,stbase,rbase)
+    elif len(rbase['field_name']) ==0 and len(stbase['field_name']) !=0:
+        and_filter = filters.and_filter(date_filter, cloud_filter,asset_filter,sgeom,stbase)
+    elif len(rbase['field_name']) !=0 and len(stbase['field_name']) ==0:
+        and_filter = filters.and_filter(date_filter, cloud_filter,asset_filter,sgeom,rbase)
+    elif len(rbase['field_name']) ==0 and len(stbase['field_name'])==0:
+        and_filter = filters.and_filter(date_filter, cloud_filter,asset_filter,sgeom)
     item_types = [item]
     req = filters.build_search_request(and_filter, item_types)
     res = client.quick_search(req)
