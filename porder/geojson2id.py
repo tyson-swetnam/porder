@@ -42,26 +42,27 @@ except Exception as e:
 client = api.ClientV1(PL_API_KEY)
 
 
-temp={"coordinates":[],"type":"Polygon"}
+temp={"coordinates":[],"type":"MultiPolygon"}
+tempsingle={"coordinates":[],"type":"Polygon"}
 stbase={'config': [], 'field_name': [], 'type': 'StringInFilter'}
 rbase={'config': {'gte': [], 'lte': []},'field_name': [], 'type': 'RangeFilter'}
-aoi = {
-  "type": "Polygon",
-  "coordinates": []
-}
-
-# Area lists
-ar = []
-far = []
 
 # get coordinates list depth
 def list_depth(dic, level = 1):
     counter = 0
     str_dic = str(dic)
-    if "[[[[" in str_dic:
+    if "[[[[[" in str_dic:
+        counter += 2
+    elif "[[[[" in str_dic:
         counter += 1
+    elif "[[[" in str_dic:
+        counter += 0
     return(counter)
 
+# Area lists
+ar = []
+far = []
+ovall=[]
 
 # Function to use the client and then search
 def idl(**kwargs):
@@ -72,12 +73,22 @@ def idl(**kwargs):
                 if infile.endswith('.geojson'):
                     with open(infile) as aoi:
                         aoi_resp = json.load(aoi)
-                        if list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==0:
-                            aoi_geom = aoi_resp['features'][0]['geometry']['coordinates']
-                        elif list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==1:
-                            aoi_geom = aoi_resp['features'][0]['geometry']['coordinates'][0]
+                        for things in aoi_resp['features']:
+                            ovall.append(things['geometry']['coordinates'])
+                    #print(list_depth(ovall))
+                    if len(ovall)>1:
+                        aoi_geom=ovall
+                    else:
+                        if list_depth(ovall)==0:
+                            aoi_geom = ovall
+                        elif list_depth(ovall)==1:
+                            aoi_geom = ovall[0]
+                        elif list_depth(ovall)==2:
+                            aoi_geom = ovall[0][0]
                         else:
                             print('Please check GeoJSON: Could not parse coordinates')
+                    aoi_geom==aoi_geom
+                    #print(aoi_geom)
                 elif infile.endswith('.json'):
                     with open (infile) as aoi:
                         aoi_resp=json.load(aoi)
@@ -169,7 +180,12 @@ def idl(**kwargs):
     print('Running search for a maximum of: ' + str(num) + ' assets')
     l=0
     [head,tail]=os.path.split(outfile)
-    temp['coordinates']=aoi_geom
+    if len(ovall)>1:
+        temp={"coordinates":[],"type":"MultiPolygon"}
+        temp['coordinates']=aoi_geom
+    else:
+        temp=tempsingle
+        temp['coordinates']=aoi_geom
     sgeom=filters.geom_filter(temp)
     aoi_shape = shape(temp)
     date_filter = filters.date_range('acquired', gte=start,lte=end)

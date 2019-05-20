@@ -122,6 +122,8 @@ porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM
 porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
 ```
 
+The idlist tool can no use a multipolygon and iteratively look for scenes.
+
 ### difflist
 It is possible you already downloaded some images or metadata files, and your you want a difference idlist to create orders for only assets and item types you do not have. It takes in your local folder path, type image or metadata and some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids.
 
@@ -151,7 +153,33 @@ A simple setup would be
 ![porder_idcheck_setup](https://user-images.githubusercontent.com/6677629/57543933-d5d3fc00-7323-11e9-946f-200a4791f5e8.png)
 
 ### order
-This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. You can now add some predefined indices for PlanetScope 4 band items with a maximum of 5 indices for a single setup . This is experimental. The list of indices include
+This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. The list of operations are below and **order is important**
+
+clip|toar|comp
+                        osite|zip|zipall|compression|projection|kernel|aws|azu
+                        re|gcs|email <Choose indices from>:
+                        ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr
+
+<center>
+
+op                | description                                                                   |
+------------------|-------------------------------------------------------------------------------|
+clip | Clip imagery can handle single and multi polygon verify or create geojson.io
+toar | Top of Atmosphere Reflectance imagery generated for imagery
+composite | Composite number of images in a given order
+zip | Zip bundles together and creates downloads (each asset has a single bundle so multiple zip files)
+zipall | Create a single zip file containing all assets
+compression | Use image compression
+projection | Reproject before downloaing image
+aws | Option called to specify delivery to AWS
+azure | Option called to specify delivery to AZURE
+gcs | Option called to specify delivery to GCS
+email | Email notification to your planet registered email
+
+</center>
+
+
+You can now add some predefined indices for PlanetScope 4 band items with a maximum of 5 indices for a single setup . This is experimental. The list of indices include
 
 <center>
 
@@ -223,6 +251,11 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.3.2
+- idlist tool can no use a multipolygon and iteratively look for scenes
+- Orders clip tool can now handle multipolygon clip
+- Added new tool zipall to handle single archive download download in format ordername_date.zip
 
 ### v0.3.1
 - Can now support an additional string and range filter

@@ -19,6 +19,7 @@ __license__ = "Apache 2.0"
 
 import csv
 import sys
+import pendulum
 import json
 import yaml
 import requests
@@ -30,9 +31,23 @@ from planet.api.auth import find_api_key
 
 x = PrettyTable()
 
+ovall=[]
+
+# get coordinates list depth
+def list_depth(dic, level = 1):
+    counter = 0
+    str_dic = str(dic)
+    if "[[[[[" in str_dic:
+        counter += 2
+    elif "[[[[" in str_dic:
+        counter += 1
+    elif "[[[" in str_dic:
+        counter += 0
+    return(counter)
+
 ##Setup for bundles
 dbundle = {'name': [], 'order_type': 'partial', 'products': [{'item_ids': [], 'item_type': [],'product_bundle': []}],'tools':[]}
-dclip = {"clip": {"aoi": {"type": "Polygon","coordinates": []}}}
+dclip = {"clip": {"aoi": {"type": "MultiPolygon","coordinates": []}}}
 dtoar = {'toar': {'scale_factor': 10000}}
 dzip = {"delivery":{"archive_filename":"{{name}}.zip","archive_type":"zip"}}
 dcomposite ={"composite":{}}
@@ -43,7 +58,7 @@ daws= {"delivery":{"amazon_s3":{"bucket":[],"aws_region":[],"aws_access_key_id":
 dazure={"delivery":{"azure_blob_storage":{"account":[],"container":[],"sas_token":[],"storage_endpoint_suffix":[],"path_prefix":[]}}}
 dgcs={"delivery": {"google_cloud_storage": {"bucket": [],"credentials": [],"path_prefix": []}}}
 dbmath={"bandmath":{}}
-
+dszip={"delivery":{"archive_filename":"Explorer_{{name}}.zip","archive_type":"zip","single_archive":True}}
 try:
     PL_API_KEY = find_api_key()
 except:
@@ -80,6 +95,7 @@ def order(**kwargs):
     k=dbundle
     for key,value in kwargs.items():
         if key=='op' and value!=None:
+            ordname=k['name']
             for items in value:
                 if items=='clip':
                     dbundle['tools'].append(dclip)
@@ -87,6 +103,8 @@ def order(**kwargs):
                     dbundle['tools'].append(dtoar)
                 elif items=='zip':
                     dbundle.update(dzip)
+                elif items=='zipall':
+                    dbundle.update(dszip)
                 elif items=='email':
                     dbundle.update(demail)
                 elif items=='aws':
@@ -128,7 +146,7 @@ def order(**kwargs):
                     dbmath['bandmath'].update(dmsavi2)
                 elif items=='compression':
                     dbundle['tools'].append(dtiff)
-
+            #dbundle[]
     for key,value in kwargs.items():
         if key=='boundary' and value!=None:
                 for items in k['tools']:
@@ -136,8 +154,28 @@ def order(**kwargs):
                         try:
                             if value.endswith('.geojson'):
                                 with open(value) as aoi:
-                                    aoi_resp = json.loads(aoi.read())
-                                    items['clip']['aoi']['coordinates']= aoi_resp['features'][0]['geometry']['coordinates']
+                                    aoi_resp = json.load(aoi)
+                                    for things in aoi_resp['features']:
+                                        ovall.append(things['geometry']['coordinates'])
+                                #print(list_depth(ovall))
+                                if len(ovall)>1:
+                                    aoi_geom=ovall
+                                    items['clip']['aoi']['coordinates']=aoi_geom
+                                else:
+                                    if list_depth(ovall)==0:
+                                        aoi_geom = ovall
+                                        items['clip']['aoi']['type']="Polygon"
+                                        items['clip']['aoi']['coordinates']=aoi_geom
+                                    elif list_depth(ovall)==1:
+                                        aoi_geom = ovall[0]
+                                        items['clip']['aoi']['type']="Polygon"
+                                        items['clip']['aoi']['coordinates']=aoi_geom
+                                    elif list_depth(ovall)==2:
+                                        aoi_geom = ovall[0][0]
+                                        items['clip']['aoi']['type']="Polygon"
+                                        items['clip']['aoi']['coordinates']=aoi_geom
+                                    else:
+                                        print('Please check GeoJSON: Could not parse coordinates')
                             elif value.endswith('.json'):
                                 with open (value) as aoi:
                                     aoi_resp=json.load(aoi)
@@ -224,6 +262,7 @@ def order(**kwargs):
     #print(dbmath)
 
     #print(payload)
+    payload=payload.replace("Explorer_{{name}}.zip",ordname+'_'+str(pendulum.now()).split("T")[0]+".zip")
     headers = {'content-type': 'application/json',
                'cache-control': 'no-cache'}
     response = requests.request('POST', url, data=payload, headers=headers,
