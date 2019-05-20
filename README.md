@@ -255,7 +255,7 @@ A simple setup would be
 ### v0.3.2
 - idlist tool can no use a multipolygon and iteratively look for scenes
 - Orders clip tool can now handle multipolygon clip
-- Added new tool zipall to handle single archive download download in format ordername_date.zip
+- Added new tool zipall to handle single archive download in format ordername_date.zip
 
 ### v0.3.1
 - Can now support an additional string and range filter
