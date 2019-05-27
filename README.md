@@ -254,6 +254,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.3.3
+- Fixed issue with order name when no ops are used.
+- Used file basename for splitting the idlist.
+
 ### v0.3.2
 - idlist tool can no use a multipolygon and iteratively look for scenes
 - Orders clip tool can now handle multipolygon clip

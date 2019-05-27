@@ -95,7 +95,6 @@ def order(**kwargs):
     k=dbundle
     for key,value in kwargs.items():
         if key=='op' and value!=None:
-            ordname=k['name']
             for items in value:
                 if items=='clip':
                     dbundle['tools'].append(dclip)
@@ -262,6 +261,7 @@ def order(**kwargs):
     #print(dbmath)
 
     #print(payload)
+    ordname=k['name']
     payload=payload.replace("Explorer_{{name}}.zip",ordname+'_'+str(pendulum.now()).split("T")[0]+".zip")
     headers = {'content-type': 'application/json',
                'cache-control': 'no-cache'}
@@ -272,6 +272,7 @@ def order(**kwargs):
         try:
             clipboard.copy(str(url) + '/' + str(content['id']))
             print('Order created at '+str(url) + '/' + str(content['id']+' and url copied to clipboard'))
+            return (str(url) + '/' + str(content['id']))
         except Exception:
             print('Headless Setup: Order created at '+str(url) + '/' + str(content['id']))
     elif response.status_code==400:
