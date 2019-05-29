@@ -132,7 +132,7 @@ porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM
 porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
 ```
 
-The idlist tool can no use a multipolygon and iteratively look for scenes.
+The idlist tool can now use a multipolygon and iteratively look for scenes.
 
 ### difflist
 It is possible you already downloaded some images or metadata files, and your you want a difference idlist to create orders for only assets and item types you do not have. It takes in your local folder path, type image or metadata and some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids.
