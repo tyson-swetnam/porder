@@ -28,6 +28,8 @@ import time
 import progressbar
 import json
 import sys
+from threading import *
+screen_lock = Semaphore(value=1)
 from retrying import retry
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
@@ -99,7 +101,9 @@ class MultiProcDownloader(object):
                 os.makedirs(head)
             os.chdir(head)
             if not os.path.isfile(fullpath):
-                print(msg, multiprocessing.current_process().name)
+                screen_lock.acquire()
+                print(str(msg)+' '+str(multiprocessing.current_process().name))
+                screen_lock.release()
                 r = requests.get(urlcheck)
                 with open(fullpath, "wb") as f:
                     f.write(r.content)
@@ -129,13 +133,14 @@ def funct(url,final,ext):
 
             if redirect_url.startswith('https'):
                 local_path=os.path.join(final,str(os.path.split(items['name'])[-1]))
-                if ext is None:
+                if not os.path.isfile(local_path) and ext is None:
                     urls.append(str(redirect_url)+'|'+local_path)
-                elif ext is not None:
+                if not os.path.isfile(local_path) and ext is not None:
                     if local_path.endswith(ext):
                         urls.append(str(redirect_url)+'|'+local_path)
     else:
         print('Order Failed with state: '+str(response['state']))
+    print('Downloading a total of '+str(len(urls))+' objects')
     downloader = MultiProcDownloader(urls)
     downloader.run()
 

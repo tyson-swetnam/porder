@@ -21,6 +21,7 @@ http://doi.org/10.5281/zenodo.3233068
 * [Installation](#installation)
 * [Getting started](#getting-started)
 * [porder Ordersv2 Simple Client](#porder-ordersv2-simple-client)
+    * [porder version](#porder-version)
     * [porder quota](#porder-quota)
     * [base64](#base64)
     * [shape to geojson](#shape-to-geojson)
@@ -79,6 +80,13 @@ To obtain help for a specific functionality, simply call it with _help_ switch, 
 
 ## porder Simple CLI for Planet ordersv2 API
 The tool is designed to simplify using the ordersv2 API and allows the user to chain together tools and operations for multiple item and asset types and perform these operations and download the assets locally.
+
+### porder version
+This prints the tool version and escapes. Simple use would be
+
+```
+porder version
+```
 
 ### porder quota
 Just a simple tool to print your planet subscription quota quickly.
@@ -244,7 +252,7 @@ The allows you to multipart download the files in your order, this uses a multip
 ![porder_multipart](https://user-images.githubusercontent.com/28806922/53097736-2b042c80-34f0-11e9-9724-68e9ed356ab7.png)
 
 ### multiprocessing download
-The uses the multiprocessing library to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files and includes an expotential rate limiting function to handle too many requests. To save on time it uses an extension filter so for example if you are using the zip operation you can use ".zip" and if you are downloading only images, udm and xml you can use ".tif" or ".xml" accordingly.
+The uses the multiprocessing library to quickly download your files to a local folder. It uses the order url generated using the orders tool to access and download the files and includes an expotential rate limiting function to handle too many requests. To save on time it uses an extension filter so for example if you are using the zip operation you can use ".zip" and if you are downloading only images, udm and xml you can use ".tif" or ".xml" accordingly. For python 3.4 or higher, this switches to using an true async downloader instead of using multiprocessing.
 
 ![porder_multiprocessing](https://user-images.githubusercontent.com/28806922/53097786-4707ce00-34f0-11e9-9e79-78ba1d4ba27c.png)
 
@@ -253,6 +261,12 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.3.4
+- Added async downloader for python 3.4
+- Checks for existing files before spawning processes
+- Better handling of multiprocessing output
+- Added a quick version tool
 
 ### v0.3.3
 - Fixed issue with order name when no ops are used.

@@ -25,6 +25,8 @@ import sys
 import json
 import base64
 import clipboard
+import platform
+import pkg_resources
 from .shp2geojson import shp2gj
 from .geojson_simplify import geosimple
 from .geojson2id import idl
@@ -35,10 +37,18 @@ from .downloader import download
 from .diffcheck import checker
 from .async_downloader import asyncdownload
 from .idcheck import idc
+if str(platform.python_version()) > "3.3.0":
+    from .async_down import downloader
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 lpath=os.path.dirname(os.path.realpath(__file__))
 sys.path.append(lpath)
 
+
+# Get package version
+def porder_version():
+    print(pkg_resources.get_distribution("porder").version)
+def version_from_parser(args):
+    porder_version()
 
 #Get quota for your account
 def planet_quota():
@@ -151,16 +161,22 @@ def asyncdownload_from_parser(args):
         local=args.local,
         ext=args.ext)
 def multiproc_from_parser(args):
-    if args.ext==None:
-        subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" ",shell=True)
-    else:
-        subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" "+args.ext,shell=True)
+    if str(platform.python_version()) > "3.3.0":
+        downloader(url=args.url,final=args.local,ext=args.ext)
+    elif str(platform.python_version()) <= "3.3.0":
+        if args.ext==None:
+            subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" ",shell=True)
+        else:
+            subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" "+args.ext,shell=True)
 
 spacing="                               "
 
 def main(args=None):
     parser = argparse.ArgumentParser(description='Ordersv2 Simple Client')
     subparsers = parser.add_subparsers()
+    parser_version = subparsers.add_parser('version', help='Prints porder version and exists')
+    parser_version.set_defaults(func=version_from_parser)
+
     parser_planet_quota = subparsers.add_parser('quota', help='Prints your Planet Quota Details')
     parser_planet_quota.set_defaults(func=planet_quota_from_parser)
 
@@ -263,9 +279,9 @@ def main(args=None):
     optional_named.add_argument('--ext', help="File Extension to download",default=None)
     parser_asyncdownload.set_defaults(func=asyncdownload_from_parser)
 
-    parser_multiproc = subparsers.add_parser('multiproc',help='''Multiprocess based downloader based on satlist''')
-    parser_multiproc.add_argument('--url',help='Ordersv2 order link')
-    parser_multiproc.add_argument('--local',help='Local Path to save files')
+    parser_multiproc = subparsers.add_parser('multiproc',help='Multiprocess based downloader to download for all files in your order')
+    parser_multiproc.add_argument('--url',help='order url you got for your order')
+    parser_multiproc.add_argument('--local',help='Output folder where ordered files will be exported')
     optional_named = parser_multiproc.add_argument_group('Optional named arguments')
     optional_named.add_argument('--ext', help="File Extension to download",default=None)
     parser_multiproc.set_defaults(func=multiproc_from_parser)
