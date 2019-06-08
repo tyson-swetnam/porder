@@ -211,17 +211,16 @@ Modified Soil-adjusted Vegetation Index v2 (MSAVI2) | [Qi 1994](https://www.scie
 
 A simple setup with image clip with email notification would be
 
-![porder_clip_email](https://user-images.githubusercontent.com/28806922/53097227-f5ab0f00-34ee-11e9-88ce-fc3f776df2de.png)
+![porder_clip_email](https://user-images.githubusercontent.com/6677629/59148197-afad8480-89d3-11e9-8428-16509d05d388.png)
 
 The same setup with delivery of each image, its metadata as a zip file would be. Note how we only added zip to the op list
 
-![porder_clip_zip_email](https://user-images.githubusercontent.com/28806922/53097313-29863480-34ef-11e9-9bf0-b4883b82f682.png)
+![porder_clip_zip_email](https://user-images.githubusercontent.com/6677629/59148201-b63bfc00-89d3-11e9-971b-0e69e7ee2a84.png)
 
 A simple setup with Top of Atmospher reflectance and a few indices along with email notification would be
 
-![porder_index_email](https://user-images.githubusercontent.com/28806922/53097451-7a962880-34ef-11e9-8dcf-2173174fb0cc.png)
+![porder_index_email](https://user-images.githubusercontent.com/6677629/59148205-bc31dd00-89d3-11e9-85eb-f8a539919da8.png)
 
-![order](/images/placing_order.gif)
 
 ### ordersize
 The tool now allows you to estimate the total download size for a specific order.
