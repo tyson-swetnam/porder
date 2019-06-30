@@ -261,6 +261,11 @@ A simple setup would be
 
 ## Changelog
 
+### v0.3.5
+- Better integration for quota tool
+- Updates information while waiting for idlist
+- Updated requirements
+
 ### v0.3.4
 - Added async downloader for python 3.4
 - Checks for existing files before spawning processes

@@ -20,11 +20,11 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.3.4',
+    version='0.3.5',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},
-    install_requires=['requests>=2.19.1','planet>=1.2.1','retrying>=1.3.3',
+    install_requires=['requests>=2.19.1','planet>=1.2.3','retrying>=1.3.3',
                       'progressbar2>=3.38.0',
                       'geopandas>=0.5.0',
                       'visvalingamwyatt>=0.1.2',

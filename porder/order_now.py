@@ -277,6 +277,7 @@ def order(**kwargs):
             print('Headless Setup: Order created at '+str(url) + '/' + str(content['id']))
     elif response.status_code==400:
         print('Failed with response: Bad request')
+        print(response.json()['general'][0]['message'])
     elif response.status_code==401:
         print('Failed with response: Forbidden')
     elif response.status_code==409:
