@@ -13,8 +13,8 @@
 If you find this tool useful, star and cite it as below
 
 ```
-Samapriya Roy. (2019, June 30). samapriya/porder: porder: Simple CLI for Planet ordersV2 API (Version 0.3.5). Zenodo.
-http://doi.org/10.5281/zenodo.3263968
+Samapriya Roy. (2019, July 13). samapriya/porder: porder: Simple CLI for Planet ordersV2 API (Version 0.3.6). Zenodo.
+http://doi.org/10.5281/zenodo.3334330
 ```
 
 ## Table of contents
