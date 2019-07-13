@@ -162,8 +162,19 @@ It is possible for you to modify the idlist, add or remove ids. Once done, this 
 A simple setup would be
 ![porder_idcheck_setup](https://user-images.githubusercontent.com/6677629/57543933-d5d3fc00-7323-11e9-946f-200a4791f5e8.png)
 
+### bundles
+Ordering using ordersv2 uses the concept of bundles. A bundle is a combination of multiple assets for an item that come together and are delivered as part of the overall fulfillment of the order. For example an analytic asset for PSScene4Band is a single tif file, however the analytic bundle for PSScene4Band includes analytic tiff file, the analytic_xml metadata and the udm data mask file as part of the bundle. You can find more information about [bundles here](https://developers.planet.com/docs/orders/product-bundles-reference/). Thus the concept of bundles bring together single function to order and download multiple related assets. Since the list of bundles is long, this tool simply allows you to get every bundle type based on item type. The setup is simple
+
+![porder_bundles](https://user-images.githubusercontent.com/6677629/61171622-48da3880-a548-11e9-829f-d8c71dc39ce5.png)
+
+A simple setup would be
+
+```
+porder bundles --item "PSScene4Band"
+```
+
 ### order
-This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. The list of operations are below and **order is important**
+This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. An important changes is the concept of passing bundles instead of using assets. The list of operations for the ```--op``` are below and ** the order of these operations is important**
 
 clip|toar|comp
                         osite|zip|zipall|compression|projection|kernel|aws|azu
@@ -207,19 +218,19 @@ Modified Soil-adjusted Vegetation Index v2 (MSAVI2) | [Qi 1994](https://www.scie
 
 </center>
 
-![porder_order](https://user-images.githubusercontent.com/25802584/54535982-25bac600-4966-11e9-9638-b3d9453119be.png)
+![porder_order](https://user-images.githubusercontent.com/6677629/61171618-48da3880-a548-11e9-9166-d0ae7b2ca0ca.png)
 
 A simple setup with image clip with email notification would be
 
-![porder_clip_email](https://user-images.githubusercontent.com/6677629/59148197-afad8480-89d3-11e9-8428-16509d05d388.png)
+![porder_clip](https://user-images.githubusercontent.com/6677629/61171619-48da3880-a548-11e9-8e7c-4059866e68f5.png)
 
 The same setup with delivery of each image, its metadata as a zip file would be. Note how we only added zip to the op list
 
-![porder_clip_zip_email](https://user-images.githubusercontent.com/6677629/59148201-b63bfc00-89d3-11e9-971b-0e69e7ee2a84.png)
+![porder_clip_zip](https://user-images.githubusercontent.com/6677629/61171620-48da3880-a548-11e9-9c96-1d12ca762ca4.png)
 
 A simple setup with Top of Atmospher reflectance and a few indices along with email notification would be
 
-![porder_index_email](https://user-images.githubusercontent.com/6677629/59148205-bc31dd00-89d3-11e9-85eb-f8a539919da8.png)
+![porder_indices](https://user-images.githubusercontent.com/6677629/61171621-48da3880-a548-11e9-8ab9-c3a3658c7d5b.png)
 
 
 ### ordersize
@@ -260,6 +271,11 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.3.6
+- Replaced asset in order tool with bundles.
+- Created a new bundles tool to generate bundle list for an item type
+- Improvements to the idlist tool now prints output as it makes progress.
 
 ### v0.3.5
 - Better integration for quota tool

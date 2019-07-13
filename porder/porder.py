@@ -71,6 +71,12 @@ def planet_quota():
             for item_id in content:
                 print(" ")
                 print(
+                    'Subscription ID: %s'
+                    % item_id['id'])
+                print(
+                    'Plan ID: %s'
+                    % item_id['plan_id'])
+                print(
                     'Allocation Name: %s'
                     % item_id['organization']['name'])
                 print(
@@ -166,12 +172,24 @@ def idsplit_from_parser(args):
     idsplit(infile=args.idlist,linenum=args.lines,
         output=args.local)
 
+# Get package version
+def bundles(item):
+    with open(os.path.join(lpath,'bundles.json')) as f:
+        r=json.load(f)
+        for key,value in r['bundles'].items():
+            mydict=r['bundles'][key]['assets']
+            for item_types in mydict:
+                if item ==item_types:
+                    print('Assets for item '+str(item)+' of Bundle type '+str(key)+': '+'\n'+str(', '.join(mydict[item]))+'\n')
+def bundles_from_parser(args):
+    bundles(item=args.item)
+
 #Place the order
 def order_from_parser(args):
     order(name=args.name,
         idlist=args.idlist,
         item=args.item,
-        asset=args.asset,
+        asset=args.bundle,
         op=args.op,
         boundary=args.boundary,
         projection=args.projection,
@@ -285,12 +303,16 @@ def main(args=None):
     parser_idcheck.add_argument('--geometry',help='Geometry file for clip')
     parser_idcheck.set_defaults(func=idcheck_from_parser)
 
+    parser_bundles = subparsers.add_parser('bundles',help='Check bundles of assets for given tiem type')
+    parser_bundles.add_argument('--item',help='Item type')
+    parser_bundles.set_defaults(func=bundles_from_parser)
+
     parser_order = subparsers.add_parser('order', help='Place an order & get order url currently supports "toar","clip","composite","reproject","compression"')
     required_named = parser_order.add_argument_group('Required named arguments.')
     required_named.add_argument('--name', help='Order Name to be Submitted', required=True)
     required_named.add_argument('--idlist', help='CSV idlist with item IDs', required=True)
     required_named.add_argument('--item', help='Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc', required=True)
-    required_named.add_argument('--asset', help='Asset Type analytic, analytic_sr,visual etc', required=True)
+    required_named.add_argument('--bundle', help='Bundle Type: analytic, analytic_sr,analytic_sr_udm2', required=True)
     optional_named = parser_order.add_argument_group('Optional named arguments')
     optional_named.add_argument('--boundary', help='Boundary/geometry for clip operation geojson|json|kml',default=None)
     optional_named.add_argument('--projection', help='Projection for reproject operation of type "EPSG:4326"',default=None)

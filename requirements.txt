@@ -1,6 +1,6 @@
 Shapely>=1.6.4.post1
 requests>=2.19.1
-planet>=1.2.1
+planet>=1.2.3
 progressbar2>=3.38.0
 pySmartDL>=1.2.5
 clipboard>=0.0.4
