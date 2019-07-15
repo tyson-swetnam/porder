@@ -190,6 +190,7 @@ def order_from_parser(args):
         idlist=args.idlist,
         item=args.item,
         asset=args.bundle,
+        sid=args.sid,
         op=args.op,
         boundary=args.boundary,
         projection=args.projection,
@@ -314,6 +315,7 @@ def main(args=None):
     required_named.add_argument('--item', help='Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc', required=True)
     required_named.add_argument('--bundle', help='Bundle Type: analytic, analytic_sr,analytic_sr_udm2', required=True)
     optional_named = parser_order.add_argument_group('Optional named arguments')
+    optional_named.add_argument('--sid', help='Subscription ID',default=None)
     optional_named.add_argument('--boundary', help='Boundary/geometry for clip operation geojson|json|kml',default=None)
     optional_named.add_argument('--projection', help='Projection for reproject operation of type "EPSG:4326"',default=None)
     optional_named.add_argument('--kernel', help='Resampling kernel used "near", "bilinear", "cubic", "cubicspline", "lanczos", "average" and "mode"',default=None)

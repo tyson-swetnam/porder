@@ -272,6 +272,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.3.7
+- Added capability to pass subscription id when submitting order.
+
 ### v0.3.6
 - Replaced asset in order tool with bundles.
 - Created a new bundles tool to generate bundle list for an item type
