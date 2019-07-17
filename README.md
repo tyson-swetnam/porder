@@ -91,7 +91,7 @@ Installation is an optional step; the application can be also run directly by ex
 
 Make sure you initialized planet client by typing ```planet init``` or ```export``` or ```set PL_API_KEY=Your API Key``` As usual, to print help:
 
-![porder_cli](https://user-images.githubusercontent.com/6677629/56938475-23549b80-6ad0-11e9-8941-e288e6a274b5.png)
+![porder_main](https://user-images.githubusercontent.com/6677629/61379317-4ee85600-a875-11e9-9234-5f57dccf9588.png)
 
 To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `porder idlist -h`. If you didn't install porder, then you can run it just by going to *porder* directory and running `python porder.py [arguments go here]`
 
