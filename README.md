@@ -289,6 +289,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.3.9
+- Removed deprecated bundles from bundles list.
+
 ### v0.3.7
 - Added capability to pass subscription id when submitting order.
 

@@ -63,33 +63,6 @@
         "PSScene4Band": ["analytic", "analytic_xml", "udm", "udm2"]
       }
     },
-    "analytic_dn": {
-      "name": "Uncalibrated DN",
-      "description": "This product bundle is deprecated, please use 'uncalibrated_dn' instead",
-      "assets": {
-        "PSOrthoTile": ["analytic_dn", "analytic_dn_xml", "udm"],
-        "PSScene3Band": ["analytic_dn", "analytic_dn_xml", "udm"],
-        "PSScene4Band": ["analytic_dn", "analytic_dn_xml", "udm"]
-      }
-    },
-    "analytic_nitf": {
-      "name": "Non-Orthorectified Analytic Radiance NITF",
-      "description": "This product bundle is deprecated, please use 'basic_analytic_nitf' instead",
-      "assets": {
-        "REScene": [
-          "basic_analytic_b1_nitf",
-          "basic_analytic_b2_nitf",
-          "basic_analytic_b3_nitf",
-          "basic_analytic_b4_nitf",
-          "basic_analytic_b5_nitf",
-          "basic_analytic_rpc",
-          "basic_analytic_sci",
-          "basic_analytic_xml_nitf",
-          "basic_udm",
-          "browse"
-        ]
-      }
-    },
     "visual": {
       "name": "Visual",
       "description": "Orthorectified product, visually enhanced for optimal appearance",
@@ -162,37 +135,6 @@
           "basic_udm2",
           "basic_analytic_rpc",
           "basic_analytic_xml"
-        ]
-      }
-    },
-    "basic_analytic_dn": {
-      "name": "Non-Orthorectified, Uncalibrated DN",
-      "description": "This product bundle is deprecated, please use 'basic_uncalibrated_dn' instead",
-      "assets": {
-        "PSScene3Band": [
-          "basic_analytic_dn",
-          "basic_analytic_dn_rpc",
-          "basic_analytic_dn_xml",
-          "basic_udm"
-        ],
-        "PSScene4Band": [
-          "basic_analytic_dn",
-          "basic_analytic_dn_xml",
-          "basic_analytic_rpc",
-          "basic_udm"
-        ],
-        "SkySatScene": ["basic_analytic_dn", "basic_analytic_dn_rpc"]
-      }
-    },
-    "basic_analytic_dn_nitf": {
-      "name": "Non-Orthorectified, Uncalibrated DN NITF",
-      "description": "This product bundle is deprecated, please use 'basic_uncalibrated_dn_nitf' instead",
-      "assets": {
-        "PSScene4Band": [
-          "basic_analytic_dn_nitf",
-          "basic_analytic_dn_rpc_nitf",
-          "basic_analytic_dn_xml_nitf",
-          "basic_udm"
         ]
       }
     },
@@ -377,34 +319,6 @@
       "description": "Unorthorectified panchromatic imagery, non-radiometrically calibrated, raw digital number",
       "assets": {
         "SkySatScene": ["basic_panchromatic_dn", "basic_panchromatic_dn_rpc"]
-      }
-    },
-    "ortho_analytic_dn": {
-      "name": "Uncalibrated DN",
-      "description": "This product bundle is deprecated, please use 'uncalibrated_dn' instead",
-      "assets": {
-        "SkySatScene": ["ortho_analytic_dn", "ortho_analytic_udm"]
-      }
-    },
-    "ortho_panchromatic_dn": {
-      "name": "Panchromatic DN",
-      "description": "This product bundle is deprecated, please use 'panchromatic_dn' instead",
-      "assets": {
-        "SkySatScene": ["ortho_panchromatic_dn", "ortho_panchromatic_udm"]
-      }
-    },
-    "ortho_pansharpened": {
-      "name": "Pansharpened",
-      "description": "This product bundle is deprecated, please use 'pansharpened' instead",
-      "assets": {
-        "SkySatScene": ["ortho_pansharpened", "ortho_pansharpened_udm"]
-      }
-    },
-    "ortho_visual": {
-      "name": "Visual",
-      "description": "This product bundle is deprecated, please use 'visual' instead",
-      "assets": {
-        "SkySatScene": ["ortho_analytic_udm", "ortho_visual"]
       }
     },
     "panchromatic_dn": {
@@ -740,94 +654,6 @@
           "basic_analytic_dn_xml",
           "analytic_sr"
         ]
-      }
-    }
-  },
-  "deprecated": {
-    "analytic": {
-      "assets": {
-        "REScene": [
-          "basic_analytic_b1",
-          "basic_analytic_b2",
-          "basic_analytic_b3",
-          "basic_analytic_b4",
-          "basic_analytic_b5",
-          "basic_analytic_xml",
-          "basic_analytic_rpc",
-          "basic_udm",
-          "basic_analytic_sci",
-          "browse"
-        ]
-      }
-    },
-    "analytic_dn": {
-      "assets": {
-        "PSOrthoTile": ["analytic_dn", "analytic_dn_xml", "udm"],
-        "PSScene3Band": ["analytic_dn", "analytic_dn_xml", "udm"],
-        "PSScene4Band": ["analytic_dn", "analytic_dn_xml", "udm"]
-      }
-    },
-    "analytic_nitf": {
-      "assets": {
-        "REScene": [
-          "basic_analytic_b1_nitf",
-          "basic_analytic_b2_nitf",
-          "basic_analytic_b3_nitf",
-          "basic_analytic_b4_nitf",
-          "basic_analytic_b5_nitf",
-          "basic_analytic_rpc",
-          "basic_analytic_sci",
-          "basic_analytic_xml_nitf",
-          "basic_udm",
-          "browse"
-        ]
-      }
-    },
-    "basic_analytic_dn": {
-      "assets": {
-        "PSScene3Band": [
-          "basic_analytic_dn",
-          "basic_analytic_dn_rpc",
-          "basic_analytic_dn_xml",
-          "basic_udm"
-        ],
-        "PSScene4Band": [
-          "basic_analytic_dn",
-          "basic_analytic_dn_xml",
-          "basic_analytic_rpc",
-          "basic_udm"
-        ],
-        "SkySatScene": ["basic_analytic_dn", "basic_analytic_dn_rpc"]
-      }
-    },
-    "basic_analytic_dn_nitf": {
-      "assets": {
-        "PSScene4Band": [
-          "basic_analytic_dn_nitf",
-          "basic_analytic_dn_rpc_nitf",
-          "basic_analytic_dn_xml_nitf",
-          "basic_udm"
-        ]
-      }
-    },
-    "ortho_analytic_dn": {
-      "assets": {
-        "SkySatScene": ["ortho_analytic_dn", "ortho_analytic_udm"]
-      }
-    },
-    "ortho_panchromatic_dn": {
-      "assets": {
-        "SkySatScene": ["ortho_panchromatic_dn", "ortho_panchromatic_udm"]
-      }
-    },
-    "ortho_pansharpened": {
-      "assets": {
-        "SkySatScene": ["ortho_pansharpened", "ortho_pansharpened_udm"]
-      }
-    },
-    "ortho_visual": {
-      "assets": {
-        "SkySatScene": ["ortho_analytic_udm", "ortho_visual"]
       }
     }
   },
