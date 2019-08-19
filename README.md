@@ -289,6 +289,12 @@ A simple setup would be
 
 ## Changelog
 
+### v0.4.0
+- Fixed issue with placing reprojection request.
+- Downloader can now download partial as well as completely successful orders.
+- Added retry method for rate limit during downloading
+- General improvements
+
 ### v0.3.9
 - Removed deprecated bundles from bundles list.
 - Improved parameter description

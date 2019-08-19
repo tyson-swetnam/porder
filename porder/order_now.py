@@ -119,7 +119,7 @@ def order(**kwargs):
                     dbundle.update(dgcs)
                 elif items=='composite':
                     dbundle['tools'].append(dcomposite)
-                elif items=='reproject':
+                elif items=='projection':
                     dbundle['tools'].append(dreproject)
                 elif items=='ndvi':
                     dndvi={"pixel_type": "32R","ndvi": "(b4 - b3) / (b4+b3)"}

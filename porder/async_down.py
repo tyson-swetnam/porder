@@ -84,7 +84,8 @@ def funct(url,final,ext):
         for z in bar(range(60)):
             time.sleep(1)
         response=SESSION.get(url).json()
-    if response['state']=='success':
+    if response['state']=='success' or response['state']=='partial':
+        print('Order completed with status: '+str(response['state']))
         for items in response['_links']['results']:
             url=(items['location'])
             url_to_check = url if url.startswith('https') else "http://%s" % url

@@ -56,7 +56,34 @@ def check_for_redirects(url):
         if r.status_code == 429:  # Too many requests
             raise Exception("rate limit error")
 
-#Get the redirects and download
+
+@retry(
+    wait_exponential_multiplier=1000,
+    wait_exponential_max=10000)
+def downonly(redirect_url,local_path,ext,items):
+    result=SESSION.get(redirect_url)
+    if not os.path.exists(local_path) and result.status_code==200:
+        if ext is not None:
+            if local_path.endswith(ext):
+                print("Downloading: " + str(local_path))
+                obj = SmartDL(redirect_url, local_path)
+                obj.start()
+                path = obj.get_dest()
+        elif ext is None:
+                print("Downloading: " + str(local_path))
+                obj = SmartDL(redirect_url, local_path)
+                obj.start()
+                path = obj.get_dest()
+    elif result.status_code==429:
+        raise Exception("rate limit error")
+    else:
+        if int(result.status_code)!=200:
+            print("Encountered error with code: " + str(result.status_code)+' for '+str(os.path.split(items['name'])[-1]))
+        elif int(result.status_code)==200:
+            print("File already exists SKIPPING: "+str(os.path.split(items['name'])[-1]))
+
+
+# Get the redirects and download
 def asyncdownload(url,local,ext):
     response=SESSION.get(url).json()
     print("Polling ...")
@@ -65,7 +92,8 @@ def asyncdownload(url,local,ext):
         for z in bar(range(60)):
             time.sleep(1)
         response=SESSION.get(url).json()
-    if response['state']=='success':
+    if response['state']=='success' or response['state']=='partial':
+        print('Order completed with status: '+str(response['state']))
         for items in response['_links']['results']:
             url=(items['location'])
             url_to_check = url if url.startswith('https') else "http://%s" % url
@@ -73,24 +101,13 @@ def asyncdownload(url,local,ext):
             if redirect_url.startswith('https'):
                 #print('Processing redirect link for '+str(os.path.split(items['name'])[-1]))
                 local_path=os.path.join(local,str(os.path.split(items['name'])[-1]))
-                result=SESSION.get(redirect_url)
-                if not os.path.exists(local_path) and result.status_code==200:
-                    if ext is not None:
-                        if local_path.endswith(ext):
-                            print("Downloading: " + str(local_path))
-                            obj = SmartDL(redirect_url, local_path)
-                            obj.start()
-                            path = obj.get_dest()
-                    elif ext is None:
-                            print("Downloading: " + str(local_path))
-                            obj = SmartDL(redirect_url, local_path)
-                            obj.start()
-                            path = obj.get_dest()
-                else:
-                    if int(result.status_code)!=200:
-                        print("Encountered error with code: " + str(result.status_code)+' for '+str(os.path.split(items['name'])[-1]))
-                    elif int(result.status_code)==200:
-                        print("File already exists SKIPPING: "+str(os.path.split(items['name'])[-1]))
+                try:
+                    downonly(redirect_url,local_path,ext,items)
+                except Exception as e:
+                    print(e)
+                except (KeyboardInterrupt, SystemExit) as e:
+                    print('\n'+'Program escaped by User')
+                    sys.exit()
     else:
         print('Order Failed with state: '+str(response['state']))
 ##download(url="https://api.planet.com/compute/ops/orders/v2/0ee9e923-59fc-4c31-8632-9882cb342708",
