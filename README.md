@@ -10,7 +10,7 @@
 
 **Please note: This tool is in no way an official tool or Planet offering, but is a personal project created and maintained by Samapriya Roy**
 
-If you find this tool useful, star and cite it as below
+If you use this tool to download data for your research, and find this tool useful, star and cite it as below
 
 ```
 Samapriya Roy. (2019, August 19). samapriya/porder: porder: Simple CLI for Planet ordersV2 API (Version 0.4.0). Zenodo.
