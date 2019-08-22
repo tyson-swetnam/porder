@@ -289,6 +289,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.4.1
+- Fixed issue with shapely self intersection using buffer(0).
+- General improvements
+
 ### v0.4.0
 - Fixed issue with placing reprojection request.
 - Downloader can now download partial as well as completely successful orders.

@@ -189,6 +189,9 @@ def idl(**kwargs):
         temp['coordinates']=aoi_geom
     sgeom=filters.geom_filter(temp)
     aoi_shape = shape(temp)
+    if not aoi_shape.is_valid:
+        aoi_shape=aoi_shape.buffer(0)
+        #print('Your Input Geometry is invalid & may have issues:A valid Polygon may not possess anyoverlapping exterior or interior rings.'+'\n')
     date_filter = filters.date_range('acquired', gte=start,lte=end)
     cloud_filter = filters.range_filter('cloud_cover', gte=cmin,lte=cmax)
     asset_filter=filters.permission_filter('assets.'+str(asset)+':download')
@@ -206,39 +209,46 @@ def idl(**kwargs):
     req = filters.build_search_request(and_filter, item_types)
     res = client.quick_search(req)
     for things in res.items_iter(1000000): # A large number as max number to check against
-        itemid=things['id']
-        footprint = things["geometry"]
-        s = shape(footprint)
-        if item.startswith('SkySat'):
-            epsgcode='3857'
-        else:
-            epsgcode=things['properties']['epsg_code']
-        if aoi_shape.area>s.area:
-            intersect=(s).intersection(aoi_shape)
-        elif s.area>=aoi_shape.area:
-            intersect=(aoi_shape).intersection(s)
-        proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
-            pyproj.Proj(init='epsg:'+str(epsgcode)))
-        print('Processing ' + str(len(ar) + 1) + ' items with total area '+ str("{:,}".format(round(sum(far)))) + ' sqkm', end='\r')
-        if transform(proj,aoi_shape).area>transform(proj,s).area:
-            if (transform(proj,intersect).area/transform(proj,s).area*100)>=ovp:
-                ar.append(transform(proj,intersect).area/1000000)
-                far.append(transform(proj,s).area/1000000)
-                with open(outfile,'a') as csvfile:
-                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                    writer.writerow([itemid])
-        elif transform(proj,s).area>transform(proj,aoi_shape).area:
-            if (transform(proj,intersect).area/transform(proj,aoi_shape).area*100)>=ovp:
-                ar.append(transform(proj,intersect).area/1000000)
-                far.append(transform(proj,s).area/1000000)
-                with open(outfile,'a') as csvfile:
-                    writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                    writer.writerow([itemid])
-        if int(len(ar))==int(num):
-            break
+        try:
+            itemid=things['id']
+            footprint = things["geometry"]
+            s = shape(footprint)
+            if item.startswith('SkySat'):
+                epsgcode='3857'
+            else:
+                epsgcode=things['properties']['epsg_code']
+            if aoi_shape.area>s.area:
+                intersect=(s).intersection(aoi_shape)
+            elif s.area>=aoi_shape.area:
+                intersect=(aoi_shape).intersection(s)
+            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
+                pyproj.Proj(init='epsg:'+str(epsgcode)))
+            print('Processing ' + str(len(ar) + 1) + ' items with total area '+ str("{:,}".format(round(sum(far)))) + ' sqkm', end='\r')
+            if transform(proj,aoi_shape).area>transform(proj,s).area:
+                if (transform(proj,intersect).area/transform(proj,s).area*100)>=ovp:
+                    ar.append(transform(proj,intersect).area/1000000)
+                    far.append(transform(proj,s).area/1000000)
+                    with open(outfile,'a') as csvfile:
+                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                        writer.writerow([itemid])
+            elif transform(proj,s).area>=transform(proj,aoi_shape).area:
+                if (transform(proj,intersect).area/transform(proj,aoi_shape).area*100)>=ovp:
+                    ar.append(transform(proj,intersect).area/1000000)
+                    far.append(transform(proj,s).area/1000000)
+                    with open(outfile,'a') as csvfile:
+                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                        writer.writerow([itemid])
+            if int(len(ar))==int(num):
+                break
+        except Exception as e:
+            pass
+        except (KeyboardInterrupt, SystemExit) as e:
+            print('\n'+'Program escaped by User')
+            sys.exit()
     num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
     print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
     print('Total estimated cost to quota: ' + str("{:,}".format(round(sum(far)))) + ' sqkm')
     print('Total estimated cost to quota if clipped: ' + str("{:,}".format(round(sum(ar)))) + ' sqkm')
+
 
 # idl(infile=r"C:\Users\samapriya\Downloads\vertex.geojson",item='PSScene4Band',asset='analytic',cmin=0.0,cmax=0.9,start='2018-01-01',end='2019-12-31',ovp=8,num=40,outfile=r'C:\planet_demo\vertexidl.csv')
