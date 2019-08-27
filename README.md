@@ -289,6 +289,11 @@ A simple setup would be
 
 ## Changelog
 
+### v0.4.2
+- Added geometry check functionality to multipolygon with shapely self intersection [Issue 30](https://github.com/samapriya/porder/issues/30).
+- For multipolygons this also performs a vertex count check and simplifies polygon to fit under 500 vertices.
+- General improvements
+
 ### v0.4.1
 - Fixed issue with shapely self intersection using buffer(0).
 - General improvements

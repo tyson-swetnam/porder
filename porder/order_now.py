@@ -23,7 +23,10 @@ import pendulum
 import json
 import yaml
 import requests
+import shapely
 import clipboard
+import visvalingamwyatt as vw
+from shapely.geometry import shape
 from prettytable import PrettyTable
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
@@ -65,6 +68,22 @@ except:
     print('Failed to get Planet Key')
     sys.exit()
 url = 'https://api.planet.com/compute/ops/orders/v2'
+
+def vdepth(dic, level=1):
+    counter = 0
+    str_dic = str(dic)
+    if "[[[[" in str_dic:
+        counter += 1
+    return(counter)
+
+def vertexcount(input):
+        aoi_resp = input
+        if vdepth(aoi_resp['geometry']['coordinates'])==0:
+            return str(len(aoi_resp['geometry']['coordinates'][0]))
+        elif vdepth(aoi_resp['geometry']['coordinates'])==1:
+            return str(len(aoi_resp['geometry']['coordinates'][0][0]))
+        else:
+            print('Please check GeoJSON: Could not parse coordinates')
 
 def order(**kwargs):
     for key,value in kwargs.items():
@@ -165,6 +184,27 @@ def order(**kwargs):
                                 if len(ovall)>1:
                                     aoi_geom=ovall
                                     items['clip']['aoi']['coordinates']=aoi_geom
+                                    temp=shape(items.get('clip')['aoi'])
+                                    if not temp.is_valid:
+                                        print('Solving shapely self intersection for multipolygon')
+                                        temp=temp.buffer(0)
+                                        geojson_string = json.dumps(shapely.geometry.mapping(temp))
+                                        items['clip']['aoi']['coordinates']=json.loads(geojson_string)['coordinates']
+                                        ft = {"type": "Feature","geometry": {"type": "Polygon","coordinates": []},"properties": {}}
+                                        ft['geometry']['coordinates']=json.loads(geojson_string)['coordinates']
+                                        print('Total number of vertices in geometry: '+str(vertexcount(ft)))
+                                        if int(vertexcount(ft))>500:
+                                            print('Simplifying geometry since Ordersv2 will only accept upto 500 vertex points')
+                                            b= vw.simplify_feature(ft, number=495)
+                                            print('Total number of vertices in simplified geometry: '+str(vertexcount(b))+'\n')
+                                            items['clip']['aoi']['coordinates']=b['geometry']['coordinates']
+                                            temp=shape(b['geometry'])
+                                            if not temp.is_valid:
+                                                temp=temp.buffer(0)
+                                                geojson_string = json.dumps(shapely.geometry.mapping(temp))
+                                                items['clip']['aoi']['coordinates']=json.loads(geojson_string)['coordinates']
+                                            elif temp.is_valid:
+                                                items['clip']['aoi']['coordinates']=b['geometry']['coordinates']
                                 else:
                                     if list_depth(ovall)==0:
                                         aoi_geom = ovall
@@ -188,6 +228,7 @@ def order(**kwargs):
                                 getcoord=kml2coord(value)
                                 items['clip']['aoi']['coordinates']=getcoord
                         except Exception as e:
+                            #print(e)
                             print('Could not parse geometry')
         #         #print(e)
     for key,value in kwargs.items():
