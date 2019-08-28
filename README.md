@@ -90,7 +90,10 @@ You will get a wheel file or a file ending with .whl. You can now simply browse 
 
 
 ```pip3 -V```
-you get a readout like this ```pip 18.1 from c:\python3\lib\site-packages\pip (python 3.6)```
+
+you get a readout like this
+
+```pip 18.1 from c:\python3\lib\site-packages\pip (python 3.6)```
 
 if you have pip just replace that with ```pip -V```
 
