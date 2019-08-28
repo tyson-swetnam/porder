@@ -71,13 +71,14 @@ For windows first thing you need to figure out is your Python version and whethe
 For my windows machine, I have both 32-bit python 2.7.16 and 64-bit Python 3.6.6. You can get the python version at the beginning of the highlighted lines and the 32 or 64 bit within the Intel or AMD64 within the square brackets. Your default python is the one you get by just typing python in the command line. Then download the following packages based on the information we collect about our python type in the earlier step. We use unofficial binaries to install these. This step is only needed if you are on a windows machine if you are using a setup manager like anaconda you **might** be able to avoid this setup completely
 
 At this stage **if you were unable to install gdal then download the gdal binaries first**, install that before everything else
+
 gdal: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal](https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal)
 
-The follow along the following libraries
-pyproj: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj)
-shapely: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely](https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely)
-fiona: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona](https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona)
-geopandas: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#geopandas](https://www.lfd.uci.edu/~gohlke/pythonlibs/#geopandas)
+Then follow along the following libraries
+* pyproj: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj)
+* shapely: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely](https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely)
+* fiona: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona](https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona)
+* geopandas: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#geopandas](https://www.lfd.uci.edu/~gohlke/pythonlibs/#geopandas)
 
 To choose the version that is correct for you use the python information you collected earlier
 For example for my python 3.6.6 and AMD 64 if I was installing shapely I would choose the following, here 36 means python 3.6 and amd64 refers to the 64bit we were talking about.
