@@ -39,11 +39,11 @@ http://doi.org/10.5281/zenodo.3370817
     * [multiprocessing download](#multiprocessing-download)
 
 ## Installation
-This assumes that you have native python & pip installed in your system, you can test this by going to the terminal (or windows command prompt) and trying
+This assumes that you have native python & pip installed in your system, you can test this by going to the terminal (or windows command prompt) and trying. I recommend installation within virtual environment if you are worries about messing up your current environment.
 
 ```python``` and then ```pip list```
 
-If you get no errors and you have python 2.7.14 or higher you should be good to go. Please note that I have tested this only on python 2.7.15 but it should run on python 3.
+If you get no errors and you have python 2.7.14 or higher you should be good to go.
 
 **This command line tool is dependent on shapely and fiona and as such uses functionality from GDAL**
 For installing GDAL in Ubuntu
@@ -58,22 +58,64 @@ Also for Ubuntu Linux I saw that this is necessary before the install
 
 ```sudo apt install libcurl4-openssl-dev libssl-dev```
 
+Shapely and a few other libraries are notoriously difficult to install on windows machines so follow the steps mentioned here **before installing porder**. You can download and install shapely and other libraries from the [Unofficial Wheel files from here](https://www.lfd.uci.edu/~gohlke/pythonlibs) download depending on the python version you have. **Do this only once you have install GDAL**. I would recommend the steps mentioned above to get the GDAL properly installed. However I am including instructions to using a precompiled version of GDAL similar to the other libraries on windows. You can test to see if you have gdal by simply running
 
-Shapely is notoriously difficult as a library to install on windows machines so follow the steps mentioned from [Shapely’s PyPI package page](https://pypi.org/project/Shapely/). You can download and install shapely from the [Unofficial Wheel files from here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely) download depending on the python version you have. You will get a wheel file or a file ending with .whl. You can now simply browse to the folder or migrate to it in your command prompt , for example in my case I was running Python 2.7.15 and win32 version so the command was
+```gdalinfo```
 
-```pip install Shapely-1.6.4.post1-cp27-cp27m-win32.whl```
+in your command prompt. If you get a read out and not an error message you are good to go.
 
-Or you can use [anaconda to install](https://conda-forge.github.io/). Again, both of these options are mentioned on [Shapely’s Official PyPI page](https://pypi.org/project/Shapely/). **Fiona** is a recommended install used by the simplify tool, but it is not necessary. You can find installation instructions [here](https://pypi.org/project/Fiona/1.8.6/#description), for windows similar to shapely you can install it using the [Unofficial wheel files found here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona)
+For windows first thing you need to figure out is your Python version and whether it is 32 bit or 64 bit. You can do this by going to your command prompt and typing python.
 
-```pip install Fiona‑1.8.6‑cp27‑cp27m‑win32.whl```
+![windows_cmd_python](https://user-images.githubusercontent.com/6677629/63856293-3dfc2b80-c96f-11e9-978d-d2c1a01cfe36.PNG)
 
-Once you have shapely configured. To install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
+For my windows machine, I have both 32-bit python 2.7.16 and 64-bit Python 3.6.6. You can get the python version at the beginning of the highlighted lines and the 32 or 64 bit within the Intel or AMD64 within the square brackets. Your default python is the one you get by just typing python in the command line. Then download the following packages based on the information we collect about our python type in the earlier step. We use unofficial binaries to install these. This step is only needed if you are on a windows machine if you are using a setup manager like anaconda you **might** be able to avoid this setup completely
+
+At this stage **if you were unable to install gdal then download the gdal binaries first**, install that before everything else
+gdal: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal](https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal)
+
+The follow along the following libraries
+pyproj: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj)
+shapely: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely](https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely)
+fiona: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona](https://www.lfd.uci.edu/~gohlke/pythonlibs/#fiona)
+geopandas: [https://www.lfd.uci.edu/~gohlke/pythonlibs/#geopandas](https://www.lfd.uci.edu/~gohlke/pythonlibs/#geopandas)
+
+To choose the version that is correct for you use the python information you collected earlier
+For example for my python 3.6.6 and AMD 64 if I was installing shapely I would choose the following, here 36 means python 3.6 and amd64 refers to the 64bit we were talking about.
+
+```Shapely‑1.6.4.post2‑cp36‑cp36m‑win_amd64.whl```
+
+You will get a wheel file or a file ending with .whl. You can now simply browse to the folder or migrate to it in your command prompt. Once there if I am installing for my python 3.6 the command was. At this point we will make use of our trusted package installer that comes with python called pip. Note the choice of pip or pip3 depends on your python version usually you can get the pip to use with your python by typing
+
+
+```pip3 -V```
+you get a readout like this ```pip 18.1 from c:\python3\lib\site-packages\pip (python 3.6)```
+
+if you have pip just replace that with ```pip -V```
+
+Then simply install the wheel files you downloaded using the following setup
+
+```
+pip3 install full path to Shapely‑1.6.4.post2‑cp36‑cp36m‑win_amd64.whl
+
+in my case that would be
+
+pip3 install "C:\Users\samapriya\Downloads\Shapely‑1.6.4.post2‑cp36‑cp36m‑win_amd64.whl"
+```
+
+Or you can use [anaconda to install](https://conda-forge.github.io/). Again, both of these options are mentioned on [Shapely’s Official PyPI page](https://pypi.org/project/Shapely/).
+
+Once you have shapely and the other libraries configured, to install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
 
 ```pip install porder```
 
-on Ubuntu I found it helps to specify the pip type and use sudo
+For linux I found it helps to specify the pip type and use --user
 
-```sudo pip2 install porder or sudo pip3 install porder```
+```
+pip install porder --user
+
+or
+
+pip3 install porder --user```
 
 or you can also try
 
@@ -82,14 +124,10 @@ git clone https://github.com/samapriya/porder.git
 cd porder
 python setup.py install
 ```
-For linux use sudo.
-
-Installation is an optional step; the application can be also run directly by executing porder.py script. The advantage of having it installed is being able to execute porder as any command line tool. I recommend installation within virtual environment. If you don't want to install, browse into the porder folder and try ```python porder.py``` to get to the same result.
-
 
 ## Getting started
 
-Make sure you initialized planet client by typing ```planet init``` or ```export``` or ```set PL_API_KEY=Your API Key``` As usual, to print help:
+Make sure you initialized planet client by typing ```planet init```. As usual, to print help:
 
 ![porder_main](https://user-images.githubusercontent.com/6677629/61379317-4ee85600-a875-11e9-9234-5f57dccf9588.png)
 
@@ -288,6 +326,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.4.3
+- Fixed issues with setup.py and pyproj version.
+- Improved ReadMe instructions.
 
 ### v0.4.2
 - Added geometry check functionality to multipolygon with shapely self intersection [Issue 30](https://github.com/samapriya/porder/issues/30).
