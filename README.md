@@ -58,6 +58,7 @@ Also for Ubuntu Linux I saw that this is necessary before the install
 
 ```sudo apt install libcurl4-openssl-dev libssl-dev```
 
+### Windows Setup
 Shapely and a few other libraries are notoriously difficult to install on windows machines so follow the steps mentioned here **before installing porder**. You can download and install shapely and other libraries from the [Unofficial Wheel files from here](https://www.lfd.uci.edu/~gohlke/pythonlibs) download depending on the python version you have. **Do this only once you have install GDAL**. I would recommend the steps mentioned above to get the GDAL properly installed. However I am including instructions to using a precompiled version of GDAL similar to the other libraries on windows. You can test to see if you have gdal by simply running
 
 ```gdalinfo```
@@ -116,7 +117,8 @@ pip install porder --user
 
 or
 
-pip3 install porder --user```
+pip3 install porder --user
+```
 
 or you can also try
 
