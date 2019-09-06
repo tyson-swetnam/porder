@@ -129,11 +129,22 @@ def funct(url,final,ext):
         print('Order completed with status: '+str(response['state']))
         for items in response['_links']['results']:
             url=(items['location'])
+            name=(items['name'])
             url_to_check = url if url.startswith('https') else "http://%s" % url
             redirect_url = check_for_redirects(url_to_check)
-
             if redirect_url.startswith('https'):
-                local_path=os.path.join(final,str(os.path.split(items['name'])[-1]))
+                if name.endswith('manifest.json'):
+                    time.sleep(0.2)
+                    resp=SESSION.get(url)
+                    if int(resp.status_code)==200:
+                        r=resp.content
+                        inp=json.loads(r)
+                        for things in inp['files']:
+                            local_path=os.path.join(final,things['annotations']['planet/item_id']+'_manifest.json')
+                    else:
+                        print(resp.status_code)
+                else:
+                    local_path=os.path.join(final,str(os.path.split(items['name'])[-1]))
                 if not os.path.isfile(local_path) and ext is None:
                     urls.append(str(redirect_url)+'|'+local_path)
                 if not os.path.isfile(local_path) and ext is not None:

@@ -38,6 +38,8 @@ except:
 SESSION = requests.Session()
 SESSION.auth = (PL_API_KEY, '')
 
+i=1
+
 @retry(
     wait_exponential_multiplier=1000,
     wait_exponential_max=10000)
@@ -60,27 +62,31 @@ def check_for_redirects(url):
 @retry(
     wait_exponential_multiplier=1000,
     wait_exponential_max=10000)
-def downonly(redirect_url,local_path,ext,items):
+def downonly(redirect_url,local_path,ext,items,ulength):
+    global i
     result=SESSION.get(redirect_url)
     if not os.path.exists(local_path) and result.status_code==200:
         if ext is not None:
             if local_path.endswith(ext):
-                print("Downloading: " + str(local_path))
+                print(str(ulength-i)+" remaining ==> Downloading: " + str(local_path))
+                i=i+1
                 obj = SmartDL(redirect_url, local_path)
                 obj.start()
                 path = obj.get_dest()
         elif ext is None:
-                print("Downloading: " + str(local_path))
-                obj = SmartDL(redirect_url, local_path)
-                obj.start()
-                path = obj.get_dest()
+            print(str(ulength-i)+" remaining ==> Downloading: " + str(local_path))
+            i=i+1
+            obj = SmartDL(redirect_url, local_path)
+            obj.start()
+            path = obj.get_dest()
     elif result.status_code==429:
         raise Exception("rate limit error")
     else:
         if int(result.status_code)!=200:
             print("Encountered error with code: " + str(result.status_code)+' for '+str(os.path.split(items['name'])[-1]))
         elif int(result.status_code)==200:
-            print("File already exists SKIPPING: "+str(os.path.split(items['name'])[-1]))
+            print("Checking "+str(ulength-i)+" remaining ==> "+"File already exists SKIPPING: "+str(os.path.split(local_path)[-1]))
+            i=i+1
 
 
 # Get the redirects and download
@@ -94,15 +100,27 @@ def asyncdownload(url,local,ext):
         response=SESSION.get(url).json()
     if response['state']=='success' or response['state']=='partial':
         print('Order completed with status: '+str(response['state']))
+        ulength=len(response['_links']['results'])
         for items in response['_links']['results']:
             url=(items['location'])
+            name=(items['name'])
             url_to_check = url if url.startswith('https') else "http://%s" % url
             redirect_url = check_for_redirects(url_to_check)
             if redirect_url.startswith('https'):
-                #print('Processing redirect link for '+str(os.path.split(items['name'])[-1]))
-                local_path=os.path.join(local,str(os.path.split(items['name'])[-1]))
+                if name.endswith('manifest.json'):
+                    time.sleep(0.2)
+                    resp=SESSION.get(url)
+                    if int(resp.status_code)==200:
+                        r=resp.content
+                        inp=json.loads(r)
+                        for things in inp['files']:
+                            local_path=os.path.join(local,things['annotations']['planet/item_id']+'_manifest.json')
+                    else:
+                        print(resp.status_code)
+                else:
+                    local_path=os.path.join(local,str(os.path.split(items['name'])[-1]))
                 try:
-                    downonly(redirect_url,local_path,ext,items)
+                    downonly(redirect_url,local_path,ext,items,ulength)
                 except Exception as e:
                     print(e)
                 except (KeyboardInterrupt, SystemExit) as e:

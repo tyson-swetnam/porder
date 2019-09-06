@@ -180,7 +180,7 @@ def bundles(item):
             mydict=r['bundles'][key]['assets']
             for item_types in mydict:
                 if item ==item_types:
-                    print('Assets for item '+str(item)+' of Bundle type '+str(key)+': '+'\n'+str(', '.join(mydict[item]))+'\n')
+                    print('Bundle type: '+str(key)+'\n'+str(', '.join(mydict[item]))+'\n')
 def bundles_from_parser(args):
     bundles(item=args.item)
 

@@ -333,6 +333,11 @@ A simple setup would be
 
 ## Changelog
 
+### v0.4.4
+- Manifest files for each asset is now written in format ItemID_manifest.json to avoid skipping manifest.json common file name.
+- Simple and multipart downloader now show number of items remaining during the download.
+- General improvements, bundles tool now prints Bundles:Name followed by assets included in the bundle
+
 ### v0.4.3
 - Fixed issues with setup.py and pyproj version.
 - Improved ReadMe instructions.
