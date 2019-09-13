@@ -28,6 +28,34 @@ import requests
 import clipboard
 import platform
 import pkg_resources
+if str(platform.system().lower()) == "windows":
+    try:
+        import pipwin
+    except ImportError:
+        subprocess.call('pip install pipwin', shell=True)
+        subprocess.call('pipwin refresh', shell=True)
+    except Exception as e:
+        print(e)
+    try:
+        import gdal
+    except ImportError:
+        subprocess.call('pipwin install gdal', shell=True)
+    try:
+        import pyproj
+    except ImportError:
+        subprocess.call('pipwin install pyproj', shell=True)
+    try:
+        import shapely
+    except ImportError:
+        subprocess.call('pipwin install shapely', shell=True)
+    try:
+        import fiona
+    except ImportError:
+        subprocess.call('pipwin install fiona', shell=True)
+    try:
+        import geopandas
+    except ImportError:
+        subprocess.call('pipwin install geopandas', shell=True)
 from .shp2geojson import shp2gj
 from .geojson_simplify import geosimple
 from .geojson2id import idl

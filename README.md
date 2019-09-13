@@ -333,6 +333,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.4.5
+- Handles installation of windows specific libraries using [pipwin](https://pypi.org/project/pipwin/).
+- General improvements
+
 ### v0.4.4
 - Manifest files for each asset is now written in format ItemID_manifest.json to avoid skipping manifest.json common file name.
 - Simple and multipart downloader now show number of items remaining during the download.
