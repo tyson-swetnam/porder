@@ -18,7 +18,9 @@ http://doi.org/10.5281/zenodo.3401360
 ```
 
 ## Table of contents
-* [Installation](#installation)
+* [Prerequisites](#prerequisites)
+* [Installing porder](#installing-porder)
+* [Windows Setup](#windows-setup)
 * [Getting started](#getting-started)
 * [porder Simple CLI for Planet ordersv2 API](#porder-simple-cli-for-planet-ordersv2-api)
     * [porder version](#porder-version)
@@ -38,7 +40,7 @@ http://doi.org/10.5281/zenodo.3401360
     * [multipart download](#multipart-download)
     * [multiprocessing download](#multiprocessing-download)
 
-## Installation
+## Prerequisites
 This assumes that you have native python & pip installed in your system, you can test this by going to the terminal (or windows command prompt) and trying. I recommend installation within virtual environment if you are worries about messing up your current environment.
 
 ```python``` and then ```pip list```
@@ -58,13 +60,54 @@ Also for Ubuntu Linux I saw that this is necessary before the install
 
 ```sudo apt install libcurl4-openssl-dev libssl-dev```
 
-### Windows Setup
+## Installing porder
+Once you have shapely and the other libraries configured, to install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
+
+```pip install porder```
+
+For linux I found it helps to specify the pip type and use --user
+
+```
+pip install porder --user
+
+or
+
+pip3 install porder --user
+```
+
+or you can also try
+
+```
+git clone https://github.com/samapriya/porder.git
+cd porder
+python setup.py install
+```
+
+## Windows Setup
 Shapely and a few other libraries are notoriously difficult to install on windows machines so follow the steps mentioned here **before installing porder**. You can download and install shapely and other libraries from the [Unofficial Wheel files from here](https://www.lfd.uci.edu/~gohlke/pythonlibs) download depending on the python version you have. **Do this only once you have install GDAL**. I would recommend the steps mentioned above to get the GDAL properly installed. However I am including instructions to using a precompiled version of GDAL similar to the other libraries on windows. You can test to see if you have gdal by simply running
 
 ```gdalinfo```
 
-in your command prompt. If you get a read out and not an error message you are good to go.
+in your command prompt. If you get a read out and not an error message you are good to go. If you don't have gdal try Option 1,2 or 3 in that order and that will install gdal along with the other libraries
 
+#### Option 1:
+Starting from porder v0.4.5 onwards:
+
+Simply run ```porder -h``` after installation. This should go fetch the extra libraries you need and install them. Once installationa is complete, the porder help page will show up. This should save you from the few setps below.
+
+#### Option 2:
+If this does not work or you get an unexpected error try the following commands. You can also use these commands if you simply want to update these libraries.
+
+```
+pipwin refresh
+pipwin install gdal
+pipwin install pyproj
+pipwin install shapely
+pipwin install fiona
+pipwing install geopandas
+```
+
+#### Option 3
 For windows first thing you need to figure out is your Python version and whether it is 32 bit or 64 bit. You can do this by going to your command prompt and typing python.
 
 ![windows_cmd_python](https://user-images.githubusercontent.com/6677629/63856293-3dfc2b80-c96f-11e9-978d-d2c1a01cfe36.PNG)
@@ -109,27 +152,6 @@ pip3 install "C:\Users\samapriya\Downloads\Shapely‑1.6.4.post2‑cp36‑cp36m�
 
 Or you can use [anaconda to install](https://conda-forge.github.io/). Again, both of these options are mentioned on [Shapely’s Official PyPI page](https://pypi.org/project/Shapely/).
 
-Once you have shapely and the other libraries configured, to install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
-
-```pip install porder```
-
-For linux I found it helps to specify the pip type and use --user
-
-```
-pip install porder --user
-
-or
-
-pip3 install porder --user
-```
-
-or you can also try
-
-```
-git clone https://github.com/samapriya/porder.git
-cd porder
-python setup.py install
-```
 
 ## Getting started
 
@@ -332,6 +354,11 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.4.6
+- Handles refreshing pipwin cache and better error handling
+- Fixed issue with downloading unique manifest ID for zip files.
+- Updated ReadMe with improved documentation.
 
 ### v0.4.5
 - Handles installation of windows specific libraries using [pipwin](https://pypi.org/project/pipwin/).

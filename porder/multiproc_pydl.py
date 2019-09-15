@@ -140,7 +140,10 @@ def funct(url,final,ext):
                         r=resp.content
                         inp=json.loads(r)
                         for things in inp['files']:
-                            local_path=os.path.join(final,things['annotations']['planet/item_id']+'_manifest.json')
+                            try:
+                                local_path=os.path.join(local,things['annotations']['planet/item_id']+'_manifest.json')
+                            except Exception as e:
+                                local_path=os.path.join(local,things['path'].split('/')[1].split('.')[0]+'_manifest.json')
                     else:
                         print(resp.status_code)
                 else:

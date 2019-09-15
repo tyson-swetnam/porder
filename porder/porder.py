@@ -21,6 +21,7 @@ __license__ = "Apache 2.0"
 import subprocess
 import argparse
 import os
+import time
 import sys
 import json
 import base64
@@ -28,9 +29,19 @@ import requests
 import clipboard
 import platform
 import pkg_resources
+from os.path import expanduser
 if str(platform.system().lower()) == "windows":
     try:
         import pipwin
+        '''Check if the pipwin cache is old: useful if you are upgrading porder on windows
+        [This section looks if the pipwin cache is older than a week]
+        '''
+        home_dir = expanduser("~")
+        fullpath=os.path.join(home_dir, ".pipwin")
+        file_mod_time = os.stat(fullpath).st_mtime
+        if int((time.time() - file_mod_time) / 60) > 10000:
+            print('Refreshing your pipwin cache')
+            subprocess.call('pipwin refresh', shell=True)
     except ImportError:
         subprocess.call('pip install pipwin', shell=True)
         subprocess.call('pipwin refresh', shell=True)
@@ -40,22 +51,32 @@ if str(platform.system().lower()) == "windows":
         import gdal
     except ImportError:
         subprocess.call('pipwin install gdal', shell=True)
+    except Exception as e:
+        print(e)
     try:
         import pyproj
     except ImportError:
         subprocess.call('pipwin install pyproj', shell=True)
+    except Exception as e:
+        print(e)
     try:
         import shapely
     except ImportError:
         subprocess.call('pipwin install shapely', shell=True)
+    except Exception as e:
+        print(e)
     try:
         import fiona
     except ImportError:
         subprocess.call('pipwin install fiona', shell=True)
+    except Exception as e:
+        print(e)
     try:
         import geopandas
     except ImportError:
         subprocess.call('pipwin install geopandas', shell=True)
+    except Exception as e:
+        print(e)
 from .shp2geojson import shp2gj
 from .geojson_simplify import geosimple
 from .geojson2id import idl
