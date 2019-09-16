@@ -93,7 +93,7 @@ in your command prompt. If you get a read out and not an error message you are g
 #### Option 1:
 Starting from porder v0.4.5 onwards:
 
-Simply run ```porder -h``` after installation. This should go fetch the extra libraries you need and install them. Once installationa is complete, the porder help page will show up. This should save you from the few setps below.
+Simply run ```porder -h``` after installation. This should go fetch the extra libraries you need and install them. Once installation is complete, the porder help page will show up. This should save you from the few steps below.
 
 #### Option 2:
 If this does not work or you get an unexpected error try the following commands. You can also use these commands if you simply want to update these libraries.
