@@ -355,6 +355,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.4.7
+- Fixed issue with queuing state for orders and downloads.
+
 ### v0.4.6
 - Handles refreshing pipwin cache and better error handling
 - Fixed issue with downloading unique manifest ID for zip files.
