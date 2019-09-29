@@ -34,12 +34,12 @@ if str(platform.system().lower()) == "windows":
     try:
         import pipwin
         '''Check if the pipwin cache is old: useful if you are upgrading porder on windows
-        [This section looks if the pipwin cache is older than a week]
+        [This section looks if the pipwin cache is older than two weeks]
         '''
         home_dir = expanduser("~")
         fullpath=os.path.join(home_dir, ".pipwin")
         file_mod_time = os.stat(fullpath).st_mtime
-        if int((time.time() - file_mod_time) / 60) > 10000:
+        if int((time.time() - file_mod_time) / 60) > 20160:
             print('Refreshing your pipwin cache')
             subprocess.call('pipwin refresh', shell=True)
     except ImportError:
@@ -102,6 +102,10 @@ try:
 except Exception as e:
     print('Failed to get Planet Key')
     sys.exit()
+
+
+SESSION = requests.Session()
+SESSION.auth = (api_key, '')
 
 
 # Get package version
@@ -254,13 +258,26 @@ def ordersize_from_parser(args):
     ordersize(url=args.url)
 
 #Get concurrent orders that are running
-def concorder():
-    try:
-        subprocess.call('python concord.py',shell=True)
-    except Exception as e:
-        print(e)
-def concorder_from_parser(args):
-    concorder()
+def stats():
+    print('Checking on all running orders...')
+    result = SESSION.get('https://api.planet.com/compute/ops/stats/orders/v2')
+    if int(result.status_code)==200:
+        page=result.json()
+        try:
+            print('\n'+'Total queued order for organization: '+str(page['organization']['queued_orders']))
+            print('Total running orders for organization: '+str(page['organization']['running_orders']))
+            print('\n'+'Total queued orders for user: '+str(page['user']['queued_orders']))
+            print('Total running orders for user: '+str(page['user']['running_orders']))
+        except Exception as e:
+            print(e)
+    elif int(result.status_code)==401:
+        print('Access denied - insufficient privileges')
+    elif int(result.status_code)==500:
+        print('Server Error')
+    else:
+        print('Failed with '+str(result.status_code)+' '+str(result.text))
+def stats_from_parser(args):
+    stats()
 
 #Download the order
 def download_from_parser(args):
@@ -380,8 +397,8 @@ def main(args=None):
     parser_ordersize.add_argument('--url',help='order url you got for your order')
     parser_ordersize.set_defaults(func=ordersize_from_parser)
 
-    parser_concorder = subparsers.add_parser('concurrent', help='Prints number of orders running')
-    parser_concorder.set_defaults(func=concorder_from_parser)
+    parser_stats = subparsers.add_parser('stats', help='Prints number of orders queued and running for org & user')
+    parser_stats.set_defaults(func=stats_from_parser)
 
     parser_download = subparsers.add_parser('download',help='Downloads all files in your order')
     parser_download.add_argument('--url',help='order url you got for your order')

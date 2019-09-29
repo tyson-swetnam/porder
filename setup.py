@@ -20,7 +20,7 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.4.7',
+    version='0.4.8',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},
@@ -30,6 +30,7 @@ setuptools.setup(
                       'pendulum>=2.0.4',
                       'pySmartDL==1.2.5;python_version<"3.4"',
                       'pySmartDL>=1.3.1;python_version>"3.4"',
+                      'pipwin>= 0.4.5;platform_system=="Windows"',
                       'pyproj>=1.9.5.1;platform_system!="Windows"',
                       'shapely>=1.6.4;platform_system!="Windows"',
                       'fiona>=1.8.6;platform_system!="Windows"',

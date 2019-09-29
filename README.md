@@ -35,7 +35,7 @@ http://doi.org/10.5281/zenodo.3457159
     * [bundles](#bundles)
     * [order](#order)
     * [ordersize](#ordersize)
-    * [concurrent](#concurrent)
+    * [stats](#stats)
     * [download](#download)
     * [multipart download](#multipart-download)
     * [multiprocessing download](#multiprocessing-download)
@@ -329,10 +329,23 @@ An example setup look like the following
 
 </center>
 
-### concurrent
-The tool allows you to check on number of running orders, to get at limit for concurrent orders.
+### stats
+The tool allows you to check on number of running and queued orders for both organization and user level. Using this is simple
 
-![porder_concurrent](https://user-images.githubusercontent.com/6677629/54481442-ffccde80-480a-11e9-89fa-32e288fd2ea1.png)
+```
+porder stats
+```
+
+output should look like this:
+
+```
+Checking on all running orders...
+Total queued order for organization: 0
+Total running orders for organization: 1
+
+Total queued orders for user: 0
+Total running orders for user: 0
+```
 
 ### download
 The allows you to download the files in your order, to a local folder. It uses the order url generated using the orders tool to access and download the files.
@@ -354,6 +367,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.4.8
+- Replaced concurrency check with stats endpoint to get queued and running orders.
+- Change pipwin cache refresh time to two weeks.
 
 ### v0.4.7
 - Fixed issue with queuing state for orders and downloads.
