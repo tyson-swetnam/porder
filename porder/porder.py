@@ -103,6 +103,13 @@ def version_from_parser(args):
 
 # Function to get user's quota
 def planet_quota():
+    # Get API Key: Requires user to have initialized Planet CLI
+    try:
+        api_key = find_api_key()
+        os.environ['PLANET_API_KEY'] = find_api_key()
+    except Exception as e:
+        print('Failed to get Planet Key: Try planet init')
+        sys.exit()
     '''Print allocation and remaining quota in Sqkm.'''
     try:
         main = requests.get('https://api.planet.com/auth/v1/experimental/public/my/subscriptions', auth=(api_key, ''))
