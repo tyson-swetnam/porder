@@ -50,7 +50,7 @@ if str(platform.system().lower()) == "windows":
     try:
         import gdal
     except ImportError:
-        subprocess.call('pipwin install gdal', shell=True)
+        subprocess.call('pipwin install gdal==2.4.1', shell=True)
     except Exception as e:
         print(e)
     try:
@@ -93,19 +93,6 @@ if str(platform.python_version()) > "3.3.0":
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 lpath=os.path.dirname(os.path.realpath(__file__))
 sys.path.append(lpath)
-
-
-# Get API Key: Requires user to have initialized Planet CLI
-try:
-    api_key = find_api_key()
-    os.environ['PLANET_API_KEY'] = find_api_key()
-except Exception as e:
-    print('Failed to get Planet Key')
-    sys.exit()
-
-
-SESSION = requests.Session()
-SESSION.auth = (api_key, '')
 
 
 # Get package version
@@ -259,6 +246,17 @@ def ordersize_from_parser(args):
 
 #Get concurrent orders that are running
 def stats():
+    # Get API Key: Requires user to have initialized Planet CLI
+    try:
+        api_key = find_api_key()
+        os.environ['PLANET_API_KEY'] = find_api_key()
+    except Exception as e:
+        print('Failed to get Planet Key: Try planet init')
+        sys.exit()
+
+
+    SESSION = requests.Session()
+    SESSION.auth = (api_key, '')
     print('Checking on all running orders...')
     result = SESSION.get('https://api.planet.com/compute/ops/stats/orders/v2')
     if int(result.status_code)==200:

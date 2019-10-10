@@ -368,6 +368,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.4.9
+- Fixed issue with gdal import for pipwin windows.
+- Fixed import issue with stats endpoint.
+
 ### v0.4.8
 - Replaced concurrency check with stats endpoint to get queued and running orders.
 - Change pipwin cache refresh time to two weeks.
