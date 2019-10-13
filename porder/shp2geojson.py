@@ -7,7 +7,7 @@ import os
 def shp2gj(folder, export):
     for items in os.listdir(folder):
         if items.endswith('.shp'):
-            inD = gpd.read_file(os.path.join(folder,items))
+            inD = gpd.read_file(os.path.join(folder,items),encoding='utf-8')
             #Reproject to EPSG 4326
             try:
                 data_proj = inD.copy()
