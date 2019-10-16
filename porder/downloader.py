@@ -27,6 +27,7 @@ import sys
 from retrying import retry
 from planet.api.utils import read_planet_json
 from planet.api.auth import find_api_key
+from datetime import datetime
 
 #Get Planet API and Authenticate SESSION
 try:
@@ -104,6 +105,11 @@ def download(url,local,ext):
         print('Order completed with status: '+str(response['state']))
         ulength=len(response['_links']['results'])
         for items in response['_links']['results']:
+            expiration_time = datetime.strptime(items['expires_at'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            if datetime.now() > expiration_time:
+                print('The URL links have expired.  Refreshing.')
+                download(url, local, ext)
+                return
             url=(items['location'])
             name=(items['name'])
             url_to_check = url if url.startswith('https') else "http://%s" % url
