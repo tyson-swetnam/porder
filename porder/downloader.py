@@ -93,23 +93,32 @@ def downonly(redirect_url,local_path,ext,items,ulength):
             i=i+1
 
 
-def download(url,local,ext):
+def get_session_response(url):
     response=SESSION.get(url).json()
     print("Polling ...")
     while response['state']=='queued' or response['state']=='running' or response['state']=='starting':
         bar = progressbar.ProgressBar()
-        for z in bar(range(60)):
+        for _ in bar(range(60)):
             time.sleep(1)
         response=SESSION.get(url).json()
+
+    return response
+
+def download(url,local,ext):
+    response = get_session_response(url)
     if response['state']=='success' or response['state']=='partial':
         print('Order completed with status: '+str(response['state']))
         ulength=len(response['_links']['results'])
-        for items in response['_links']['results']:
+        for index, items in enumerate(response['_links']['results']):
             expiration_time = datetime.strptime(items['expires_at'], "%Y-%m-%dT%H:%M:%S.%fZ")
             if datetime.now() > expiration_time:
                 print('The URL links have expired.  Refreshing.')
-                download(url, local, ext)
-                return
+                response[:] = get_session_response(url)
+                if response['state']=='success' or response['state']=='partial':
+                    items = response['_links']['results'][index]
+                else:
+                    print('Order Failed with state: '+str(response['state']))
+                    return
             url=(items['location'])
             name=(items['name'])
             url_to_check = url if url.startswith('https') else "http://%s" % url
