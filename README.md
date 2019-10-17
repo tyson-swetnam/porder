@@ -368,6 +368,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.5.1
+- Added utf-8 encoding for shapefile to geojson conversion
+- Merged [pull request 34](https://github.com/samapriya/porder/pull/34) to refresh url once expired.
+
 ### v0.4.9
 - Fixed issue with gdal import for pipwin windows.
 - Fixed import issue with stats endpoint.
