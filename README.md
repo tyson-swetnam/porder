@@ -270,6 +270,7 @@ op                | description                                                 
 ------------------|-------------------------------------------------------------------------------|
 clip | Clip imagery can handle single and multi polygon verify or create geojson.io
 toar | Top of Atmosphere Reflectance imagery generated for imagery
+harmonize| Harmonize Dove R (instrument type PS2.SD) data to classic dove (instrument type PS)
 composite | Composite number of images in a given order
 zip | Zip bundles together and creates downloads (each asset has a single bundle so multiple zip files)
 zipall | Create a single zip file containing all assets
@@ -367,6 +368,11 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.5.2
+- Added harmonization tool to harmonize PS2.SD to PS2.
+- Improvements and error handling to quota tool
+- Merged [pull request 35](https://github.com/samapriya/porder/pull/35) to keep download progress via enumerate.
 
 ### v0.5.1
 - Added utf-8 encoding for shapefile to geojson conversion

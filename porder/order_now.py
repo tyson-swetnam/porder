@@ -54,6 +54,7 @@ dclip = {"clip": {"aoi": {"type": "MultiPolygon","coordinates": []}}}
 dtoar = {'toar': {'scale_factor': 10000}}
 dzip = {"delivery":{"archive_filename":"{{name}}.zip","archive_type":"zip"}}
 dcomposite ={"composite":{}}
+dharmonize={"harmonize": {"target_sensor": "PS2"}}
 dreproject={"reproject": {"projection": [],"kernel":[]}}
 dtiff={"tiff_optimize": {"compression": []}}
 demail={'notifications':{'email': True}}
@@ -124,6 +125,8 @@ def order(**kwargs):
                     dbundle['tools'].append(dclip)
                 elif items=='toar':
                     dbundle['tools'].append(dtoar)
+                elif items=='harmonize':
+                    dbundle['tools'].append(dharmonize)
                 elif items=='zip':
                     dbundle.update(dzip)
                 elif items=='zipall':

@@ -116,36 +116,43 @@ def planet_quota():
         if main.status_code == 200:
             content = main.json()
             for item_id in content:
-                print(" ")
-                print(
-                    'Subscription ID: %s'
-                    % item_id['id'])
-                print(
-                    'Plan ID: %s'
-                    % item_id['plan_id'])
-                print(
-                    'Allocation Name: %s'
-                    % item_id['organization']['name'])
-                print(
-                    'Allocation active from: %s'
-                    % item_id['active_from'].split("T")[0])
-                print(
-                    'Quota Enabled: %s'
-                    % item_id['quota_enabled'])
-                print(
-                    'Total Quota in SqKm: %s'
-                    % item_id['quota_sqkm'])
-                print(
-                    'Total Quota used: %s'
-                    % item_id['quota_used'])
-                if (item_id['quota_sqkm'])is not None:
-                    leftquota = (float(
-                        item_id['quota_sqkm'] - float(item_id['quota_used'])))
+                try:
+                    print(" ")
                     print(
-                        'Remaining Quota in SqKm: %s' % leftquota)
-                else:
-                    print('No Quota Allocated')
-                print('')
+                        'Subscription ID: %s'
+                        % item_id['id'])
+                    print(
+                        'Plan ID: %s'
+                        % item_id['plan_id'])
+                    print(
+                        'Allocation Name: %s'
+                        % item_id['organization']['name'])
+                    print(
+                        'Allocation active from: %s'
+                        % item_id['active_from'].split("T")[0])
+                    if item_id['active_to'] is not None:
+                         print(
+                            'Allocation active to: %s'
+                            % item_id['active_to'].split("T")[0])
+                    print(
+                        'Quota Enabled: %s'
+                        % item_id['quota_enabled'])
+                    print(
+                        'Total Quota in SqKm: %s'
+                        % item_id['quota_sqkm'])
+                    print(
+                        'Total Quota used: %s'
+                        % item_id['quota_used'])
+                    if (item_id['quota_sqkm'])is not None:
+                        leftquota = (float(
+                            item_id['quota_sqkm'] - float(item_id['quota_used'])))
+                        print(
+                            'Remaining Quota in SqKm: %s' % leftquota)
+                    else:
+                        print('No Quota Allocated')
+                    print('')
+                except Exception as e:
+                    pass
         elif main.status_code == 500:
             print('Temporary issue: Try again')
         else:
@@ -394,7 +401,7 @@ def main(args=None):
     optional_named.add_argument('--aws', help='AWS cloud credentials config yml file',default=None)
     optional_named.add_argument('--azure', help='Azure cloud credentials config yml file',default=None)
     optional_named.add_argument('--gcs', help='GCS cloud credentials config yml file',default=None)
-    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|composite|zip|zipall|compression|projection|kernel|aws|azure|gcs|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr",default=None)
+    optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|harmonize|composite|zip|zipall|compression|projection|kernel|aws|azure|gcs|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr",default=None)
 
     parser_order.set_defaults(func=order_from_parser)
 
