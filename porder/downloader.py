@@ -22,6 +22,7 @@ import requests
 import time
 import progressbar
 import json
+import glob
 import os
 import sys
 from retrying import retry
@@ -105,10 +106,11 @@ def get_session_response(url):
     return response
 
 def download(url,local,ext):
+    filenames = glob.glob1(local,'*')
     response = get_session_response(url)
     if response['state']=='success' or response['state']=='partial':
         print('Order completed with status: '+str(response['state']))
-        ulength=len(response['_links']['results'])
+        ulength=len(response['_links']['results'])-len(filenames)
         for index, items in enumerate(response['_links']['results']):
             expiration_time = datetime.strptime(items['expires_at'], "%Y-%m-%dT%H:%M:%S.%fZ")
             if datetime.now() > expiration_time:
@@ -121,31 +123,35 @@ def download(url,local,ext):
                     return
             url=(items['location'])
             name=(items['name'])
-            url_to_check = url if url.startswith('https') else "http://%s" % url
-            redirect_url = check_for_redirects(url_to_check)
-            if redirect_url.startswith('https'):
-                if name.endswith('manifest.json'):
-                    time.sleep(0.2)
-                    resp=SESSION.get(url)
-                    if int(resp.status_code)==200:
-                        r=resp.content
-                        inp=json.loads(r)
-                        for things in inp['files']:
-                            try:
-                                local_path=os.path.join(local,things['annotations']['planet/item_id']+'_manifest.json')
-                            except Exception as e:
-                                local_path=os.path.join(local,things['path'].split('/')[1].split('.')[0]+'_manifest.json')
-                    else:
-                        print(resp.status_code)
+            if name.endswith('manifest.json'):
+                time.sleep(0.2)
+                resp=SESSION.get(url)
+                if int(resp.status_code)==200:
+                    r=resp.content
+                    inp=json.loads(r)
+                    for things in inp['files']:
+                        try:
+                            local_path=os.path.join(local,things['annotations']['planet/item_id']+'_manifest.json')
+                        except Exception as e:
+                            local_path=os.path.join(local,things['path'].split('/')[1].split('.')[0]+'_manifest.json')
                 else:
-                    local_path=os.path.join(local,str(os.path.split(items['name'])[-1]))
-                try:
-                    downonly(redirect_url,local_path,ext,items,ulength)
-                except Exception as e:
-                    print(e)
-                except (KeyboardInterrupt, SystemExit) as e:
-                    print('\n'+'Program escaped by User')
-                    sys.exit()
+                    print(resp.status_code)
+            else:
+                local_path=os.path.join(local,str(os.path.split(items['name'])[-1]))
+            filenames=[os.path.join(local,files) for files in filenames]
+            if not local_path in filenames:
+                url_to_check = url if url.startswith('https') else "http://%s" % url
+                redirect_url = check_for_redirects(url_to_check)
+                if redirect_url.startswith('https'):
+                        try:
+                            downonly(redirect_url,local_path,ext,items,ulength)
+                        except Exception as e:
+                            print(e)
+                        except (KeyboardInterrupt, SystemExit) as e:
+                            print('\n'+'Program escaped by User')
+                            sys.exit()
+            else:
+                print("File already exists SKIPPING: "+str(local_path))
     else:
         print('Order Failed with state: '+str(response['state']))
 # download(url="https://api.planet.com/compute/ops/orders/v2/0ee9e923-59fc-4c31-8632-9882cb342708",

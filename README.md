@@ -157,7 +157,7 @@ Or you can use [anaconda to install](https://conda-forge.github.io/). Again, bot
 
 Make sure you initialized planet client by typing ```planet init```. As usual, to print help:
 
-![porder_main](https://user-images.githubusercontent.com/6677629/61379317-4ee85600-a875-11e9-9234-5f57dccf9588.png)
+![porder_main](https://user-images.githubusercontent.com/6677629/68093060-a3810280-fe5f-11e9-8dbd-b5f59d42ea49.png)
 
 To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `porder idlist -h`. If you didn't install porder, then you can run it just by going to *porder* directory and running `python porder.py [arguments go here]`
 
@@ -257,7 +257,13 @@ porder bundles --item "PSScene4Band"
 ```
 
 ### order
-This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. An important changes is the concept of passing bundles instead of using assets. The list of operations for the ```--op``` are below and ** the order of these operations is important**
+This tool allows you to actually place the order using the idlist that you created earlier. the ```--op``` argument allows you to take operations, delivery and notifications in a sequence for example ```--op toar clip email``` performs Top of Atmospheric reflectance, followed by clipping to your geometry and send you an email notification once the order has completed, failed or had any any change of status. An important changes is the concept of passing bundles instead of using assets. Bundles are predefined meaning all assets in a bundle are not available for an item your attempt at downloading that attempt will fail.
+
+For example if an item id '20181227_125554_0f4c' does not have surface reflectance asset type. So if you try to download this using bundle type analytic_sr_udm2 it will not work, similary if you order an item where a specific operation cannot be performed for example if you order visual and then try to do bandmath with four bands. These examples and more are where **fallback bundles** come in handy. Think of this as providing a list of bundles to keep trying if one bundle type fails. The priority goes left to right. You can provide comma seperated fallback bundles for example as
+
+```analytic_sr_udm2,analytic``` instead of ```analytic_sr_udm2``` to avoid certain items from failing to download.
+
+The list of operations for the ```--op``` are below and ** the order of these operations is important**
 
 clip|toar|comp
                         osite|zip|zipall|compression|projection|kernel|aws|azu
@@ -368,6 +374,11 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.5.3
+- Updated order status.
+- Check existing files before attempting redirect url and download.
+- Overall optimization for faster check and updated readme for fallback bundles.
 
 ### v0.5.2
 - Added harmonization tool to harmonize PS2.SD to PS2.

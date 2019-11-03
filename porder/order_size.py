@@ -56,7 +56,7 @@ def parsesize(url):
 def ordersize(url):
     response=SESSION.get(url).json()
     print("Polling ...")
-    while response['state']=='running' or response['state']=='starting':
+    while response['state']=='queued' or response['state']=='running' or response['state']=='starting':
         bar = progressbar.ProgressBar()
         for z in bar(range(60)):
             time.sleep(1)
