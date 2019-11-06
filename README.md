@@ -375,6 +375,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.5.4
+- Updated bundles.json.
+- Merged pull request to [update bundles](https://github.com/samapriya/porder/pull/36).
+
 ### v0.5.3
 - Updated order status.
 - Check existing files before attempting redirect url and download.
