@@ -375,6 +375,11 @@ A simple setup would be
 
 ## Changelog
 
+### v0.5.5
+- Better file check for skipping download requests.
+- Improvements to multiprocessing and async downloader.
+- General improvements to stability and performance.
+
 ### v0.5.4
 - Updated bundles.json.
 - Merged pull request to [update bundles](https://github.com/samapriya/porder/pull/36).

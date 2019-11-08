@@ -1,3 +1,4 @@
+from __future__ import print_function
 __copyright__ = """
     Copyright 2019 Samapriya Roy
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,8 @@ __license__ = "Apache 2.0"
 import requests
 import asyncio
 import os
+import json
+import glob
 import progressbar
 import sys
 import time
@@ -74,6 +77,7 @@ def fetch(session, url):
 
 urls=[]
 def funct(url,final,ext):
+    filenames = glob.glob1(final,'*')
     if not os.path.exists(final):
         os.makedirs(final)
     os.chdir(final)
@@ -89,30 +93,32 @@ def funct(url,final,ext):
         for items in response['_links']['results']:
             url=(items['location'])
             name=(items['name'])
-            url_to_check = url if url.startswith('https') else "http://%s" % url
-            redirect_url = check_for_redirects(url_to_check)
-
-            if redirect_url.startswith('https'):
-                if name.endswith('manifest.json'):
-                    time.sleep(0.2)
-                    resp=SESSION.get(url)
-                    if int(resp.status_code)==200:
-                        r=resp.content
-                        inp=json.loads(r)
-                        for things in inp['files']:
-                            try:
-                                local_path=os.path.join(local,things['annotations']['planet/item_id']+'_manifest.json')
-                            except Exception as e:
-                                local_path=os.path.join(local,things['path'].split('/')[1].split('.')[0]+'_manifest.json')
-                    else:
-                        print(resp.status_code)
+            if name.endswith('manifest.json'):
+                time.sleep(0.2)
+                resp=SESSION.get(url)
+                if int(resp.status_code)==200:
+                    r=resp.content
+                    inp=json.loads(r)
+                    for things in inp['files']:
+                        try:
+                            local_path=os.path.join(final,things['annotations']['planet/item_id']+'_manifest.json')
+                        except Exception as e:
+                            local_path=os.path.join(final,things['path'].split('/')[1].split('.')[0]+'_manifest.json')
                 else:
-                    local_path=os.path.join(final,str(os.path.split(items['name'])[-1]))
+                    print(resp.status_code)
+            else:
+                local_path=os.path.join(final,str(os.path.split(items['name'])[-1]))
+            filenames=[os.path.join(final,files) for files in filenames]
+            if not local_path in filenames:
+                url_to_check = url if url.startswith('https') else "http://%s" % url
+                redirect_url = check_for_redirects(url_to_check)
                 if not os.path.isfile(local_path) and ext is None:
                     urls.append(str(redirect_url)+'|'+local_path)
+                    print("Processing total URLs " + str(len(urls)), end="\r")
                 if not os.path.isfile(local_path) and ext is not None:
                     if local_path.endswith(ext):
                         urls.append(str(redirect_url)+'|'+local_path)
+                        print("Processing total URLs " + str(len(urls)), end="\r")
     else:
         print('Order Failed with state: '+str(response['state']))
     print('Processing a url list with '+str(len(urls))+' items')
