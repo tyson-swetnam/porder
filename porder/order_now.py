@@ -49,7 +49,7 @@ def list_depth(dic, level = 1):
     return(counter)
 
 ##Setup for bundles
-dbundle = {'name': [], 'subscription_id':[], 'order_type': 'partial', 'products': [{'item_ids': [], 'item_type': [],'product_bundle': []}],'tools':[]}
+dbundle = {'name': [], 'subscription_id':[], 'order_type': 'partial', 'products': [{'item_ids': [], 'item_type': [],'product_bundle': []}],'tools':[], 'delivery':{}}
 dclip = {"clip": {"aoi": {"type": "MultiPolygon","coordinates": []}}}
 dtoar = {'toar': {'scale_factor': 10000}}
 dzip = {"delivery":{"archive_filename":"{{name}}.zip","archive_type":"zip"}}
@@ -128,17 +128,17 @@ def order(**kwargs):
                 elif items=='harmonize':
                     dbundle['tools'].append(dharmonize)
                 elif items=='zip':
-                    dbundle.update(dzip)
+                    dbundle['delivery'].update(dzip['delivery'])
                 elif items=='zipall':
-                    dbundle.update(dszip)
+                    dbundle['delivery'].update(dszip['delivery'])
                 elif items=='email':
                     dbundle.update(demail)
                 elif items=='aws':
-                    dbundle.update(daws)
+                    dbundle['delivery'].update(daws['delivery'])
                 elif items=='azure':
-                    dbundle.update(dazure)
+                    dbundle['delivery'].update(dazure['delivery'])
                 elif items=='gcs':
-                    dbundle.update(dgcs)
+                    dbundle['delivery'].update(dgcs['delivery'])
                 elif items=='composite':
                     dbundle['tools'].append(dcomposite)
                 elif items=='projection':
