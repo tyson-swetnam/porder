@@ -34,6 +34,7 @@ http://doi.org/10.5281/zenodo.3533213
     * [idcheck](#idcheck)
     * [bundles](#bundles)
     * [order](#order)
+    * [orderstate list](#orderstate-list)
     * [ordersize](#ordersize)
     * [stats](#stats)
     * [download](#download)
@@ -322,6 +323,30 @@ A simple setup with Top of Atmospher reflectance and a few indices along with em
 
 ![porder_indices](https://user-images.githubusercontent.com/6677629/61171621-48da3880-a548-11e9-8ab9-c3a3658c7d5b.png)
 
+### orderstate list
+This tool allows you to get the list of orders based on the states and based on the start and end dates of orders. For example if you want to find out all orders that failed within the week you can use this tool to check that.
+
+```
+usage: porder ostate [-h] [--state STATE] [--start START] [--end END]
+                     [--limit LIMIT]
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --state STATE  choose state between queued| running | success | failed |
+                 partial
+  --start START  start date in format YYYY-MM-DD
+  --end END      end date in format YYYY-MM-DD
+
+Optional named arguments:
+  --limit LIMIT  Limit the maximum table size
+```
+
+The setup to check failed orders would be for example the following, You can place a limit on the number of orders to get by using --limit
+
+```
+porder ostate --state failed --start 2019-11-01 --end 2019-11-20
+```
+
 
 ### ordersize
 The tool now allows you to estimate the total download size for a specific order.
@@ -374,6 +399,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.5.6
+- Merged [pull request 38](https://github.com/samapriya/porder/pull/38) to allow for nested delivery of zip files to cloud storage.
+- Added an order state list tool.
 
 ### v0.5.5
 - Better file check for skipping download requests.

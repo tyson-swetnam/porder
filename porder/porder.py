@@ -85,6 +85,7 @@ from .order_now import order
 from .order_size import ordersize
 from .downloader import download
 from .diffcheck import checker
+from .ordstat import ostat
 from .async_downloader import asyncdownload
 from .idcheck import idc
 from planet.api.auth import find_api_key
@@ -291,6 +292,10 @@ def stats():
 def stats_from_parser(args):
     stats()
 
+# Get order list by state and date
+def ostate_from_parser(args):
+    ostat(state=args.state,start=args.start,end=args.end,limit=args.limit)
+
 #Download the order
 def download_from_parser(args):
     download(url=args.url,
@@ -408,6 +413,14 @@ def main(args=None):
     parser_ordersize = subparsers.add_parser('ordersize',help='Estimate total download size')
     parser_ordersize.add_argument('--url',help='order url you got for your order')
     parser_ordersize.set_defaults(func=ordersize_from_parser)
+
+    parser_ostate = subparsers.add_parser('ostate',help='Get list of orders by state and date range')
+    parser_ostate.add_argument('--state',help='choose state between queued| running | success | failed | partial')
+    parser_ostate.add_argument('--start',help='start date in format YYYY-MM-DD')
+    parser_ostate.add_argument('--end',help='end date in format YYYY-MM-DD')
+    optional_named = parser_ostate.add_argument_group('Optional named arguments')
+    optional_named.add_argument('--limit', help="Limit the maximum table size", default=None)
+    parser_ostate.set_defaults(func=ostate_from_parser)
 
     parser_stats = subparsers.add_parser('stats', help='Prints number of orders queued and running for org & user')
     parser_stats.set_defaults(func=stats_from_parser)
