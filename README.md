@@ -400,6 +400,11 @@ A simple setup would be
 
 ## Changelog
 
+### v0.5.7
+- Fixed arg readout if no argument is passed to CLI. [Issue 39](https://github.com/samapriya/porder/issues/39).
+- Updated requirements to include DateTimeRange
+- Fixed issue with GDAL~=3 requirement for fiona 1.8.11 release
+
 ### v0.5.6
 - Merged [pull request 38](https://github.com/samapriya/porder/pull/38) to allow for nested delivery of zip files to cloud storage.
 - Added an order state list tool.

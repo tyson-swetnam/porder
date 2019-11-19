@@ -20,7 +20,7 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.5.6',
+    version='0.5.7',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},
@@ -28,9 +28,10 @@ setuptools.setup(
                       'progressbar2>=3.38.0',
                       'visvalingamwyatt>=0.1.2',
                       'pendulum>=2.0.4',
+                      'DateTimeRange>=0.6.1',
                       'pySmartDL==1.2.5;python_version<"3.4"',
                       'pySmartDL>=1.3.1;python_version>"3.4"',
-                      'pipwin>= 0.4.5;platform_system=="Windows"',
+                      'pipwin== 0.4.5;platform_system=="Windows"',
                       'pyproj>=1.9.5.1;platform_system!="Windows"',
                       'shapely>=1.6.4;platform_system!="Windows"',
                       'fiona>=1.8.6;platform_system!="Windows"',
@@ -48,6 +49,7 @@ setuptools.setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Operating System :: OS Independent',
         'Topic :: Scientific/Engineering :: GIS',
     ),

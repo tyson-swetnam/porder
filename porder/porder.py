@@ -50,7 +50,7 @@ if str(platform.system().lower()) == "windows":
     try:
         import gdal
     except ImportError:
-        subprocess.call('pipwin install gdal==2.4.1', shell=True)
+        subprocess.call('pipwin install gdal', shell=True)
     except Exception as e:
         print(e)
     try:
@@ -447,7 +447,11 @@ def main(args=None):
     parser_multiproc.set_defaults(func=multiproc_from_parser)
     args = parser.parse_args()
 
-    args.func(args)
+    try:
+        func = args.func
+    except AttributeError:
+        parser.error("too few arguments")
+    func(args)
 
 if __name__ == '__main__':
     main()
