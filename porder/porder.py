@@ -31,6 +31,8 @@ import platform
 import pkg_resources
 from os.path import expanduser
 if str(platform.system().lower()) == "windows":
+    # Get python runtime version
+    version =sys.version_info[0]
     try:
         import pipwin
         '''Check if the pipwin cache is old: useful if you are upgrading porder on windows
@@ -43,7 +45,7 @@ if str(platform.system().lower()) == "windows":
             print('Refreshing your pipwin cache')
             subprocess.call('pipwin refresh', shell=True)
     except ImportError:
-        subprocess.call('pip install pipwin', shell=True)
+        subprocess.call('python'+str(version)+' -m pip install pipwin', shell=True)
         subprocess.call('pipwin refresh', shell=True)
     except Exception as e:
         print(e)
