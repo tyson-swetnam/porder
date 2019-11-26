@@ -17,6 +17,7 @@ Samapriya Roy. (2019, November 19). samapriya/porder: porder: Simple CLI for Pla
 http://doi.org/10.5281/zenodo.3547667
 ```
 
+### **[Read the Detailed Docs here](https://samapriya.github.io/porder/)**
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Installing porder](#installing-porder)
