@@ -26,6 +26,7 @@ import sys
 import json
 import base64
 import requests
+import webbrowser
 import clipboard
 import platform
 import pkg_resources
@@ -45,7 +46,7 @@ if str(platform.system().lower()) == "windows":
             print('Refreshing your pipwin cache')
             subprocess.call('pipwin refresh', shell=True)
     except ImportError:
-        subprocess.call('python'+str(version)+' -m pip install pipwin', shell=True)
+        subprocess.call('python'+str(version)+' -m pip install pipwin== 0.4.5', shell=True)
         subprocess.call('pipwin refresh', shell=True)
     except Exception as e:
         print(e)
@@ -103,6 +104,17 @@ def porder_version():
     print(pkg_resources.get_distribution("porder").version)
 def version_from_parser(args):
     porder_version()
+
+# Go to the readMe
+def readme():
+    try:
+        a=webbrowser.open('https://samapriya.github.io/porder/', new=2)
+        if a==False:
+            print('Your setup does not have a monitor to display the webpage')
+    except Exception as e:
+        print(e)
+def read_from_parser(args):
+    readme()
 
 # Function to get user's quota
 def planet_quota():
@@ -323,8 +335,12 @@ spacing="                               "
 def main(args=None):
     parser = argparse.ArgumentParser(description='Ordersv2 Simple Client')
     subparsers = parser.add_subparsers()
+
     parser_version = subparsers.add_parser('version', help='Prints porder version and exists')
     parser_version.set_defaults(func=version_from_parser)
+
+    parser_read = subparsers.add_parser('readme',help='Go the web based porder readme page')
+    parser_read.set_defaults(func=read_from_parser)
 
     parser_planet_quota = subparsers.add_parser('quota', help='Prints your Planet Quota Details')
     parser_planet_quota.set_defaults(func=planet_quota_from_parser)

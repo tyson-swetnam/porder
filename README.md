@@ -25,6 +25,7 @@ http://doi.org/10.5281/zenodo.3547667
 * [Getting started](#getting-started)
 * [porder Simple CLI for Planet ordersv2 API](#porder-simple-cli-for-planet-ordersv2-api)
     * [porder version](#porder-version)
+    * [porder readme](#porder readme)
     * [porder quota](#porder-quota)
     * [base64](#base64)
     * [shape to geojson](#shape-to-geojson)
@@ -171,6 +172,13 @@ This prints the tool version and escapes. Simple use would be
 
 ```
 porder version
+```
+
+### porder readme
+Now open the readme webpage in your browser using
+
+```
+porder readme
 ```
 
 ### porder quota
@@ -400,6 +408,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.5.8
+- Handles python version while installing pipwin
+- Now open readme page in browser using **porder readme**
 
 ### v0.5.7
 - Fixed arg readout if no argument is passed to CLI. [Issue 39](https://github.com/samapriya/porder/issues/39).
