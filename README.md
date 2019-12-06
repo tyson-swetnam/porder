@@ -17,7 +17,7 @@ Samapriya Roy. (2019, December 6). samapriya/porder: porder: Simple CLI for Plan
 http://doi.org/10.5281/zenodo.3565734
 ```
 
-### **[Read the Detailed Docs here](https://samapriya.github.io/porder/)**
+### **[Read the Guided Docs here](https://samapriya.github.io/porder/)**
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Installing porder](#installing-porder)
