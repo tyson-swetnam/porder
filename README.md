@@ -25,7 +25,7 @@ http://doi.org/10.5281/zenodo.3565734
 * [Getting started](#getting-started)
 * [porder Simple CLI for Planet ordersv2 API](#porder-simple-cli-for-planet-ordersv2-api)
     * [porder version](#porder-version)
-    * [porder readme](#porder readme)
+    * [porder readme](#porder-readme)
     * [porder quota](#porder-quota)
     * [base64](#base64)
     * [shape to geojson](#shape-to-geojson)
