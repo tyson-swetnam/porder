@@ -221,8 +221,8 @@ def idl(**kwargs):
                 intersect=(s).intersection(aoi_shape)
             elif s.area>=aoi_shape.area:
                 intersect=(aoi_shape).intersection(s)
-            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
-                pyproj.Proj(init='epsg:'+str(epsgcode)))
+            proj = partial(pyproj.transform, pyproj.Proj('epsg:4326'),
+                pyproj.Proj('epsg:'+str(epsgcode)))
             print('Processing ' + str(len(ar) + 1) + ' items with total area '+ str("{:,}".format(round(sum(far)))) + ' sqkm', end='\r')
             if transform(proj,aoi_shape).area>transform(proj,s).area:
                 if (transform(proj,intersect).area/transform(proj,s).area*100)>=ovp:
