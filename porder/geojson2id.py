@@ -26,13 +26,11 @@ import json
 import csv
 import os
 import pyproj
-from functools import partial
 from planet import api
 from planet.api import filters
 from planet.api.auth import find_api_key
 from shapely.geometry import shape
 from shapely.ops import transform
-
 
 try:
     PL_API_KEY = find_api_key()
@@ -221,20 +219,19 @@ def idl(**kwargs):
                 intersect=(s).intersection(aoi_shape)
             elif s.area>=aoi_shape.area:
                 intersect=(aoi_shape).intersection(s)
-            proj = partial(pyproj.transform, pyproj.Proj('epsg:4326'),
-                pyproj.Proj('epsg:'+str(epsgcode)))
+            proj_transform = pyproj.Transformer.from_proj(pyproj.Proj(4326), pyproj.Proj(epsgcode), always_xy=True).transform # always_xy determines correct coord order
             print('Processing ' + str(len(ar) + 1) + ' items with total area '+ str("{:,}".format(round(sum(far)))) + ' sqkm', end='\r')
-            if transform(proj,aoi_shape).area>transform(proj,s).area:
-                if (transform(proj,intersect).area/transform(proj,s).area*100)>=ovp:
-                    ar.append(transform(proj,intersect).area/1000000)
-                    far.append(transform(proj,s).area/1000000)
+            if transform(proj_transform, (aoi_shape)).area>transform(proj_transform,s).area:
+                if (transform(proj_transform, intersect).area / transform(proj_transform, s).area*100)>=ovp:
+                    ar.append(transform(proj_transform, intersect).area/1000000)
+                    far.append(transform(proj_transform, s).area/1000000)
                     with open(outfile,'a') as csvfile:
                         writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
                         writer.writerow([itemid])
-            elif transform(proj,s).area>=transform(proj,aoi_shape).area:
-                if (transform(proj,intersect).area/transform(proj,aoi_shape).area*100)>=ovp:
-                    ar.append(transform(proj,intersect).area/1000000)
-                    far.append(transform(proj,s).area/1000000)
+            elif transform(proj_transform, s).area>=transform(proj_transform, aoi_shape).area:
+                if (transform(proj_transform, intersect).area/transform(proj_transform, aoi_shape).area*100)>=ovp:
+                    ar.append(transform(proj_transform, intersect).area/1000000)
+                    far.append(transform(proj_transform, s).area/1000000)
                     with open(outfile,'a') as csvfile:
                         writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
                         writer.writerow([itemid])
