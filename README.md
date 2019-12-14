@@ -410,8 +410,9 @@ A simple setup would be
 ## Changelog
 
 ### v0.5.9
-- No more depecration or future warnings from pyproj
+- No more depecration or future warnings from pyproj [Issue 40](https://github.com/samapriya/porder/issues/40)
 - `porder search` is faster
+- Python 2.7 will reach the end of its life on January 1st, 2020. No more python 2 support from v0.5.9
 
 ### v0.5.8
 - Handles python version while installing pipwin
