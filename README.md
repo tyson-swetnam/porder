@@ -409,6 +409,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.5.9
+- No more depecration or future warnings from pyproj
+- `porder search` is faster
+
 ### v0.5.8
 - Handles python version while installing pipwin
 - Now open readme page in browser using **porder readme**
