@@ -189,9 +189,13 @@ def gcs_cred(cred):
         aoi_resp=json.load(file)
         filestr=json.dumps(aoi_resp)
         print('')
-        print('base64 encoding copied to clipboard')
-        #print(base64.b64encode(filestr))
-        clipboard.copy(base64.b64encode(filestr))
+        bstr = filestr.encode('utf-8')
+        try:
+            clipboard.copy(base64.b64encode(bstr).decode('ascii'))
+            print('base64 encoding copied to clipboard')
+        except Exception as e:
+            print('Unable to copy to clipboard'+'\n')
+            print(base64.b64encode(bstr).decode('ascii'))
 def gcs_cred_from_parser(args):
     gcs_cred(cred=args.cred)
 
