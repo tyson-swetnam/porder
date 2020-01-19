@@ -409,6 +409,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.6.0
+- Fixed base64 encoding for GCS credentials for python 3.
+- Re-release of python 3 only supported version. Use upto version 0.5.7 only for Python 2.
+
 ### v0.5.9
 - No more deperecation or future warnings from pyproj [Issue 40](https://github.com/samapriya/porder/issues/40)
 - `porder search` is faster
