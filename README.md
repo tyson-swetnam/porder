@@ -36,6 +36,7 @@ http://doi.org/10.5281/zenodo.3612491
     * [idcheck](#idcheck)
     * [bundles](#bundles)
     * [order](#order)
+    * [cancel](#cancel)
     * [orderstate list](#orderstate-list)
     * [ordersize](#ordersize)
     * [stats](#stats)
@@ -332,6 +333,29 @@ A simple setup with Top of Atmospher reflectance and a few indices along with em
 
 ![porder_indices](https://user-images.githubusercontent.com/6677629/61171621-48da3880-a548-11e9-8ab9-c3a3658c7d5b.png)
 
+### cancel
+You can cancel a queued order or cancel all queued orders, before the status changes to running. Simply put you can cancel a specific order before it starts running or cancel all of your queued orders.
+
+```
+usage: porder cancel [-h] [--id ID]
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --id ID     order id you want to cancel use "all" to cancel all
+```
+
+Setup to cancel an order
+
+```
+porder cancel --id "orderid goes here"
+```
+
+to cancel all queued orders
+
+```
+porder cancel --id "all"
+```
+
 ### orderstate list
 This tool allows you to get the list of orders based on the states and based on the start and end dates of orders. For example if you want to find out all orders that failed within the week you can use this tool to check that.
 
@@ -408,6 +432,9 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.6.1
+- Added cancel order and bulk cancel orders tools
 
 ### v0.6.0
 - Fixed base64 encoding for GCS credentials for python 3.

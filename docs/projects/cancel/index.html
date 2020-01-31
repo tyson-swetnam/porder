@@ -13,7 +13,7 @@
         <meta name="description" content="porder-Simple CLI for Planet ordersV2 API">
       
       
-        <link rel="canonical" href="https://github.com/samapriya/projects/bandmath/">
+        <link rel="canonical" href="https://github.com/samapriya/projects/cancel/">
       
       
         <meta name="author" content="Samapriya Roy">
@@ -42,7 +42,7 @@
     
     
       
-        <title>Band Math on Clipped Images - porder docs</title>
+        <title>Cancel order or orders - porder docs</title>
       
     
     
@@ -91,7 +91,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#band-math-on-clipped-images" tabindex="1" class="md-skip">
+      <a href="#cancel-order-or-orders" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -117,7 +117,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Band Math on Clipped Images
+                Cancel order or orders
               
             </span>
           
@@ -562,10 +562,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9" checked>
     
     <label class="md-nav__link" for="nav-9">
       Additional tools
@@ -581,11 +583,20 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../cancel/" title="Cancel order or orders" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+    <a href="./" title="Cancel order or orders" class="md-nav__link md-nav__link--active">
       Cancel order or orders
     </a>
+    
   </li>
 
         
@@ -634,12 +645,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
     
     <label class="md-nav__link" for="nav-10">
       FAQ
@@ -667,20 +676,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Band Math on Clipped Images" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../bandmath/" title="Band Math on Clipped Images" class="md-nav__link">
       Band Math on Clipped Images
     </a>
-    
   </li>
 
         
@@ -740,19 +740,12 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/samapriya/porder/edit/master/docs/projects/bandmath.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/samapriya/porder/edit/master/docs/projects/cancel.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="band-math-on-clipped-images">Band Math on Clipped Images<a class="headerlink" href="#band-math-on-clipped-images" title="Permanent link">&para;</a></h1>
-<p>These are the steps needed to clip images to a given geometry file.</p>
-<ol>
-<li>Create or convert your geometry into a geojson file, using <a href="http://geojson.io/#map=2/20.0/0.0">geojson.io</a></li>
-<li>Use porder idlist tool to get the idlist file that intersects your geometry.</li>
-<li>Place your order with clipping including as an operation and the geometry included as a the boundary file notice the <strong>--boundary</strong> argument passed while placing the order. Bandmath is passed as operations here we pass <strong>ndvi ndwi evi2</strong> after the clipping operation in the same order setup.</li>
-</ol>
-<p>Read about <a href="https://samapriya.github.io/porder/projects/order/">available indices here</a>. Pass index names in lowercase <strong>ndvi ndwi evi2 sr tvi</strong> and you can pass a maximum of 5 indices at a time. <em>Your capability to perform this operation is based on your overall permission</em></p>
-<p>The order setup will look like the following</p>
-<p><img alt="clipping_index" src="https://user-images.githubusercontent.com/6677629/70330242-2d2f4180-180b-11ea-82f6-c6807477687f.gif" /></p>
+                <h1 id="cancel-order-or-orders">Cancel order or orders<a class="headerlink" href="#cancel-order-or-orders" title="Permanent link">&para;</a></h1>
+<p>You can cancel a queued order or cancel all queued orders, before the status changes to running. Simply put you can cancel a specific order before it starts running or cancel all of your queued orders.</p>
+<p><img alt="porder_cancel" src="https://user-images.githubusercontent.com/6677629/73516145-7ba12c80-43c5-11ea-9a38-609cc1c5d33f.gif" /></p>
                 
                   
                 
@@ -773,7 +766,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../clipping/" title="Clipping images" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../multiprocessing/" title="Multiprocessing or Async Downloading" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -782,19 +775,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Clipping images
+                Multiprocessing or Async Downloading
               </span>
             </div>
           </a>
         
         
-          <a href="../zip/" title="Using zip" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../orderstats/" title="Order stats" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Using zip
+                Order stats
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

@@ -273,6 +273,34 @@ def order_from_parser(args):
         azure=args.azure,
         gcs=args.gcs)
 
+# Cancel an order or all order
+def cancel(id):
+    headers = {'Content-Type': 'application/json'}
+    # Get API Key: Requires user to have initialized Planet CLI
+    try:
+        api_key = find_api_key()
+    except Exception as e:
+        print('Failed to get Planet Key: Try planet init')
+        sys.exit()
+    if id =="all":
+        url='https://api.planet.com/compute/ops/bulk/orders/v2/cancel'
+        resp=requests.post(url,data="{}",headers=headers,auth=(api_key, ''))
+        if resp.status_code ==200:
+            print('Number of orders failed to cancel: '+str(resp.json()['result']['failed']['count']))
+            print('Number of orders successfully cancelled: '+str(resp.json()['result']['succeeded']['count']))
+        else:
+            print('Failed wth status code & error: '+str(resp.status_code)+' : '+str(resp.json()))
+    else:
+        url='https://api.planet.com/compute/ops/orders/v2/'+str(id)
+        resp=requests.put(url,headers=headers,auth=(api_key, ''))
+        if resp.status_code ==200:
+            print('Orders ID '+str(id)+' successfully cancelled')
+        else:
+            print('Failed wth status code & error: '+str(resp.status_code)+' : '+str(resp.json()))
+
+def cancel_from_parser(args):
+    cancel(id=args.id)
+
 #Get size of order in human size
 def ordersize_from_parser(args):
     ordersize(url=args.url)
@@ -431,6 +459,10 @@ def main(args=None):
     optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|harmonize|composite|zip|zipall|compression|projection|kernel|aws|azure|gcs|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr",default=None)
 
     parser_order.set_defaults(func=order_from_parser)
+
+    parser_cancel = subparsers.add_parser('cancel',help='Cancel queued order(s)')
+    parser_cancel.add_argument('--id',help='order id you want to cancel use "all" to cancel all')
+    parser_cancel.set_defaults(func=cancel_from_parser)
 
     parser_ordersize = subparsers.add_parser('ordersize',help='Estimate total download size')
     parser_ordersize.add_argument('--url',help='order url you got for your order')
