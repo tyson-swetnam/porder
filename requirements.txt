@@ -1,6 +1,6 @@
 Shapely>=1.6.4.post1
 requests>=2.19.1
-planet>=1.2.3
+planet>=1.4.5
 progressbar2>=3.38.0
 DateTimeRange>=0.6.1
 pySmartDL>=1.2.5
@@ -12,3 +12,4 @@ pyproj>=2.2.0
 geopandas>=0.5.0
 pendulum>=2.0.4
 visvalingamwyatt>=0.1.2
+werkzeug==0.16.1

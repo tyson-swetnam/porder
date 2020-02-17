@@ -433,6 +433,12 @@ A simple setup would be
 
 ## Changelog
 
+### v0.6.2
+- Fixed issue with werkzeug and pipwin implementation.
+- Changed default overlap to 0.01
+- Fixed issue with YAML loader implementation.
+- General improvements.
+
 ### v0.6.1
 - Added cancel order and bulk cancel orders tools
 

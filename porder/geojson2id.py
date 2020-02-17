@@ -154,7 +154,7 @@ def idl(**kwargs):
             if value is not None:
                 ovp=int(value)
             elif value == None:
-                ovp=1
+                ovp=0.1
         if key== 'filters' and value is not None:
             for items in value:
                 ftype=items.split(':')[0]
@@ -243,7 +243,7 @@ def idl(**kwargs):
             print('\n'+'Program escaped by User')
             sys.exit()
     num_lines = sum(1 for line in open(os.path.join(head,tail.split('.')[0]+'.csv')))
-    print('Total number of assets written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
+    print('Total number of item ids written to '+str(os.path.join(head,tail.split('.')[0]+'.csv')+' ===> '+str(num_lines)))
     print('Total estimated cost to quota: ' + str("{:,}".format(round(sum(far)))) + ' sqkm')
     print('Total estimated cost to quota if clipped: ' + str("{:,}".format(round(sum(ar)))) + ' sqkm')
 

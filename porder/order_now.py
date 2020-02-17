@@ -237,7 +237,7 @@ def order(**kwargs):
     for key,value in kwargs.items():
         if key=='aws' and value!=None:
             with open(value, 'r') as ymlfile:
-                cfg = yaml.load(ymlfile)
+                cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
                 for section in cfg:
                     k['delivery']['amazon_s3']['bucket']=cfg['amazon_s3']['bucket']
                     k['delivery']['amazon_s3']['aws_region']=cfg['amazon_s3']['aws_region']
@@ -247,7 +247,7 @@ def order(**kwargs):
     for key,value in kwargs.items():
         if key=='azure' and value!=None:
             with open(value, 'r') as ymlfile:
-                cfg = yaml.load(ymlfile)
+                cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
                 for section in cfg:
                     k['delivery']['azure_blob_storage']['account']=cfg['azure']['account']
                     k['delivery']['azure_blob_storage']['container']=cfg['azure']['container']
@@ -257,7 +257,7 @@ def order(**kwargs):
     for key,value in kwargs.items():
         if key=='gcs' and value!=None:
             with open(value, 'r') as ymlfile:
-                cfg = yaml.load(ymlfile)
+                cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
                 for section in cfg:
                     k['delivery']['google_cloud_storage']['bucket']=cfg['gcs']['bucket']
                     k['delivery']['google_cloud_storage']['credentials']=cfg['gcs']['credentials']
