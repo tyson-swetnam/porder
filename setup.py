@@ -20,7 +20,7 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.6.2',
+    version='0.6.3',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},
@@ -36,9 +36,7 @@ setuptools.setup(
                       'fiona>=1.8.6;platform_system!="Windows"',
                       'geopandas>=0.5.0;platform_system!="Windows"',
                       'werkzeug==0.16.1',
-                      'clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2',
-                      'pipwin @ git+https://github.com/samapriya/pipwin.git'],
-    dependency_links=['https://github.com/samapriya/pipwin/tarball/master'],
+                      'clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2',],
     license='Apache 2.0',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
