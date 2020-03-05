@@ -46,7 +46,7 @@ if str(platform.system().lower()) == "windows":
             print('Refreshing your pipwin cache')
             subprocess.call('pipwin refresh', shell=True)
     except ImportError:
-        subprocess.call('python'+str(version)+' -m pip install git+https://github.com/samapriya/pipwin.git', shell=True)
+        subprocess.call('python'+str(version)+' -m pip install pipwin==0.4.7', shell=True)
         subprocess.call('pipwin refresh', shell=True)
     except Exception as e:
         print(e)

@@ -433,6 +433,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.6.4
+- [Pull request](https://github.com/lepisma/pipwin/pull/38) fixed issue with pipwin installation.
+
 ### v0.6.2
 - Fixed issue with werkzeug and pipwin implementation.
 - Changed default overlap to 0.01

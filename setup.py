@@ -20,7 +20,7 @@ def readme():
         return f.read()
 setuptools.setup(
     name='porder',
-    version='0.6.3',
+    version='0.6.4',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},
@@ -35,7 +35,6 @@ setuptools.setup(
                       'shapely>=1.6.4;platform_system!="Windows"',
                       'fiona>=1.8.6;platform_system!="Windows"',
                       'geopandas>=0.5.0;platform_system!="Windows"',
-                      'werkzeug==0.16.1',
                       'clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2',],
     license='Apache 2.0',
     long_description=open('README.md').read(),

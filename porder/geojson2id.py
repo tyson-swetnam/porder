@@ -154,7 +154,7 @@ def idl(**kwargs):
             if value is not None:
                 ovp=int(value)
             elif value == None:
-                ovp=0.1
+                ovp=0.01
         if key== 'filters' and value is not None:
             for items in value:
                 ftype=items.split(':')[0]
