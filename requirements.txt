@@ -1,3 +1,4 @@
+beautifulsoup4
 Shapely>=1.6.4.post1
 requests>=2.19.1
 planet>=1.4.5

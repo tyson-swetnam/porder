@@ -433,6 +433,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.6.5
+- Added bundles check function to get latest bundles from [developers page](https://developers.planet.com/docs/orders/product-bundles-reference/).
+
 ### v0.6.4
 - [Pull request](https://github.com/lepisma/pipwin/pull/38) fixed issue with pipwin installation.
 

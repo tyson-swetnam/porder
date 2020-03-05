@@ -29,7 +29,10 @@ import requests
 import webbrowser
 import clipboard
 import platform
+import datetime
 import pkg_resources
+from bs4 import BeautifulSoup
+from pySmartDL import SmartDL
 from os.path import expanduser
 if str(platform.system().lower()) == "windows":
     # Get python runtime version
@@ -247,6 +250,29 @@ def idsplit_from_parser(args):
 
 # Get package version
 def bundles(item):
+    url = "https://developers.planet.com/docs/orders/product-bundles-reference/"
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, "html.parser")
+    with open(os.path.join(lpath,'bundles.json')) as f:
+        r=json.load(f)
+        current=r['version']
+        curr_date = datetime.datetime.strptime(current, "%m-%d-%y")
+    for detail in soup.find_all("em"):
+        release=detail.text.split(':')[1].strip()
+        ref_date = datetime.datetime.strptime(release, "%m-%d-%y")
+    if curr_date<ref_date:
+        print('Refreshing bundles to '+'\n'+str(release))
+        try:
+            url = 'https://developers.planet.com/theme/js/scrub_all_bundles_bundle_spec.json'
+            dest = os.path.join(lpath,'bundles.json')
+            obj = SmartDL(url, dest)
+            obj.start()
+            path=obj.get_dest()
+        except Exception as e:
+            print(e)
+    else:
+        print('Bundles version: '+str(current)+'\n')
+    print('')
     with open(os.path.join(lpath,'bundles.json')) as f:
         r=json.load(f)
         for key,value in r['bundles'].items():
