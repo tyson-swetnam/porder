@@ -433,6 +433,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.6.6
+- Fixed downloader for pipwin for [release >= 0.4.8](https://github.com/lepisma/pipwin/pull/41)
+- Improved overall package installation for windows
+
 ### v0.6.5
 - Added bundles check function to get latest bundles from [developers page](https://developers.planet.com/docs/orders/product-bundles-reference/).
 
@@ -464,7 +468,7 @@ A simple setup would be
 ### v0.5.7
 - Fixed arg readout if no argument is passed to CLI. [Issue 39](https://github.com/samapriya/porder/issues/39).
 - Updated requirements to include DateTimeRange
-- Fixed issue with GDAL~=3 requirement for fiona 1.8.11 release
+- Fixed issue with GDAL~=3 requirement for fiona 1.8.11 release.
 
 ### v0.5.6
 - Merged [pull request 38](https://github.com/samapriya/porder/pull/38) to allow for nested delivery of zip files to cloud storage.
