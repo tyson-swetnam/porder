@@ -433,9 +433,10 @@ A simple setup would be
 
 ## Changelog
 
-### v0.6.6
+### v0.6.6-v0.6.7
 - Fixed downloader for pipwin for [release >= 0.4.8](https://github.com/lepisma/pipwin/pull/41)
 - Improved overall package installation for windows
+- Check pipwin import version to get release 0.4.9
 
 ### v0.6.5
 - Added bundles check function to get latest bundles from [developers page](https://developers.planet.com/docs/orders/product-bundles-reference/).
