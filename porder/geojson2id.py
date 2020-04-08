@@ -26,6 +26,7 @@ import json
 import csv
 import os
 import pyproj
+from .kml2ee import kml2coord
 from planet import api
 from planet.api import filters
 from planet.api.auth import find_api_key
@@ -86,15 +87,14 @@ def idl(**kwargs):
                             aoi_geom = ovall[0][0]
                         else:
                             print('Please check GeoJSON: Could not parse coordinates')
-                    aoi_geom==aoi_geom
-                    #print(aoi_geom)
+                    aoi_geom=aoi_geom
                 elif infile.endswith('.json'):
                     with open (infile) as aoi:
                         aoi_resp=json.load(aoi)
                         aoi_geom=aoi_resp['config'][0]['config']['coordinates']
                 elif infile.endswith('.kml'):
                     getcoord=kml2coord(infile)
-                    aoi_geom=getcoord
+                    aoi_geom=getcoord['features'][0]['geometry']['coordinates']
             except Exception as e:
                 print('Could not parse geometry')
                 print(e)
@@ -181,10 +181,10 @@ def idl(**kwargs):
     [head,tail]=os.path.split(outfile)
     if len(ovall)>1:
         temp={"coordinates":[],"type":"MultiPolygon"}
-        temp['coordinates']=aoi_geom
+        temp["coordinates"]=aoi_geom
     else:
         temp=tempsingle
-        temp['coordinates']=aoi_geom
+        temp["coordinates"]=aoi_geom
     sgeom=filters.geom_filter(temp)
     aoi_shape = shape(temp)
     if not aoi_shape.is_valid:

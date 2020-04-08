@@ -88,7 +88,7 @@ if str(platform.system().lower()) == "windows":
         subprocess.call('pipwin install geopandas', shell=True)
     except Exception as e:
         print(e)
-from .shp2geojson import shp2gj
+from .conv2geojson import convert
 from .geojson_simplify import geosimple
 from .geojson2id import idl
 from .text_split import idsplit
@@ -188,8 +188,8 @@ def planet_quota_from_parser(args):
     planet_quota()
 
 #Convert folder with multiple shapefiles to geojsons
-def shp2gj_metadata_from_parser(args):
-    shp2gj(folder=args.source, export=args.destination)
+def convert_metadata_from_parser(args):
+    convert(folder=args.source, export=args.destination)
 
 #base64 encoding for GCS credentials
 def gcs_cred(cred):
@@ -408,10 +408,10 @@ def main(args=None):
     parser_planet_quota = subparsers.add_parser('quota', help='Prints your Planet Quota Details')
     parser_planet_quota.set_defaults(func=planet_quota_from_parser)
 
-    parser_shp2gj = subparsers.add_parser('shp2geojson',help='Convert all shapefiles in folder to GeoJSON')
-    parser_shp2gj.add_argument('--source', help='Choose Source Folder')
-    parser_shp2gj.add_argument('--destination', help='Choose Destination Folder')
-    parser_shp2gj.set_defaults(func=shp2gj_metadata_from_parser)
+    parser_convert = subparsers.add_parser('convert',help='Convert all shapefiles or kmls in folder to GeoJSON')
+    parser_convert.add_argument('--source', help='Choose Source Folder')
+    parser_convert.add_argument('--destination', help='Choose Destination Folder')
+    parser_convert.set_defaults(func=convert_metadata_from_parser)
 
     parser_gcs_cred = subparsers.add_parser('base64', help='Base 64 encode a JSON file')
     required_named = parser_gcs_cred.add_argument_group('Required named arguments.')

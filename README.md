@@ -433,6 +433,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.6.8
+- Fixed issues with direct usage of kml to get idlist.
+- Combined convert tool to convert folders with shapefiles and kml to geojsons.
+
 ### v0.6.6-v0.6.7
 - Fixed downloader for pipwin for [release >= 0.4.8](https://github.com/lepisma/pipwin/pull/41)
 - Improved overall package installation for windows
