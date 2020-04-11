@@ -261,10 +261,10 @@ def bundles(item):
     with open(os.path.join(lpath,'bundles.json')) as f:
         r=json.load(f)
         current=r['version']
-        curr_date = datetime.datetime.strptime(current, "%m-%d-%y")
+        curr_date = datetime.datetime.strptime(current, "%Y-%m-%d")
     for detail in soup.find_all("em"):
         release=detail.text.split(':')[1].strip()
-        ref_date = datetime.datetime.strptime(release, "%m-%d-%y")
+        ref_date = datetime.datetime.strptime(release, "%Y-%m-%d")
     if curr_date<ref_date:
         print('Refreshing bundles to '+'\n'+str(release))
         try:

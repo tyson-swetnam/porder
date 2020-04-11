@@ -28,7 +28,7 @@ http://doi.org/10.5281/zenodo.3731859
     * [porder readme](#porder-readme)
     * [porder quota](#porder-quota)
     * [base64](#base64)
-    * [shape to geojson](#shape-to-geojson)
+    * [convert to geojson](#convert-to-geojson)
     * [simplify](#simplify)
     * [idlist](#idlist)
     * [difflist](#difflist)
@@ -161,7 +161,7 @@ Or you can use [anaconda to install](https://conda-forge.github.io/). Again, bot
 
 Make sure you initialized planet client by typing ```planet init```. As usual, to print help:
 
-![porder_main](https://user-images.githubusercontent.com/6677629/68093060-a3810280-fe5f-11e9-8dbd-b5f59d42ea49.png)
+![pmain](https://user-images.githubusercontent.com/6677629/79036688-c0e99380-7b98-11ea-9625-ddd03d558a4f.png)
 
 To obtain help for a specific functionality, simply call it with _help_ switch, e.g.: `porder idlist -h`. If you didn't install porder, then you can run it just by going to *porder* directory and running `python porder.py [arguments go here]`
 
@@ -192,10 +192,10 @@ This does exactly as it sounds, it encodes your credential files to base64 for u
 
 ![porder_base64](https://user-images.githubusercontent.com/28806922/53096754-d495ee80-34ed-11e9-980d-418601bc975a.png)
 
-### shape to geojson
-This tool allows you to convert from  a folder with multiple shapefiles to a folder with geojson that can then be used with the tool. It makes use of geopandas and reprojects your shapefile to make it compatible while passing onto the API for search and download.
+### convert to geojson
+This tool allows you to convert from a folder with multiple shapefiles or kml files to a folder with geojson that can then be used with the tool. It makes use of geopandas and reprojects your shapefile to make it compatible while passing onto the API for search and download. KML conversions are handled seperately.
 
-![porder_shp2geojson](https://user-images.githubusercontent.com/6677629/56938418-d1137a80-6acf-11e9-9e03-953ae367445f.png)
+![pconvert](https://user-images.githubusercontent.com/6677629/79036707-f1313200-7b98-11ea-9c6b-19960d1c6923.png)
 
 ### simplify
 This reduces the number of vertices for a multi vertex and complex GeoJSON. Extremely high vertex count (over 500) seem to fail and hence this tool allows you to export a new geojson with reduced vertices. It uses an implementation of the Visvalingam-Wyatt line simplification algorithm. This tool does work with and without Fiona, but Fiona installation is recommended.
@@ -432,6 +432,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.6.9
+- Updated readme to do bulk conversion from Shapefile and KML to geojson.
+- Fixed issues with bundles read and update.
 
 ### v0.6.8
 - Fixed issues with direct usage of kml to get idlist.

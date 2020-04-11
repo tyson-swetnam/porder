@@ -107,6 +107,39 @@
         ]
       }
     },
+    "analytic_5b": {
+      "name": "Analytic Image",
+      "description": "Radiometrically-calibrated analytic image stored as 16-bit scaled radiance",
+      "bands": "all",
+      "rectification": "orthorectified",
+      "radiometry": "at-sensor",
+      "fileType": "GeoTIFF",
+      "auxiliaryFiles": "udm",
+      "assets": {
+        "PSOrthoTile": [
+          "analytic_5b",
+          "analytic_5b_xml",
+          "udm"
+        ]
+      }
+    },
+    "analytic_5b_udm2": {
+      "name": "Analytic Image",
+      "description": "Radiometrically-calibrated analytic image stored as 16-bit scaled radiance. Includes udm2",
+      "bands": "all",
+      "rectification": "orthorectified",
+      "radiometry": "at-sensor",
+      "fileType": "GeoTIFF",
+      "auxiliaryFiles": "udm and udm2",
+      "assets": {
+        "PSOrthoTile": [
+          "analytic_5b",
+          "analytic_5b_xml",
+          "udm",
+          "udm2"
+        ]
+      }
+    },
     "visual": {
       "name": "Visual",
       "description": "Orthorectified product, visually enhanced for optimal appearance",
@@ -336,6 +369,16 @@
           "udm",
           "analytic_xml"
         ],
+        "PSOrthoTile": [
+          "analytic_sr",
+          "udm",
+          "analytic_xml"
+        ],
+        "REOrthoTile": [
+          "analytic_sr",
+          "udm",
+          "analytic_xml"
+        ],
         "MOD09GQ": [
           "analytic_num_observations",
           "analytic_orbit_pnt",
@@ -420,6 +463,12 @@
           "analytic_xml",
           "udm",
           "udm2"
+        ],
+        "PSOrthoTile": [
+          "analytic_sr",
+          "udm",
+          "udm2",
+          "analytic_xml"
         ]
       }
     },
@@ -649,5 +698,5 @@
       }
     }
   },
-  "version": "02-20-20"
+  "version": "2020-03-10"
 }
