@@ -433,6 +433,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.7.0
+- Now estimates total download size before downloading.
+- Fixed issue with downloading single archive zip files.
+
 ### v0.6.9
 - Updated readme to do bulk conversion from Shapefile and KML to geojson.
 - Fixed issues with bundles read and update.

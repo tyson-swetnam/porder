@@ -41,6 +41,17 @@ except:
 SESSION = requests.Session()
 SESSION.auth = (PL_API_KEY, '')
 
+
+suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+def humansize(nbytes):
+    i = 0
+    while nbytes >= 1024 and i < len(suffixes)-1:
+        nbytes /= 1024.
+        i += 1
+    f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
+    return '%s %s' % (f, suffixes[i])
+
+
 i=1
 
 @retry(
@@ -102,6 +113,7 @@ def get_session_response(url):
 
     return response
 
+size_list=[]
 # Get the redirects and download
 def asyncdownload(url,local,ext):
     filenames = glob.glob1(local,'*')
@@ -109,6 +121,14 @@ def asyncdownload(url,local,ext):
     if response['state']=='success' or response['state']=='partial':
         print('Order completed with status: '+str(response['state']))
         ulength=len(response['_links']['results'])-len(filenames)
+        print('')
+        for files in response['_links']['results']:
+            if files['name'].endswith('manifest.json'):
+                time.sleep(0.2)
+                resp=SESSION.get(files['location']).json()
+                for things in resp['files']: size_list.append(things['size'])
+        print('Estimated Download Size for order: {}'.format(humansize(sum(size_list))))
+        print('')
         for index, items in enumerate(response['_links']['results']):
             expiration_time = datetime.strptime(items['expires_at'], "%Y-%m-%dT%H:%M:%S.%fZ")
             if datetime.now() > expiration_time:
@@ -129,9 +149,9 @@ def asyncdownload(url,local,ext):
                     inp=json.loads(r)
                     for things in inp['files']:
                         try:
-                            local_path=os.path.join(local,things['annotations']['planet/item_id']+'_manifest.json')
+                            local_path=os.path.join(local,things['path'].split('/')[-1])
                         except Exception as e:
-                            local_path=os.path.join(local,things['path'].split('/')[1].split('.')[0]+'_manifest.json')
+                            print(e)
                 else:
                     print(resp.status_code)
             else:

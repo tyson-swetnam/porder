@@ -35,6 +35,15 @@ except:
 SESSION = requests.Session()
 SESSION.auth = (PL_API_KEY, '')
 
+suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+def humansize(nbytes):
+    i = 0
+    while nbytes >= 1024 and i < len(suffixes)-1:
+        nbytes /= 1024.
+        i += 1
+    f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
+    return '%s %s' % (f, suffixes[i])
+
 
 @retry(
     wait_exponential_multiplier=1000,
@@ -76,6 +85,7 @@ def fetch(session, url):
     return tail
 
 urls=[]
+size_list=[]
 def funct(url,final,ext):
     filenames = glob.glob1(final,'*')
     if not os.path.exists(final):
@@ -90,6 +100,14 @@ def funct(url,final,ext):
         response=SESSION.get(url).json()
     if response['state']=='success' or response['state']=='partial':
         print('Order completed with status: '+str(response['state']))
+        print('')
+        for files in response['_links']['results']:
+            if files['name'].endswith('manifest.json'):
+                time.sleep(0.2)
+                resp=SESSION.get(files['location']).json()
+                for things in resp['files']: size_list.append(things['size'])
+        print('Estimated Download Size for order: {}'.format(humansize(sum(size_list))))
+        print('')
         for items in response['_links']['results']:
             url=(items['location'])
             name=(items['name'])
@@ -101,9 +119,9 @@ def funct(url,final,ext):
                     inp=json.loads(r)
                     for things in inp['files']:
                         try:
-                            local_path=os.path.join(final,things['annotations']['planet/item_id']+'_manifest.json')
+                            local_path=os.path.join(final,things['path'].split('/')[-1])
                         except Exception as e:
-                            local_path=os.path.join(final,things['path'].split('/')[1].split('.')[0]+'_manifest.json')
+                            print(e)
                 else:
                     print(resp.status_code)
             else:
