@@ -39,10 +39,10 @@ if str(platform.system().lower()) == "windows":
     version =sys.version_info[0]
     try:
         import pipwin
-        if pipwin.__version__=='0.4.9':
+        if pipwin.__version__=='0.5.0':
             pass
         else:
-            subprocess.call('python'+str(version)+' -m pip install pipwin==0.4.9', shell=True)
+            subprocess.call('python'+str(version)+' -m pip install pipwin==0.5.0', shell=True)
             subprocess.call('pipwin refresh', shell=True)
         '''Check if the pipwin cache is old: useful if you are upgrading porder on windows
         [This section looks if the pipwin cache is older than two weeks]
@@ -465,7 +465,8 @@ def main(args=None):
     parser_idcheck.add_argument('--idlist',help='Idlist csv file')
     parser_idcheck.add_argument('--item',help='Item type')
     parser_idcheck.add_argument('--asset',help='Asset type')
-    parser_idcheck.add_argument('--geometry',help='Geometry file for clip')
+    optional_named = parser_idcheck.add_argument_group('Optional named arguments')
+    optional_named.add_argument('--geometry', help="Geometry file for clip if any", default=None)
     parser_idcheck.set_defaults(func=idcheck_from_parser)
 
     parser_bundles = subparsers.add_parser('bundles',help='Check bundles of assets for given tiem type')

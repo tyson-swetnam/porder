@@ -433,6 +433,12 @@ A simple setup would be
 
 ## Changelog
 
+### v0.7.1
+- ID check tool now works with/without geometry, pass an idlist, and item and asset type to check.
+- Order size tool is optimized for speed.
+- pipwin tool uploaded to v0.5.0 to handle windows packages.
+- Overall general improvements.
+
 ### v0.7.0
 - Now estimates total download size before downloading.
 - Fixed issue with downloading single archive zip files.

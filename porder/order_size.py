@@ -30,53 +30,25 @@ except:
 SESSION = requests.Session()
 SESSION.auth = (PL_API_KEY, '')
 
-#Get the redirects and ordersize
-@retry(
-    wait_exponential_multiplier=1000,
-    wait_exponential_max=10000)
-def parsesize(url):
-    mfsize=[]
-    mfname=[]
-    result=SESSION.get(url)
-    if result.status_code==200:
-        r=result.content
-        inp=json.loads(r)
-        for things in inp['files']:
-            mfname.append(things['path'])
-            mfsize.append(things['size'])
-        return (len(mfname),sum(mfsize))
-            #time.sleep(0.3)
-        #print('Total of '+str(len(fname)/3)+' items has filesize of '+str(humansize(sum(sz))))
-    elif result.status_code == 429:
-        raise Exception("rate limit error")
-    elif result.status_code !=(429,200):
-        return (result.status_code)
-
-    #
-def ordersize(url):
+def get_session_response(url):
     response=SESSION.get(url).json()
-    print("Polling ...")
     while response['state']=='queued' or response['state']=='running' or response['state']=='starting':
         bar = progressbar.ProgressBar()
-        for z in bar(range(60)):
+        for _ in bar(range(60)):
             time.sleep(1)
         response=SESSION.get(url).json()
-    if response['state']=='success':
-        for items in response['_links']['results']:
-            if items['name'].endswith('manifest.json'):
-                url=(items['location'])
-                #print(url)
-                try:
-                    name,size=parsesize(url)
-                    sz.append(size)
-                    fname.append(name)
-                except:
-                    error_code=parsesize(url)
-                    print('Order has expired or exited with error '+str(error_code))
-                    sys.exit()
-        print('Total of '+str(len(fname))+' download objects with download size of '+str(humansize(sum(sz))))
 
-    else:
-        print('Order Failed with state: '+str(response['state']))
+    return response
 
-#ordersize(url='https://api.planet.com/compute/ops/orders/v2/6433d78f-c695-4763-b68b-01f2ef2ccb9c')
+size_list=[]
+def ordersize(url):
+    response = get_session_response(url)
+    if response['state']=='success' or response['state']=='partial':
+        print('')
+        print('Order completed with status: '+str(response['state']))
+        for files in response['_links']['results']:
+            if files['name'].endswith('manifest.json'):
+                time.sleep(0.2)
+                resp=SESSION.get(files['location']).json()
+                for things in resp['files']: size_list.append(things['size'])
+        print('Estimated Download Size for order: {}'.format(humansize(sum(size_list))))
