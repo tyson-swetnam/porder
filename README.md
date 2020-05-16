@@ -36,6 +36,7 @@ http://doi.org/10.5281/zenodo.3781275
     * [idcheck](#idcheck)
     * [bundles](#bundles)
     * [order](#order)
+    * [reorder](#reorder)
     * [cancel](#cancel)
     * [orderstate list](#orderstate-list)
     * [ordersize](#ordersize)
@@ -333,6 +334,24 @@ A simple setup with Top of Atmospher reflectance and a few indices along with em
 
 ![porder_indices](https://user-images.githubusercontent.com/6677629/61171621-48da3880-a548-11e9-8ab9-c3a3658c7d5b.png)
 
+
+### reorder
+This tool allows you to reorder an existing order with the same item ids and tools. This is tyring to look into the overall strucutre of existing orders and maybe ueful to reorder if an order fails for example.
+
+```
+usage: porder reorder [-h] --url URL [--notification NOTIFICATION]
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Required named arguments.:
+  --url URL             Order url to be ordered
+
+Optional named arguments:
+  --notification NOTIFICATION
+                        Use "email" to get an email notification
+```
+
 ### cancel
 You can cancel a queued order or cancel all queued orders, before the status changes to running. Simply put you can cancel a specific order before it starts running or cancel all of your queued orders.
 
@@ -432,6 +451,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.7.3
+- Now constantly checks for updated version incase your porder version is not udpated.
+- Aded a reorder tool for users to reoder an exiting order or failed order.
 
 ### v0.7.1
 - ID check tool now works with/without geometry, pass an idlist, and item and asset type to check.

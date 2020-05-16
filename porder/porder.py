@@ -99,6 +99,7 @@ from .diffcheck import checker
 from .ordstat import ostat
 from .async_downloader import asyncdownload
 from .idcheck import idc
+from .resubmit import reorder
 from planet.api.auth import find_api_key
 if str(platform.python_version()) > "3.3.0":
     from .async_down import downloader
@@ -109,7 +110,15 @@ sys.path.append(lpath)
 
 # Get package version
 def porder_version():
-    print(pkg_resources.get_distribution("porder").version)
+    url='https://pypi.org/project/porder/'
+    source = requests.get(url)
+    html_content = source.text
+    soup = BeautifulSoup(html_content, "html.parser")
+    company = soup.find('h1')
+    if not pkg_resources.get_distribution("porder").version == company.string.strip().split(' ')[-1]:
+        print("\n"+"=========================================================================")
+        print('Current version of porder is {} upgrade to lastest version: {}'.format(pkg_resources.get_distribution("porder").version,company.string.strip().split(' ')[-1]))
+        print("=========================================================================")
 def version_from_parser(args):
     porder_version()
 
@@ -304,6 +313,10 @@ def order_from_parser(args):
         azure=args.azure,
         gcs=args.gcs)
 
+#Reorer an old or failed order
+def reorder_from_parser(args):
+    reorder(url=args.url, notification=args.notification)
+
 # Cancel an order or all order
 def cancel(id):
     headers = {'Content-Type': 'application/json'}
@@ -392,6 +405,8 @@ def multiproc_from_parser(args):
             subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" ",shell=True)
         else:
             subprocess.call("python multiproc_pydl.py "+args.url+" "+args.local+" "+args.ext,shell=True)
+porder_version()
+print('')
 
 spacing="                               "
 
@@ -491,6 +506,13 @@ def main(args=None):
     optional_named.add_argument('--op', nargs='+',help="Add operations, delivery & notification clip|toar|harmonize|composite|zip|zipall|compression|projection|kernel|aws|azure|gcs|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr",default=None)
 
     parser_order.set_defaults(func=order_from_parser)
+
+    parser_reorder = subparsers.add_parser('reorder', help='Reorder an existing order')
+    required_named = parser_reorder.add_argument_group('Required named arguments.')
+    required_named.add_argument('--url', help='Order url to be ordered', required=True)
+    optional_named = parser_reorder.add_argument_group('Optional named arguments')
+    optional_named.add_argument('--notification', help='Use "email" to get an email notification',default=None)
+    parser_reorder.set_defaults(func=reorder_from_parser)
 
     parser_cancel = subparsers.add_parser('cancel',help='Cancel queued order(s)')
     parser_cancel.add_argument('--id',help='order id you want to cancel use "all" to cancel all')
