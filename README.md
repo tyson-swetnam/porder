@@ -453,8 +453,8 @@ A simple setup would be
 ## Changelog
 
 ### v0.7.3
-- Now constantly checks for updated version incase your porder version is not udpated.
-- Aded a reorder tool for users to reoder an exiting order or failed order.
+- Now constantly checks for updated version incase your porder version is not updated.
+- Added a reorder tool for users to reorder an exiting order or failed order.
 
 ### v0.7.1
 - ID check tool now works with/without geometry, pass an idlist, and item and asset type to check.
