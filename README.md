@@ -24,7 +24,6 @@ http://doi.org/10.5281/zenodo.3831044
 * [Windows Setup](#windows-setup)
 * [Getting started](#getting-started)
 * [porder Simple CLI for Planet ordersv2 API](#porder-simple-cli-for-planet-ordersv2-api)
-    * [porder version](#porder-version)
     * [porder readme](#porder-readme)
     * [porder quota](#porder-quota)
     * [base64](#base64)
@@ -168,13 +167,6 @@ To obtain help for a specific functionality, simply call it with _help_ switch, 
 
 ## porder Simple CLI for Planet ordersv2 API
 The tool is designed to simplify using the ordersv2 API and allows the user to chain together tools and operations for multiple item and asset types and perform these operations and download the assets locally.
-
-### porder version
-This prints the tool version and escapes. Simple use would be
-
-```
-porder version
-```
 
 ### porder readme
 Now open the readme webpage in your browser using
@@ -451,6 +443,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.7.4
+- added smart check on partially completed order for reordering.
+- completed orders can be reordered as well
 
 ### v0.7.3
 - Now constantly checks for updated version incase your porder version is not updated.
