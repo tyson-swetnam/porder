@@ -208,33 +208,34 @@ def idl(**kwargs):
     res = client.quick_search(req)
     for things in res.items_iter(1000000): # A large number as max number to check against
         try:
-            itemid=things['id']
-            footprint = things["geometry"]
-            s = shape(footprint)
-            if item.startswith('SkySat'):
-                epsgcode='3857'
-            else:
-                epsgcode=things['properties']['epsg_code']
-            if aoi_shape.area>s.area:
-                intersect=(s).intersection(aoi_shape)
-            elif s.area>=aoi_shape.area:
-                intersect=(aoi_shape).intersection(s)
-            proj_transform = pyproj.Transformer.from_proj(pyproj.Proj(4326), pyproj.Proj(epsgcode), always_xy=True).transform # always_xy determines correct coord order
-            print('Processing ' + str(len(ar) + 1) + ' items with total area '+ str("{:,}".format(round(sum(far)))) + ' sqkm', end='\r')
-            if transform(proj_transform, (aoi_shape)).area>transform(proj_transform,s).area:
-                if (transform(proj_transform, intersect).area / transform(proj_transform, s).area*100)>=ovp:
-                    ar.append(transform(proj_transform, intersect).area/1000000)
-                    far.append(transform(proj_transform, s).area/1000000)
-                    with open(outfile,'a') as csvfile:
-                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                        writer.writerow([itemid])
-            elif transform(proj_transform, s).area>=transform(proj_transform, aoi_shape).area:
-                if (transform(proj_transform, intersect).area/transform(proj_transform, aoi_shape).area*100)>=ovp:
-                    ar.append(transform(proj_transform, intersect).area/1000000)
-                    far.append(transform(proj_transform, s).area/1000000)
-                    with open(outfile,'a') as csvfile:
-                        writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
-                        writer.writerow([itemid])
+            if things['properties']['quality_category'] =='standard':
+                itemid=things['id']
+                footprint = things["geometry"]
+                s = shape(footprint)
+                if item.startswith('SkySat'):
+                    epsgcode='3857'
+                else:
+                    epsgcode=things['properties']['epsg_code']
+                if aoi_shape.area>s.area:
+                    intersect=(s).intersection(aoi_shape)
+                elif s.area>=aoi_shape.area:
+                    intersect=(aoi_shape).intersection(s)
+                proj_transform = pyproj.Transformer.from_proj(pyproj.Proj(4326), pyproj.Proj(epsgcode), always_xy=True).transform # always_xy determines correct coord order
+                print('Processing ' + str(len(ar) + 1) + ' items with total area '+ str("{:,}".format(round(sum(far)))) + ' sqkm', end='\r')
+                if transform(proj_transform, (aoi_shape)).area>transform(proj_transform,s).area:
+                    if (transform(proj_transform, intersect).area / transform(proj_transform, s).area*100)>=ovp:
+                        ar.append(transform(proj_transform, intersect).area/1000000)
+                        far.append(transform(proj_transform, s).area/1000000)
+                        with open(outfile,'a') as csvfile:
+                            writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                            writer.writerow([itemid])
+                elif transform(proj_transform, s).area>=transform(proj_transform, aoi_shape).area:
+                    if (transform(proj_transform, intersect).area/transform(proj_transform, aoi_shape).area*100)>=ovp:
+                        ar.append(transform(proj_transform, intersect).area/1000000)
+                        far.append(transform(proj_transform, s).area/1000000)
+                        with open(outfile,'a') as csvfile:
+                            writer=csv.writer(csvfile,delimiter=',',lineterminator='\n')
+                            writer.writerow([itemid])
             if int(len(ar))==int(num):
                 break
         except Exception as e:

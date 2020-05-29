@@ -444,6 +444,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.7.5
+- Fixed pipwin python path for installer.
+- idlist tool now only returns standard and excludes beta and test quality.
+
 ### v0.7.4
 - added smart check on partially completed order for reordering.
 - completed orders can be reordered as well

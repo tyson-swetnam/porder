@@ -42,7 +42,7 @@ if str(platform.system().lower()) == "windows":
         if pipwin.__version__=='0.5.0':
             pass
         else:
-            subprocess.call('python'+str(version)+' -m pip install pipwin==0.5.0', shell=True)
+            a=subprocess.call('{} -m pip install pipwin==0.5.0'.format(sys.executable), shell=True,stdout=subprocess.PIPE)
             subprocess.call('pipwin refresh', shell=True)
         '''Check if the pipwin cache is old: useful if you are upgrading porder on windows
         [This section looks if the pipwin cache is older than two weeks]
@@ -54,7 +54,7 @@ if str(platform.system().lower()) == "windows":
             print('Refreshing your pipwin cache')
             subprocess.call('pipwin refresh', shell=True)
     except ImportError:
-        subprocess.call('python'+str(version)+' -m pip install pipwin==0.5.0', shell=True)
+        a=subprocess.call('{} -m pip install pipwin==0.5.0'.format(sys.executable), shell=True,stdout=subprocess.PIPE)
         subprocess.call('pipwin refresh', shell=True)
     except Exception as e:
         print(e)
