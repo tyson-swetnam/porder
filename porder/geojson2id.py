@@ -192,7 +192,7 @@ def idl(**kwargs):
         #print('Your Input Geometry is invalid & may have issues:A valid Polygon may not possess anyoverlapping exterior or interior rings.'+'\n')
     date_filter = filters.date_range('acquired', gte=start,lte=end)
     cloud_filter = filters.range_filter('cloud_cover', gte=cmin,lte=cmax)
-    asset_filter=filters.permission_filter('assets.'+str(asset)+':download')
+    asset_filter=filters.permission_filter('assets.'+str(asset.split(',')[0])+':download')
     # print(rbase)
     # print(stbase)
     if len(rbase['field_name']) !=0 and len(stbase['field_name']) !=0:
@@ -208,7 +208,8 @@ def idl(**kwargs):
     res = client.quick_search(req)
     for things in res.items_iter(1000000): # A large number as max number to check against
         try:
-            if things['properties']['quality_category'] =='standard':
+            all_assets=[assets.split(':')[0].replace('assets.','') for assets in things['_permissions']]
+            if things['properties']['quality_category'] =='standard' and all(elem in all_assets for elem in asset.split(',')):
                 itemid=things['id']
                 footprint = things["geometry"]
                 s = shape(footprint)

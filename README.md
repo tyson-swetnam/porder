@@ -196,7 +196,7 @@ This reduces the number of vertices for a multi vertex and complex GeoJSON. Extr
 ![porder simplify](https://user-images.githubusercontent.com/6677629/56763793-36ced200-6771-11e9-8b61-8f94b1f61152.png)
 
 ### idlist
-Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip). The tool now also prints estimated area in Square kilometes for the download and estimated area if you clipped your area with the geometry you are searching (just estimates).
+Create an idlist for your geometry based on some basic filters,including geometry, start and end date and cloud cover. If no cloud cover is specified everything form 0 to 100% cloud cover is included. For now the tool can handle geojson,json and kml files. The output is a csv file with ids. The tool also allows you to make sure you get percentage overlap, when selecting image, for clip operations adjust it accordingly (usally --ovp 1 for orders not to fail during clip). The tool now also prints estimated area in Square kilometes for the download and estimated area if you clipped your area with the geometry you are searching (just estimates). You can now pass multiple assetswith the idlist tool pass assets as analytic_sr,udm2 for example to get items with both these assets ``` --asset analytic_sr,udm2.
 
 **I have changed the setup to now do the following two things**
 
@@ -328,7 +328,7 @@ A simple setup with Top of Atmospher reflectance and a few indices along with em
 
 
 ### reorder
-This tool allows you to reorder an existing order with the same item ids and tools. This is tyring to look into the overall strucutre of existing orders and maybe ueful to reorder if an order fails for example.
+This tool allows you to reorder an existing order with the same item ids and tools. This is trying to look into the overall structures of existing orders and maybe useful to reorder if an order fails for example.
 
 ```
 usage: porder reorder [-h] --url URL [--notification NOTIFICATION]
@@ -443,6 +443,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.7.6
+- Now use multiple assets with the idlist tool pass assets as analytic_sr,udm2 for example to get items with both these assets.
+- Updated readme.
 
 ### v0.7.5
 - Fixed pipwin python path for installer.

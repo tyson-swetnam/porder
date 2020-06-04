@@ -13,7 +13,7 @@
         <meta name="description" content="porder-Simple CLI for Planet ordersV2 API">
       
       
-        <link rel="canonical" href="https://github.com/samapriya/projects/convert2geojson/">
+        <link rel="canonical" href="https://github.com/samapriya/projects/reorder/">
       
       
         <meta name="author" content="Samapriya Roy">
@@ -42,7 +42,7 @@
     
     
       
-        <title>Convert to GeoJSON - porder docs</title>
+        <title>Reorder an order - porder docs</title>
       
     
     
@@ -91,7 +91,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#convert-to-geojson" tabindex="1" class="md-skip">
+      <a href="#reorder-an-order" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -117,7 +117,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Convert to GeoJSON
+                Reorder an order
               
             </span>
           
@@ -346,12 +346,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
     
     <label class="md-nav__link" for="nav-6">
       porder tools
@@ -391,20 +389,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Convert to GeoJSON" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../convert2geojson/" title="Convert to GeoJSON" class="md-nav__link">
       Convert to GeoJSON
     </a>
-    
   </li>
 
         
@@ -429,10 +418,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
     
     <label class="md-nav__link" for="nav-7">
       Placing an order
@@ -496,11 +487,49 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../reorder/" title="Reorder an order" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Reorder an order
+      </label>
+    
+    <a href="./" title="Reorder an order" class="md-nav__link md-nav__link--active">
       Reorder an order
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#operations-setup" title="Operations setup" class="md-nav__link">
+    Operations setup
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -730,6 +759,22 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#operations-setup" title="Operations setup" class="md-nav__link">
+    Operations setup
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -740,12 +785,26 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/samapriya/porder/edit/master/docs/projects/convert2geojson.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/samapriya/porder/edit/master/docs/projects/reorder.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="convert-to-geojson">Convert to GeoJSON<a class="headerlink" href="#convert-to-geojson" title="Permanent link">&para;</a></h1>
-<p>This tool allows you to convert from  a folder with multiple shapefiles or kml files to a folder with geojson that can then be used with the tool. It makes use of geopandas and reprojects your shapefile to make it compatible while passing onto the API for search and download.</p>
-<p><img alt="convert_porder" src="https://user-images.githubusercontent.com/6677629/78746902-09eddd80-7936-11ea-8459-d15076625393.gif" /></p>
+                <h1 id="reorder-an-order">Reorder an order<a class="headerlink" href="#reorder-an-order" title="Permanent link">&para;</a></h1>
+<p>This tool allows you to reorder an existing order with the same item ids and tools. This is trying to look into the overall structures of existing orders and maybe useful to reorder if an order fails for example.</p>
+<div class="highlight"><pre><span></span><code>usage: porder reorder [-h] --url URL [--notification NOTIFICATION]
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Required named arguments.:
+  --url URL             Order url to be ordered
+
+Optional named arguments:
+  --notification NOTIFICATION
+                        Use &quot;email&quot; to get an email notification
+</code></pre></div>
+
+<h2 id="operations-setup">Operations setup<a class="headerlink" href="#operations-setup" title="Permanent link">&para;</a></h2>
+<p><img alt="porder_reorder" src="https://user-images.githubusercontent.com/6677629/83717177-09a15400-a600-11ea-877c-9c727d7d8cba.gif" /></p>
                 
                   
                 
@@ -766,7 +825,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../base64/" title="base46 encoding" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../order/" title="Place an order" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -775,19 +834,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                base46 encoding
+                Place an order
               </span>
             </div>
           </a>
         
         
-          <a href="../simplify/" title="Simplify geometry" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../download/" title="Simple Downloader" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Simplify geometry
+                Simple Downloader
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
