@@ -17,7 +17,7 @@ Samapriya Roy. (2020, June 4). samapriya/porder: porder: Simple CLI for Planet o
 http://doi.org/10.5281/zenodo.3875911
 ```
 
-### **[Read the Guided Docs here](https://samapriya.github.io/porder/)**
+### **[Read the Guided Docs here](https://tyson-swetnam.github.io/porder/)**
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Installing porder](#installing-porder)
