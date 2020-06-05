@@ -40,7 +40,7 @@ setuptools.setup(
     license='Apache 2.0',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    python_requires='>=2.7',
+    python_requires='>=3.4',
     classifiers=(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
