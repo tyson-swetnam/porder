@@ -108,7 +108,7 @@ pipwin install gdal
 pipwin install pyproj
 pipwin install shapely
 pipwin install fiona
-pipwing install geopandas
+pipwin install geopandas
 ```
 
 #### Option 3
