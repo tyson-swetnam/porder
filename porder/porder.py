@@ -125,7 +125,7 @@ def version_from_parser(args):
 # Go to the readMe
 def readme():
     try:
-        a=webbrowser.open('https://samapriya.github.io/porder/', new=2)
+        a=webbrowser.open('https://tyson-swetnam.github.io/porder/', new=2)
         if a==False:
             print('Your setup does not have a monitor to display the webpage')
     except Exception as e:
