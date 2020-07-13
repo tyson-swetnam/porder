@@ -119,6 +119,8 @@ def porder_version():
         print("\n"+"=========================================================================")
         print('Current version of porder is {} upgrade to lastest version: {}'.format(pkg_resources.get_distribution("porder").version,company.string.strip().split(' ')[-1]))
         print("=========================================================================")
+    else:
+        print('Current version of porder is {}'.format(pkg_resources.get_distribution("porder").version))
 def version_from_parser(args):
     porder_version()
 

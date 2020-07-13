@@ -446,6 +446,9 @@ A simple setup would be
 
 ## Changelog
 
+### v0.7.7
+- Removed dependency on pendulum and general cleanup.
+
 ### v0.7.6
 - Now use multiple assets with the idlist tool pass assets as analytic_sr,udm2 for example to get items with both these assets.
 - Updated readme.

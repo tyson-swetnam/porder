@@ -19,13 +19,13 @@ __license__ = "Apache 2.0"
 
 import csv
 import sys
-import pendulum
 import json
 import yaml
 import requests
 import shapely
 import clipboard
 import visvalingamwyatt as vw
+from datetime import date
 from shapely.geometry import shape
 from prettytable import PrettyTable
 from planet.api.utils import read_planet_json
@@ -62,7 +62,7 @@ daws= {"delivery":{"amazon_s3":{"bucket":[],"aws_region":[],"aws_access_key_id":
 dazure={"delivery":{"azure_blob_storage":{"account":[],"container":[],"sas_token":[],"storage_endpoint_suffix":[],"path_prefix":[]}}}
 dgcs={"delivery": {"google_cloud_storage": {"bucket": [],"credentials": [],"path_prefix": []}}}
 dbmath={"bandmath":{}}
-dszip={"delivery":{"archive_filename":"Explorer_{{name}}.zip","archive_type":"zip","single_archive":True}}
+dszip={"delivery":{"archive_filename":"{{name}}_{{order_id}}.zip","archive_type":"zip","single_archive":True}}
 try:
     PL_API_KEY = find_api_key()
 except:
@@ -311,7 +311,8 @@ def order(**kwargs):
 
     #print(payload)
     ordname=k['name']
-    payload=payload.replace("Explorer_{{name}}.zip",ordname+'_'+str(pendulum.now()).split("T")[0]+".zip")
+    payload=payload.replace("{{name}}_{{order_id}}.zip","{{name}}_{{order_id}}_"+str(date.today())+".zip")
+    #print(payload)
     headers = {'content-type': 'application/json',
                'cache-control': 'no-cache'}
     response = requests.request('POST', url, data=payload, headers=headers,
