@@ -446,6 +446,12 @@ A simple setup would be
 
 ## Changelog
 
+### v0.7.8
+- Added support for multipolygon search and clip.
+- Added coregistration and format tools to order
+- Removed persistent version print
+- Overall cleanup and general Improvements
+
 ### v0.7.7
 - Removed dependency on pendulum and general cleanup.
 

@@ -36,129 +36,196 @@ from shapely.ops import transform
 try:
     PL_API_KEY = find_api_key()
 except Exception as e:
-    print('Failed to get Planet Key')
+    print("Failed to get Planet Key")
     sys.exit()
 
 client = api.ClientV1(PL_API_KEY)
 
 
-temp={"coordinates":[],"type":"Polygon"}
-aoi = {
-  "type": "Polygon",
-  "coordinates": []
-}
+temp = {"coordinates": [], "type": "MultiPolygon"}
+aoi = {"type": "Polygon", "coordinates": []}
 
 # Area lists
 ar = []
 far = []
+ovall = []
+
+## Handle MultiPolygon
+def multipoly(poly):
+    multipoly_empty = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {"id": 0},
+                "geometry": {"type": "MultiPolygon", "coordinates": []},
+            }
+        ],
+    }
+    poly_list = []
+    with open(poly) as jsonfile:
+        data = json.load(jsonfile)
+        if len(data["features"]) > 1:
+            for things in data["features"]:
+                poly_list.append(things["geometry"]["coordinates"])
+            multipoly_empty["features"][0]["geometry"]["coordinates"] = poly_list
+            return json.dumps(multipoly_empty)
+        elif len(data["features"]) == 1:
+            return data
+
 
 # get coordinates list depth
-def list_depth(dic, level = 1):
+def list_depth(dic, level=1):
     counter = 0
     str_dic = str(dic)
-    if "[[[[" in str_dic:
+    if "[[[[[" in str_dic:
+        counter += 2
+    elif "[[[[" in str_dic:
         counter += 1
-    return(counter)
+    elif "[[[" in str_dic:
+        counter += 0
+    return counter
 
 
 # Function to use the client and then search
-def idc(idlist,item,asset,geometry):
+def idc(idlist, item, asset, geometry):
     if geometry is not None:
         try:
-            if geometry.endswith('.geojson'):
-                with open(geometry) as aoi:
-                    aoi_resp = json.load(aoi)
-                    if list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==0:
-                        aoi_geom = aoi_resp['features'][0]['geometry']['coordinates']
-                    elif list_depth(aoi_resp['features'][0]['geometry']['coordinates'])==1:
-                        aoi_geom = aoi_resp['features'][0]['geometry']['coordinates'][0]
-                    else:
-                        print('Please check GeoJSON: Could not parse coordinates')
+            if geometry.endswith(".geojson"):
+                aoi_resp = multipoly(geometry)
+                try:
+                    for things in aoi_resp["features"]:
+                        ovall.append(things["geometry"]["coordinates"])
+                except Exception:
+                    for things in json.loads(aoi_resp)["features"]:
+                        ovall.append(things["geometry"]["coordinates"])
+                # print(list_depth(ovall))
+                aoi_geom = ovall
+                if (
+                    list_depth(ovall) == 2
+                    and json.loads(aoi_resp)["features"][0]["geometry"]["type"]
+                    == "MultiPolygon"
+                ):
+                    temp["coordinates"] = aoi_geom[0]
+                elif (
+                    list_depth(ovall) == 2
+                    and json.loads(aoi_resp)["features"][0]["geometry"]["type"]
+                    != "MultiPolygon"
+                ):
+                    aoi_geom = ovall[0][0]
+                    temp["type"] = "Polygon"
+                    temp["coordinates"] = aoi_geom
+                elif list_depth(ovall) == 1:
+                    aoi_geom = ovall[0]
+                    temp["type"] = "Polygon"
+                    temp["coordinates"] = aoi_geom
+                elif list_depth(ovall) == 0:
+                    aoi_geom = ovall
+                    temp["type"] = "Polygon"
+                    temp["coordinates"] = aoi_geom
+                else:
+                    print("Please check GeoJSON: Could not parse coordinates")
         except Exception as e:
-            print('Could not parse geometry')
+            print("Could not parse geometry")
             print(e)
-        l=[]
-        stbase={'config': [], 'field_name': 'id', 'type': 'StringInFilter'}
+        l = []
+        stbase = {"config": [], "field_name": "id", "type": "StringInFilter"}
         with open(idlist) as f:
             try:
                 reader = csv.reader(f)
                 for row in reader:
-                    item_id=row[0]
-                    if str(item_id.isalpha())=='False':
+                    item_id = row[0]
+                    if str(item_id.isalpha()) == "False":
                         l.append(item_id)
             except Exception as e:
                 print(e)
-        stbase['config']=l
-        temp['coordinates']=aoi_geom
-        sgeom=filters.geom_filter(temp)
+        stbase["config"] = l
+        # temp["coordinates"] = aoi_geom
+        # sgeom = filters.geom_filter(temp)
         aoi_shape = shape(temp)
-        asset_filter=filters.permission_filter('assets.'+str(asset)+':download')
-        and_filter = filters.and_filter(asset_filter,stbase)
+        asset_filter = filters.permission_filter("assets." + str(asset) + ":download")
+        and_filter = filters.and_filter(asset_filter, stbase)
         item_types = [item]
         req = filters.build_search_request(and_filter, item_types)
         res = client.quick_search(req)
-        num_lines = sum(1 for line in open(os.path.join(idlist.split('.')[0]+'.csv')))
-        n=1
-        print('Checking assets in idlist...')
-        for things in res.items_iter(num_lines): # A large number as max number to check against
-            itemid=things['id']
-            #print('Processing '+str(n)+' of '+str(num_lines))
-            n=n+1
+        num_lines = sum(1 for line in open(os.path.join(idlist.split(".")[0] + ".csv")))
+        n = 1
+        print("Checking assets in idlist...")
+        for things in res.items_iter(
+            num_lines
+        ):  # A large number as max number to check against
+            itemid = things["id"]
+            # print('Processing '+str(n)+' of '+str(num_lines))
+            n = n + 1
             footprint = things["geometry"]
             s = shape(footprint)
-            if item.startswith('SkySat'):
-                epsgcode='3857'
+            if item.startswith("SkySat"):
+                epsgcode = "3857"
             else:
-                epsgcode=things['properties']['epsg_code']
-            if aoi_shape.area>s.area:
-                intersect=(s).intersection(aoi_shape)
-            elif s.area>=aoi_shape.area:
-                intersect=(aoi_shape).intersection(s)
-            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
-                pyproj.Proj(init='epsg:'+str(epsgcode)))
-            if transform(proj,aoi_shape).area>transform(proj,s).area:
-                ar.append(transform(proj,intersect).area/1000000)
-                far.append(transform(proj,s).area/1000000)
-            elif transform(proj,s).area>transform(proj,aoi_shape).area:
-                ar.append(transform(proj,intersect).area/1000000)
-                far.append(transform(proj,s).area/1000000)
+                epsgcode = things["properties"]["epsg_code"]
+            if aoi_shape.area > s.area:
+                intersect = (s).intersection(aoi_shape)
+            elif s.area >= aoi_shape.area:
+                intersect = (aoi_shape).intersection(s)
+            proj = pyproj.Transformer.from_proj(
+                pyproj.Proj(4326), pyproj.Proj(epsgcode), always_xy=True
+            ).transform
+            if transform(proj, aoi_shape).area > transform(proj, s).area:
+                ar.append(transform(proj, intersect).area / 1000000)
+                far.append(transform(proj, s).area / 1000000)
+            elif transform(proj, s).area > transform(proj, aoi_shape).area:
+                ar.append(transform(proj, intersect).area / 1000000)
+                far.append(transform(proj, s).area / 1000000)
     elif geometry is None:
-        l=[]
-        stbase={'config': [], 'field_name': 'id', 'type': 'StringInFilter'}
+        l = []
+        stbase = {"config": [], "field_name": "id", "type": "StringInFilter"}
         with open(idlist) as f:
             try:
                 reader = csv.reader(f)
                 for row in reader:
-                    item_id=row[0]
-                    if str(item_id.isalpha())=='False':
+                    item_id = row[0]
+                    if str(item_id.isalpha()) == "False":
                         l.append(item_id)
             except Exception as e:
                 print(e)
-        stbase['config']=l
-        asset_filter=filters.permission_filter('assets.'+str(asset)+':download')
-        and_filter = filters.and_filter(asset_filter,stbase)
+        stbase["config"] = l
+        asset_filter = filters.permission_filter("assets." + str(asset) + ":download")
+        and_filter = filters.and_filter(asset_filter, stbase)
         item_types = [item]
         req = filters.build_search_request(and_filter, item_types)
         res = client.quick_search(req)
-        num_lines = sum(1 for line in open(os.path.join(idlist.split('.')[0]+'.csv')))
-        n=1
-        print('Checking assets in idlist...')
-        for things in res.items_iter(num_lines): # A large number as max number to check against
-            itemid=things['id']
-            #print('Processing '+str(n)+' of '+str(num_lines))
-            n=n+1
+        num_lines = sum(1 for line in open(os.path.join(idlist.split(".")[0] + ".csv")))
+        n = 1
+        print("Checking assets in idlist...")
+        for things in res.items_iter(
+            num_lines
+        ):  # A large number as max number to check against
+            itemid = things["id"]
+            # print('Processing '+str(n)+' of '+str(num_lines))
+            n = n + 1
             footprint = things["geometry"]
             s = shape(footprint)
-            if item.startswith('SkySat'):
-                epsgcode='3857'
+            if item.startswith("SkySat"):
+                epsgcode = "3857"
             else:
-                epsgcode=things['properties']['epsg_code']
-            proj = partial(pyproj.transform, pyproj.Proj(init='epsg:4326'),
-                pyproj.Proj(init='epsg:'+str(epsgcode)))
-            far.append(transform(proj,s).area/1000000)
+                epsgcode = things["properties"]["epsg_code"]
+            proj = pyproj.Transformer.from_proj(
+                pyproj.Proj(4326), pyproj.Proj(epsgcode), always_xy=True
+            ).transform
+            far.append(transform(proj, s).area / 1000000)
 
-    print('\n'+'Total estimated cost to quota: ' + str("{:,}".format(round(sum(far)))) + ' sqkm')
-    if not len(ar)==0:
-        print('Total estimated cost to quota if clipped: ' + str("{:,}".format(round(sum(ar)))) + ' sqkm')
+    print(
+        "\n"
+        + "Total estimated cost to quota: "
+        + str("{:,}".format(round(sum(far))))
+        + " sqkm"
+    )
+    if not len(ar) == 0:
+        print(
+            "Total estimated cost to quota if clipped: "
+            + str("{:,}".format(round(sum(ar))))
+            + " sqkm"
+        )
+
+
 # idc(idlist=r'C:\planet_demo\opencadover.csv',item='PSScene4Band',asset='analytic',geometry=r'C:\Users\samapriya\Downloads\sfo.geojson')
-

@@ -57,7 +57,7 @@ def handle_page(page, start, end):
                 print(e)
 
 
-def ostat(state, start, end,limit):
+def ostat(state, start, end, limit):
     start = datetime.strptime(start, "%Y-%m-%d")
     end = datetime.strptime(end, "%Y-%m-%d")
     mpage = "https://api.planet.com/compute/ops/orders/v2?state=" + str(state)
@@ -79,9 +79,9 @@ def ostat(state, start, end,limit):
             else:
                 print(result.status_code)
     if limit is not None:
-        print(x.get_string(start=0,end=int(limit)))
+        print(x.get_string(start=0, end=int(limit)))
     else:
         print(x)
 
 
-#idl(state="success", start="2019-08-02", end="2019-08-02")
+# idl(state="success", start="2019-08-02", end="2019-08-02")

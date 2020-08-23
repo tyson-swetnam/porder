@@ -18,18 +18,20 @@ __copyright__ = """
 __license__ = "Apache 2.0"
 
 import os
-def idsplit(infile,linenum,output):
+
+
+def idsplit(infile, linenum, output):
     lines_per_file = int(linenum)
     smallfile = None
     with open(infile) as bigfile:
-        basename=os.path.basename(infile).split('.')[0]
+        basename = os.path.basename(infile).split(".")[0]
         for lineno, line in enumerate(bigfile):
             if lineno % lines_per_file == 0:
                 if smallfile:
                     smallfile.close()
-                small_filename = basename+'_{}.csv'.format(str(lineno+int(linenum)))
-                smallfile = open(os.path.join(output,small_filename), "w")
+                small_filename = basename + "_{}.csv".format(str(lineno + int(linenum)))
+                smallfile = open(os.path.join(output, small_filename), "w")
             smallfile.write(line)
         if smallfile:
             smallfile.close()
-    print('IDlist split at '+str(output))
+    print("IDlist split at " + str(output))
