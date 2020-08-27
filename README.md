@@ -8,11 +8,13 @@
 ![Commit](https://img.shields.io/github/commit-activity/m/samapriya/porder)
 ![CI porder](https://github.com/samapriya/porder/workflows/CI%20porder/badge.svg)
 
-[Ordersv2 is the next iteration of Planet's API](https://developers.planet.com/docs/orders/) in getting Analysis Ready Data (ARD) delivered to you. Orders v2 allows you to improved functionality in this domain, including capability to submit an number of images in a batch order, and perform operations such as top of atmospheric reflectance, compression, coregistration and also enhanced notifications such as email and webhooks. Based on your access you can use this tool to chain together a sequence of operations. This tool is a command line interface that allows you to interact with the ordersv2 API along with place orders and download orders as needed. The tool also allows you to chain multiple processes together and additional functionalities will be added as needed. For exporting to cloud storages release 0.0.8 onwards has a configuration folder with config yml structures to be used with this tool. Simply replaces the fields as needed.
+**Disclaimer: This is an unofficial tool. Is not licensed or endorsed by Planet Labs. It was created by Samapriya Roy and is owned and maintained by Tyson Swetnam**
 
-**Please note: This is in no way an official tool, or Planet offering. Created by Samapriya Roy. Owned and maintained by Tyson Swetnam**
+[Orders v2](https://developers.planet.com/docs/orders/) is the next iteration of Planet's API for getting Analysis Ready Data (ARD) delivered to you. Orders v2 has the capability to submit any number of images in a batch order and perform operations such as: top of atmospheric (TOA) reflectance, compression, coregistration, and supports enhanced notifications such as email and webhooks. Based on your personal license access you can use the `porder` to place orders, download orders, or chain together a sequence of operations from the Orders v2 API. The `porder` tool runs on the command line interface only. For exporting to cloud storage `porder` uses a configuration folder with `config.yml` structures.
 
-If you use this tool to download data for your research, and find this tool useful, star and cite it as below
+If you use this tool to download data and find it useful please star us on GitHub (top right corner of this page).
+
+If you publish research which used this tool, please use this citation:
 
 ```
 Samapriya Roy, & Tyson L. Swetnam. (2020, August 23). tyson-swetnam/porder: porder: Simple CLI for Planet ordersV2 API (Version 0.7.8). Zenodo.
@@ -47,49 +49,93 @@ http://doi.org/10.5281/zenodo.3996650
     * [multiprocessing download](#multiprocessing-download)
 
 ## Prerequisites
-This assumes that you have native python & pip installed in your system, you can test this by going to the terminal (or windows command prompt) and trying. I recommend installation within virtual environment if you are worries about messing up your current environment.
 
-```python``` and then ```pip list```
+You must have native python & pip installed. You can test this by going to the terminal (or windows command prompt) and trying. 
 
-If you get no errors and you have python 2.7.14 or higher you should be good to go.
+```python --version``` and then ```pip list```
 
-**This command line tool is dependent on shapely and fiona and as such uses functionality from GDAL**
-For installing GDAL in Ubuntu
+If you have no errors and you have Python `2.7.14` or higher you should be good to go.
+
+We also recommend installation within virtual environment. If you use [Conda](https://docs.conda.io/en/latest/)
+
 ```
-sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
-sudo apt-get install gdal-bin
-sudo apt-get install python-gdal
+$ conda create -n planet_orders python
+$ conda activate planet_orders
 ```
-For Windows I found this [guide](https://webcache.googleusercontent.com/search?q=cache:UZWc-pnCgwsJ:https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows+&cd=4&hl=en&ct=clnk&gl=us) from UCLA
 
-Also for Ubuntu Linux I saw that this is necessary before the install
+**The `porder` tool is dependent on `shapely` and `fiona` which depend on GDAL**
 
-```sudo apt install libcurl4-openssl-dev libssl-dev```
+[QGIS](https://qgis.org/en/site/) is a useful open-source GIS platform which includes all of the major required dependencies for running `porder`. Installation of QGIS will ensure all `porder` requirements are met. 
+
+### Linux
+
+Installing Python GDAL in Ubuntu
+
+```
+$ sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
+$ sudo apt-get install gdal-binv libcurl4-openssl-dev libssl-dev python3-gdal
+```
+
+### Windows
+
+We also recommend using [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and following the linux instructions.
+
+For Windows this [guide](https://webcache.googleusercontent.com/search?q=cache:UZWc-pnCgwsJ:https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows+&cd=4&hl=en&ct=clnk&gl=us) from UCLA is useful.
+
+
+### MacOS X
+
+[KyngChaos](https://www.kyngchaos.com/software/frameworks/) maintains a MacOS X installation for GDAL
+
+Install GDAL using [brew]
+
+Install brew:
+
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+Install GDAL:
+```
+% brew install gdal --HEAD
+% brew install gdal
+% gdal-config --version 
+```
+
+Install GDAL Python binding:
+
+```
+% pip3 install —-upgrade pip
+% pip3 install numpy
+% python3 -c ‘import gdal; print(gdal.VersionInfo())’
+```
 
 ## Installing porder
-Once you have shapely and the other libraries configured, to install **porder: Simple CLI for Planet ordersv2 API** you can install using two methods
+
+Once you have the dependency libraries configured you're ready to install 
+
+From `pip`:
 
 ```pip install porder```
 
-For linux I found it helps to specify the pip type and use --user
+For linux it might help to specify the pip type and use `--user`
 
 ```
-pip install porder --user
-
-or
-
 pip3 install porder --user
 ```
 
-or you can also try
+From GitHub `source`:
 
 ```
-git clone https://github.com/samapriya/porder.git
+git clone https://github.com/tyson-swetnam/porder.git
 cd porder
 python setup.py install
 ```
 
+Type `porder -h` to view the help
+
 ## Windows Setup
+
 Shapely and a few other libraries are notoriously difficult to install on windows machines so follow the steps mentioned here **before installing porder**. You can download and install shapely and other libraries from the [Unofficial Wheel files from here](https://www.lfd.uci.edu/~gohlke/pythonlibs) download depending on the python version you have. **Do this only once you have install GDAL**. I would recommend the steps mentioned above to get the GDAL properly installed. However I am including instructions to using a precompiled version of GDAL similar to the other libraries on windows. You can test to see if you have gdal by simply running
 
 ```gdalinfo```
@@ -114,6 +160,7 @@ pipwin install geopandas
 ```
 
 #### Option 3
+
 For windows first thing you need to figure out is your Python version and whether it is 32 bit or 64 bit. You can do this by going to your command prompt and typing python.
 
 ![windows_cmd_python](https://user-images.githubusercontent.com/6677629/63856293-3dfc2b80-c96f-11e9-978d-d2c1a01cfe36.PNG)
@@ -157,7 +204,6 @@ pip3 install "C:\Users\samapriya\Downloads\Shapely‑1.6.4.post2‑cp36‑cp36m�
 ```
 
 Or you can use [anaconda to install](https://conda-forge.github.io/). Again, both of these options are mentioned on [Shapely’s Official PyPI page](https://pypi.org/project/Shapely/).
-
 
 ## Getting started
 
