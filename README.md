@@ -110,6 +110,41 @@ Install GDAL Python binding:
 % python3 -c ‘import gdal; print(gdal.VersionInfo())’
 ```
 
+### Docker
+
+You can also run `porder` with [Docker](https://hub.docker.com/r/tswetnam/porder)
+
+```
+$ docker pull tswetnam/porder:latest
+```
+
+If you haven't run `planet init` to create your token, do so first. Make sure to run docker with the volume flag mounted back to your home `${HOME}` or current working directory `${PWD}`:
+
+```
+$ docker run -it --rm -v ${HOME}:/root tswetnam/porder:latest planet init
+```
+
+check if you now have a private `.planet.json` file in your home or current working directory.
+
+Run `porder` as a test:
+
+```
+$ docker run -it --rm -v ${HOME}:/root tswetnam/porder:latest porder quota
+```
+
+This should return your user information and the remaining available km of data:
+
+```
+Subscription ID: XXXXX
+Plan ID: XXXXX
+Allocation Name: your@email.address
+Allocation active from: YEAR-MM-DD
+Quota Enabled: True
+Total Quota in SqKm: 10000
+Total Quota used: 0.0
+Remaining Quota in SqKm: 10000.0
+```
+
 ## Installing porder
 
 Once you have the dependency libraries configured you're ready to install 
