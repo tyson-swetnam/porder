@@ -1,5 +1,21 @@
 FROM python:3.7.6
 
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="Planet porder" \
+      org.label-schema.description="Built from Python official uses Planet Labs Orders v2 API" \
+      org.label-schema.url="https://planet.com" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="e.g. https://github.com/tyson-swetnam/porder" \
+      org.label-schema.vendor="University of Arizona" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0"
+
+MAINTAINER "Tyson Lee Swetnam <tswetnam@cyverse.org>"
+
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt update && apt install --assume-yes --no-install-recommends \
        software-properties-common \
