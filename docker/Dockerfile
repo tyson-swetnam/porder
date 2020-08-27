@@ -18,8 +18,6 @@ RUN add-apt-repository "deb https://qgis.org/debian `lsb_release -c -s` main" &&
     apt update && \
     apt install -y gdal-bin python3-gdal
 
-RUN git clone https://github.com/tyson-swetnam/porder && \
+RUN git clone https://github.com/tyson-swetnam/porder --branch 0.7.8 --single-branch && \
     cd porder && \
     python setup.py install
-
-
