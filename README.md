@@ -73,7 +73,7 @@ Installing Python GDAL in Ubuntu
 
 ```
 $ sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
-$ sudo apt-get install gdal-binv libcurl4-openssl-dev libssl-dev python3-gdal
+$ sudo apt-get install gdal-bin libcurl4-openssl-dev libssl-dev python3-gdal
 ```
 
 ### Windows
