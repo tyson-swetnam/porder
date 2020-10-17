@@ -364,10 +364,11 @@ def order_from_parser(args):
         asset=args.bundle,
         sid=args.sid,
         op=args.op,
-        anchor=args.anchor,
-        format=args.format,
+        anchor = args.anchor,
+        format = args.format,
         boundary=args.boundary,
         projection=args.projection,
+        gee=args.gee,
         kernel=args.kernel,
         compression=args.compression,
         aws=args.aws,
@@ -715,6 +716,11 @@ def main(args=None):
         default=None,
     )
     optional_named.add_argument(
+        "--gee",
+        help='provide gee-project,gee-collection',
+        default=None,
+    )
+    optional_named.add_argument(
         "--kernel",
         help='Resampling kernel used "near", "bilinear", "cubic", "cubicspline", "lanczos", "average" and "mode"',
         default=None,
@@ -726,12 +732,12 @@ def main(args=None):
     )
     optional_named.add_argument(
         "--anchor",
-        help="Anchor Item ID to use for the coregistration tool",
+        help='Anchor Item ID to use for the coregistration tool',
         default=None,
     )
     optional_named.add_argument(
         "--format",
-        help="Delivery format choose from COG/PL_NITF to use for the format tool",
+        help='Delivery format choose from COG/PL_NITF to use for the format tool',
         default=None,
     )
     optional_named.add_argument(

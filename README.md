@@ -50,7 +50,7 @@ http://doi.org/10.5281/zenodo.3996650
 
 ## Prerequisites
 
-You must have native python & pip installed. You can test this by going to the terminal (or windows command prompt) and trying. 
+You must have native python & pip installed. You can test this by going to the terminal (or windows command prompt) and trying.
 
 ```python --version``` and then ```pip list```
 
@@ -65,7 +65,7 @@ $ conda activate planet_orders
 
 **The `porder` tool is dependent on `shapely` and `fiona` which depend on GDAL**
 
-[QGIS](https://qgis.org/en/site/) is a useful open-source GIS platform which includes all of the major required dependencies for running `porder`. Installation of QGIS will ensure all `porder` requirements are met. 
+[QGIS](https://qgis.org/en/site/) is a useful open-source GIS platform which includes all of the major required dependencies for running `porder`. Installation of QGIS will ensure all `porder` requirements are met.
 
 ### Linux
 
@@ -99,7 +99,7 @@ Install GDAL:
 ```
 % brew install gdal --HEAD
 % brew install gdal
-% gdal-config --version 
+% gdal-config --version
 ```
 
 Install GDAL Python binding:
@@ -147,7 +147,7 @@ Remaining Quota in SqKm: 10000.0
 
 ## Installing porder
 
-Once you have the dependency libraries configured you're ready to install 
+Once you have the dependency libraries configured you're ready to install
 
 From `pip`:
 
@@ -352,10 +352,6 @@ For example if an item id '20181227_125554_0f4c' does not have surface reflectan
 
 The list of operations for the ```--op``` are below and ** the order of these operations is important**
 
-clip|toar|comp
-                        osite|zip|zipall|compression|projection|kernel|aws|azu
-                        re|gcs|email <Choose indices from>:
-                        ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr
 
 <center>
 
@@ -373,6 +369,9 @@ aws | Option called to specify delivery to AWS
 azure | Option called to specify delivery to AZURE
 gcs | Option called to specify delivery to GCS
 email | Email notification to your planet registered email
+anchor  | Anchor image id for coregistration
+format | Delivery format choose from COG/PL_NITF to use for the format tool  
+gee  |  provide gee-project,gee-collection
 
 </center>
 
@@ -526,6 +525,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.7.9
+- Added gee-integration tool to order
+- General improvements
 
 ### v0.7.8
 - Added support for multipolygon search and clip.

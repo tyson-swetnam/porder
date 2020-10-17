@@ -95,7 +95,14 @@ dgcs = {
         "google_cloud_storage": {"bucket": [], "credentials": [], "path_prefix": []}
     }
 }
-dgee = {"delivery": {"google_earth_engine": {"project": [], "collection": []}}}
+dgee = {
+    "delivery": {
+        "google_earth_engine": {
+            "project": [],
+            "collection": []
+        }
+    }
+}
 
 dbmath = {"bandmath": {}}
 dszip = {
@@ -211,6 +218,8 @@ def order(**kwargs):
                     dbundle["delivery"].update(dazure["delivery"])
                 elif items == "gcs":
                     dbundle["delivery"].update(dgcs["delivery"])
+                elif items == "gee":
+                    dbundle["delivery"].update(dgee["delivery"])
                 elif items == "composite":
                     dbundle["tools"].append(dcomposite)
                 elif items == "projection":
@@ -419,8 +428,8 @@ def order(**kwargs):
                     ]
     for key, value in kwargs.items():
         if key == "gee" and value != None:
-            project = value[0]
-            collection = value[1]
+            project = value.split(',')[0]
+            collection = value.split(',')[-1]
             k["delivery"]["google_earth_engine"]["project"] = project
             k["delivery"]["google_earth_engine"]["collection"] = collection
 
@@ -480,7 +489,7 @@ def order(**kwargs):
     # print('')
     # print(dbmath)
 
-    # print(payload)
+    #print(payload)
     ordname = k["name"]
     payload = payload.replace(
         "{{name}}_{{order_id}}.zip",

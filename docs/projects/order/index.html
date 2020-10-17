@@ -793,10 +793,6 @@
 <p>For example if an item id '20181227_125554_0f4c' does not have surface reflectance asset type. So if you try to download this using bundle type analytic_sr_udm2 it will not work, similary if you order an item where a specific operation cannot be performed for example if you order visual and then try to do bandmath with four bands. These examples and more are where <strong>fallback bundles</strong> come in handy. Think of this as providing a list of bundles to keep trying if one bundle type fails. The priority goes left to right. You can provide comma seperated fallback bundles for example as</p>
 <p><strong><code>analytic_sr_udm2,analytic</code></strong> instead of <strong><code>analytic_sr_udm2</code></strong> to avoid certain items from failing to download.</p>
 <p>The list of operations for the <strong><code>--op</code></strong> are below and <strong>the order of these operations is important</strong></p>
-<p>clip|toar|comp
-                        osite|zip|zipall|compression|projection|kernel|aws|azu
-                        re|gcs|email <Choose indices from>:
-                        ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr</p>
 <p><center></p>
 <table>
 <thead>
@@ -853,6 +849,18 @@
 <tr>
 <td>email</td>
 <td>Email notification to your planet registered email</td>
+</tr>
+<tr>
+<td>anchor</td>
+<td>Anchor image id for coregistration</td>
+</tr>
+<tr>
+<td>format</td>
+<td>Delivery format choose from COG/PL_NITF to use for the format tool</td>
+</tr>
+<tr>
+<td>gee</td>
+<td>provide gee-project,gee-collection</td>
 </tr>
 </tbody>
 </table>
