@@ -370,7 +370,7 @@ azure | Option called to specify delivery to AZURE
 gcs | Option called to specify delivery to GCS
 email | Email notification to your planet registered email
 anchor  | Anchor image id for coregistration
-format | Delivery format choose from COG/PL_NITF to use for the format tool  
+format | Delivery format choose from COG/PL_NITF to use for the format tool
 gee  |  provide gee-project,gee-collection
 
 </center>
@@ -404,10 +404,13 @@ The same setup with delivery of each image, its metadata as a zip file would be.
 
 ![porder_clip_zip](https://user-images.githubusercontent.com/6677629/61171620-48da3880-a548-11e9-9c96-1d12ca762ca4.png)
 
-A simple setup with Top of Atmospher reflectance and a few indices along with email notification would be
+A simple setup with Top of Atmosphere reflectance and a few indices along with email notification would be
 
 ![porder_indices](https://user-images.githubusercontent.com/6677629/61171621-48da3880-a548-11e9-8ab9-c3a3658c7d5b.png)
 
+A simple setup with **Google Earth Engine Delivery** and a few indices along with email notification would be
+
+![porder_gee](https://user-images.githubusercontent.com/6677629/105747304-3cd58200-5f06-11eb-8b50-b903035c4ad2.gif)
 
 ### reorder
 This tool allows you to reorder an existing order with the same item ids and tools. This is trying to look into the overall structures of existing orders and maybe useful to reorder if an order fails for example.
@@ -525,6 +528,10 @@ A simple setup would be
 ![porder_multiproc_setup](https://user-images.githubusercontent.com/28806922/53097885-71f22200-34f0-11e9-88dd-c60c9cd03f6c.png)
 
 ## Changelog
+
+### v0.8.0
+- Added gee-integration example
+- Updated readme site to include examples
 
 ### v0.7.9
 - Added gee-integration tool to order

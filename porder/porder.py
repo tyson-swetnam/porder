@@ -50,6 +50,11 @@ if str(platform.system().lower()) == "windows":
                 shell=True,
                 stdout=subprocess.PIPE,
             )
+            b = subprocess.call(
+                "{} -m pip install wheel".format(sys.executable),
+                shell=True,
+                stdout=subprocess.PIPE,
+            )
             subprocess.call("pipwin refresh", shell=True)
         """Check if the pipwin cache is old: useful if you are upgrading porder on windows
         [This section looks if the pipwin cache is older than two weeks]
@@ -527,11 +532,6 @@ def main(args=None):
     parser = argparse.ArgumentParser(description="Ordersv2 Simple Client")
     subparsers = parser.add_subparsers()
 
-    parser_version = subparsers.add_parser(
-        "version", help="Prints porder version and exists"
-    )
-    parser_version.set_defaults(func=version_from_parser)
-
     parser_read = subparsers.add_parser(
         "readme", help="Go the web based porder readme page"
     )
@@ -752,7 +752,7 @@ def main(args=None):
     optional_named.add_argument(
         "--op",
         nargs="+",
-        help="Add operations, delivery & notification clip|toar|harmonize|composite|zip|zipall|compression|projection|kernel|coreg|format|aws|azure|gcs|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr",
+        help="Add operations, delivery & notification clip|toar|harmonize|composite|zip|zipall|compression|projection|kernel|coreg|format|aws|azure|gcs|gee|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr",
         default=None,
     )
 
