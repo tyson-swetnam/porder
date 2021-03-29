@@ -1,0 +1,134 @@
+site_name: porder docs
+site_description: porder-Simple CLI for Planet ordersV2 API
+site_author: Samapriya Roy
+site_url: https://github.com/samapriya
+
+site_name: porder docs
+site_description: porder-Simple CLI for Planet ordersV2 API
+
+site_author: Samapriya Roy
+site_url: https://github.com/samapriya
+
+# Repository
+repo_name: porder
+repo_url: https://github.com/tyson-swetnam/porder
+
+# Copyright
+copyright: 'Copyright &copy; 2021 - 2022 Samapriya Roy'
+
+
+# Configuration
+theme:
+  name: 'material'
+
+  # 404 page
+  static_templates:
+    - 404.html
+
+  # Don't include MkDocs' JavaScript
+  include_search_page: false
+  search_index_only: true
+
+  # Default values, taken from mkdocs_theme.yml
+  language: en
+  palette:
+    scheme: default
+    primary: blue
+    accent: pink
+  font:
+    text: Google Sans
+    code: Regular
+  favicon: assets/favicon.png
+  icon:
+    logo: logo
+
+# Options
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/samapriya
+    - icon: fontawesome/brands/medium
+      link: https://medium.com/@samapriyaroy
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/samapriyaroy
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/samapriya
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - abbr
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+
+# Page tree
+nav:
+  - Introduction: index.md
+  - License: license.md
+  - Prerequisites: prerequisites.md
+  - General Installation: installation.md
+  - Windows Setup:
+    - Setup: projects/setup.md
+    - Auto Install using porder: projects/autoinstall.md
+    - Pipwin Installation: projects/pipwin.md
+    - Package installation: projects/package-install.md
+  - porder tools:
+    - Quota tool: projects/quota.md
+    - base46 encoding: projects/base64.md
+    - Convert to GeoJSON: projects/convert2geojson.md
+    - Simplify geometry: projects/simplify.md
+  - Placing an order:
+    - Getting an idlist: projects/idlist.md
+    - Split a long idlist: projects/idsplit.md
+    - Get your bundle type: projects/bundle.md
+    - Place an order: projects/order.md
+    - Reorder an order: projects/reorder.md
+  - Download an order:
+    - Simple Downloader: projects/download.md
+    - Multipart Downloader: projects/multipart.md
+    - Multiprocessing or Async Downloading: projects/multiprocessing.md
+  - Additional tools:
+    - Cancel order or orders: projects/cancel.md
+    - Order stats: projects/orderstats.md
+    - Order size: projects/ordersize.md
+    - Order state check: projects/statecheck.md
+  - FAQ:
+    - Clipping images: projects/clipping.md
+    - Band Math on Clipped Images: projects/bandmath.md
+    - Using zip: projects/zip.md
+    - GEE Delivery: projects/gee.md
+  - Changelog: changelog.md

@@ -62,7 +62,7 @@ if str(platform.system().lower()) == "windows":
         home_dir = expanduser("~")
         fullpath = os.path.join(home_dir, ".pipwin")
         file_mod_time = os.stat(fullpath).st_mtime
-        if int((time.time() - file_mod_time) / 60) > 20160:
+        if int((time.time() - file_mod_time) / 60) > 43200:
             print("Refreshing your pipwin cache")
             subprocess.call("pipwin refresh", shell=True)
     except ImportError:
@@ -575,10 +575,10 @@ def main(args=None):
         "--input", help="Input geometry file for now geojson/json/kml", required=True
     )
     required_named.add_argument(
-        "--start", help="Start date in format YYYY-MM-DD", required=True
+        "--start", help="Start Date &/or Time yyyy-mm-ddTHH:MM:SS", required=True
     )
     required_named.add_argument(
-        "--end", help="End date in format YYYY-MM-DD", required=True
+        "--end", help="End Date &/or Time yyyy-mm-ddTHH:MM:SS", required=True
     )
     required_named.add_argument(
         "--item",
@@ -638,8 +638,8 @@ def main(args=None):
     required_named.add_argument(
         "--asset", help="Asset Type analytic, analytic_sr,visual etc", required=True
     )
-    required_named.add_argument("--start", help="Start Date YYYY-MM-DD", required=True)
-    required_named.add_argument("--end", help="End Date YYYY-MM-DD", required=True)
+    required_named.add_argument("--start", help="Start date in format YYYY-MM-DD", required=True)
+    required_named.add_argument("--end", help="End date in format YYYY-MM-DD", required=True)
     required_named.add_argument(
         "--outfile", help="Full path to CSV file with difference ID list", required=True
     )

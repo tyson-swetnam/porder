@@ -2,7 +2,7 @@ from __future__ import print_function
 
 __copyright__ = """
 
-    Copyright 2019 Samapriya Roy
+    Copyright 2021 Samapriya Roy
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -33,6 +33,10 @@ from planet.api import filters
 from planet.api.auth import find_api_key
 from shapely.geometry import shape
 from shapely.ops import transform
+from datetime import datetime
+from datetime import timezone
+from time import mktime
+from planet.api.utils import strp_lenient
 
 try:
     PL_API_KEY = find_api_key()
@@ -47,6 +51,24 @@ temp = {"coordinates": [], "type": "MultiPolygon"}
 tempsingle = {"coordinates": [], "type": "Polygon"}
 stbase = {"config": [], "field_name": [], "type": "StringInFilter"}
 rbase = {"config": {"gte": [], "lte": []}, "field_name": [], "type": "RangeFilter"}
+
+
+# Get time right
+def time2epoch(st):
+    str_time = datetime.strptime(st.isoformat(), "%Y-%m-%dT%H:%M:%S")
+    str_tuple = str_time.timetuple()
+    epoch_time = mktime(str_tuple)
+    return epoch_time
+
+
+def time2utc(st):
+    st_time = strp_lenient(st)
+    if st_time is not None:
+        dt_ts = datetime.fromtimestamp(time2epoch(st_time), tz=timezone.utc)
+        return dt_ts.isoformat().replace("+00:00", "Z")
+    else:
+        sys.exit("Could not parse time {}: check and retry".format(st))
+
 
 # get coordinates list depth
 def list_depth(dic, level=1):
@@ -148,13 +170,16 @@ def idl(**kwargs):
                 sys.exit(e)
         if key == "start" and value is not None:
             try:
-                start = value
+                start = time2utc(value)
                 st = filters.date_range("acquired", gte=start)
-            except Excpetion as e:
+            except Exception as e:
                 sys.exit(e)
         if key == "end" and value is not None:
-            end = value
-            ed = filters.date_range("acquired", lte=end)
+            try:
+                end = time2utc(value)
+                ed = filters.date_range("acquired", lte=end)
+            except Exception as e:
+                sys.exit(e)
         if key == "asset" and value is not None:
             try:
                 asset = value
