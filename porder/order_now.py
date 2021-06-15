@@ -337,7 +337,7 @@ def order(**kwargs):
                                 )
                                 if int(vertexcount(ft)) > 500:
                                     print(
-                                        "Simplifying geometry since Ordersv2 will only accept upto 500 vertex points"
+                                        "Simplifying geometry since Ordersv2 will only accept up to 500 vertex points"
                                     )
                                     b = vw.simplify_feature(ft, number=495)
                                     print(
@@ -474,7 +474,7 @@ def order(**kwargs):
             x.add_row([i, f])
             dbmath["bandmath"][i] = dbmath["bandmath"].pop(f)
     else:
-        print("You can only use upto 5 bands")
+        print("You can only use up to 5 bands")
         sys.exit()
 
     if len(dbmath["bandmath"]) > 0:
