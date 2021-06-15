@@ -225,39 +225,42 @@ def order(**kwargs):
                 elif items == "projection":
                     dbundle["tools"].append(dreproject)
                 elif items == "ndvi":
-                    dndvi = {"pixel_type": "32R", "ndvi": "(b4 - b3) / (b4+b3)"}
+                    dndvi = {"pixel_type": "32R", "ndvi": "(b4 - b3) / (b4 + b3)"}
                     dbmath["bandmath"].update(dndvi)
                 elif items == "gndvi":
-                    dgndvi = {"pixel_type": "32R", "gndvi": "(b4 - b2) / (b4+b2)"}
+                    dgndvi = {"pixel_type": "32R", "gndvi": "(b4 - b2) / (b4 + b2)"}
                     dbmath["bandmath"].update(dgndvi)
                 elif items == "ndwi":
-                    dndwi = {"pixel_type": "32R", "ndwi": "(b2 - b4) / (b4+b2)"}
+                    dndwi = {"pixel_type": "32R", "ndwi": "(b2 - b4) / (b4 + b2)"}
                     dbmath["bandmath"].update(dndwi)
                 elif items == "bndvi":
-                    bndvi = {"pixel_type": "32R", "bndvi": "(b4-b1)/(b4+b1)"}
+                    bndvi = {"pixel_type": "32R", "bndvi": "(b4 - b1) / (b4 + b1)"}
                     dbmath["bandmath"].update(bndvi)
-                elif items == "tvi":
-                    dtvi = {"pixel_type": "32R", "tvi": "((b4-b3)/(b4+b3)+0.5) ** 0.5"}
-                    dbmath["bandmath"].update(dtvi)
+                elif items == "tvi_deering":
+                    dtvi_deering = {"pixel_type": "32R", "tvi_deering": "(((b4 - b3) / (b4 + b3)) + 0.5) ** 0.5"}
+                    dbmath["bandmath"].update(dtvi_deering)
+                elif items == "tvi_brogeleblanc":
+                    dtvi_brogeleblanc = {"pixel_type": "32R", "tvi_brogeleblanc": "0.5 * ((120 * (b4 - b2) / 10000) - (200 * (b3 - b2) / 10000))"}
+                    dbmath["bandmath"].update(dtvi_brogeleblanc)                   
                 elif items == "osavi":
                     dosavi = {
                         "pixel_type": "32R",
-                        "osavi": "1.16 * (b4-b3)/(b4+b3+0.16)",
+                        "osavi": "1.16 * (b4 - b3) / (b4 + b3 + (0.16 * 10000))",
                     }
                     dbmath["bandmath"].update(dosavi)
                 elif items == "evi2":
                     devi2 = {
                         "pixel_type": "32R",
-                        "evi2": "2.5 * (b4 - b3) / ((b4 + (2.4* b3) + 1))",
+                        "evi2": "2.5 * (b4 - b3) / (b4 + (2.4 * b3) + (1 * 10000))",
                     }
                     dbmath["bandmath"].update(devi2)
                 elif items == "sr":
-                    dsr = {"pixel_type": "32R", "sr": "(b4/b3)"}
+                    dsr = {"pixel_type": "32R", "sr": "(b4 / b3)"}
                     dbmath["bandmath"].update(dsr)
                 elif items == "msavi2":
                     dmsavi2 = {
                         "pixel_type": "32R",
-                        "msavi2": "(2 * b4 - ((2 * b4 + 1) ** 2 - 8 * (b4 - b3)) ** 0.5) / 2",
+                        "msavi2": "((2 * b4 / 10000) + 1 - (((((2 * b4 / 10000) + 1) ** 2) - (8 * (b4 - b3) / 10000)) ** 0.5)) / 2",
                     }
                     dbmath["bandmath"].update(dmsavi2)
                 elif items == "compression":
