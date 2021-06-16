@@ -570,6 +570,13 @@ A simple setup would be
 
 ## Changelog
 
+### v0.8.2
+- [Pull request 48](https://github.com/tyson-swetnam/porder/pull/48)
+- fixes typos and equations for bandmath and includes additional reference information
+- increased pipwin check time to 60+ days
+- added better version check and handling
+- updated license date and minor fixes
+
 ### v0.8.1
 - Search function can now parse date and time. Enhancement from [Issue 47](https://github.com/tyson-swetnam/porder/issues/47)
 - Updated readme site to include search examples

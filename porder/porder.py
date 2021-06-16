@@ -2,7 +2,7 @@ from __future__ import print_function
 
 __copyright__ = """
 
-    Copyright 2019 Samapriya Roy
+    Copyright 2021 Samapriya Roy
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ if str(platform.system().lower()) == "windows":
         home_dir = expanduser("~")
         fullpath = os.path.join(home_dir, ".pipwin")
         file_mod_time = os.stat(fullpath).st_mtime
-        if int((time.time() - file_mod_time) / 60) > 43200:
+        if int((time.time() - file_mod_time) / 60) > 90000:
             print("Refreshing your pipwin cache")
             subprocess.call("pipwin refresh", shell=True)
     except ImportError:
@@ -126,16 +126,34 @@ sys.path.append(lpath)
 
 
 # Get package version
+class Solution:
+    def compareVersion(self, version1, version2):
+        versions1 = [int(v) for v in version1.split(".")]
+        versions2 = [int(v) for v in version2.split(".")]
+        for i in range(max(len(versions1), len(versions2))):
+            v1 = versions1[i] if i < len(versions1) else 0
+            v2 = versions2[i] if i < len(versions2) else 0
+            if v1 > v2:
+                return 1
+            elif v1 < v2:
+                return -1
+        return 0
+
+
+ob1 = Solution()
+
+# Get package version
 def porder_version():
     url = "https://pypi.org/project/porder/"
     source = requests.get(url)
     html_content = source.text
     soup = BeautifulSoup(html_content, "html.parser")
     company = soup.find("h1")
-    if (
-        not pkg_resources.get_distribution("porder").version
-        == company.string.strip().split(" ")[-1]
-    ):
+    vcheck = ob1.compareVersion(
+        company.string.strip().split(" ")[-1],
+        pkg_resources.get_distribution("porder").version,
+    )
+    if vcheck == 1:
         print(
             "\n"
             + "========================================================================="
@@ -149,10 +167,25 @@ def porder_version():
         print(
             "========================================================================="
         )
+    elif vcheck == -1:
+        print(
+            "\n"
+            + "========================================================================="
+        )
+        print(
+            "Possibly running staging code {} compared to pypi release {}".format(
+                pkg_resources.get_distribution("porder").version,
+                company.string.strip().split(" ")[-1],
+            )
+        )
+        print(
+            "========================================================================="
+        )
 
 
-def version_from_parser(args):
-    porder_version()
+porder_version()
+
+
 
 
 # Go to the readMe
@@ -522,7 +555,6 @@ def multiproc_from_parser(args):
             )
 
 
-porder_version()
 print("")
 
 spacing = "                               "
