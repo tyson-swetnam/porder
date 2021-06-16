@@ -752,7 +752,7 @@ def main(args=None):
     optional_named.add_argument(
         "--op",
         nargs="+",
-        help="Add operations, delivery & notification clip|toar|harmonize|composite|zip|zipall|compression|projection|kernel|coreg|format|aws|azure|gcs|gee|email <Choose indices from>: ndvi|gndvi|bndvi|ndwi|tvi|osavi|evi2|msavi2|sr",
+        help="Add operations, delivery & notification clip|toar|harmonize|composite|zip|zipall|compression|projection|kernel|coreg|format|aws|azure|gcs|gee|email <Choose indices from>: ndvi|gndvi|ndwi|bndvi|tvi_deering|tvi_brogeleblanc|osavi|evi2|sr|msavi2",
         default=None,
     )
 
