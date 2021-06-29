@@ -32,6 +32,7 @@ import clipboard
 import platform
 import datetime
 import pkg_resources
+import dateutil.parser
 from bs4 import BeautifulSoup
 from pySmartDL import SmartDL
 from os.path import expanduser
@@ -351,18 +352,15 @@ def idsplit_from_parser(args):
 
 # Get package version
 def bundles(item):
-    url = "https://developers.planet.com/docs/orders/product-bundles-reference/"
-    html = requests.get(url).text
-    soup = BeautifulSoup(html, "html.parser")
+    url = "https://developers.planet.com/theme/js/scrub_all_bundles_bundle_spec.json"
+    date_response = requests.get(url).json()
+    ref_date = dateutil.parser.parse(date_response['version'])
     with open(os.path.join(lpath, "bundles.json")) as f:
-        r = json.load(f)
-        current = r["version"]
-        curr_date = datetime.datetime.strptime(current, "%Y-%m-%d")
-    for detail in soup.find_all("em"):
-        release = detail.text.split(":")[1].strip()
-        ref_date = datetime.datetime.strptime(release, "%Y-%m-%d")
+        r=json.load(f)
+        current= r['version']
+        curr_date = dateutil.parser.parse(current)
     if curr_date < ref_date:
-        print("Refreshing bundles to " + "\n" + str(release))
+        print("Refreshing bundles to " + "\n" + str(date_response['version']))
         try:
             url = "https://developers.planet.com/theme/js/scrub_all_bundles_bundle_spec.json"
             dest = os.path.join(lpath, "bundles.json")

@@ -570,6 +570,10 @@ A simple setup would be
 
 ## Changelog
 
+### v0.8.3
+- Fixed bundle parsing
+- Updated based bundles
+
 ### v0.8.2
 - [Pull request 48](https://github.com/tyson-swetnam/porder/pull/48)
 - fixes typos and equations for bandmath and includes additional reference information
