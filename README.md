@@ -17,8 +17,8 @@ If you use this tool to download data and find it useful please star us on GitHu
 If you publish research which used this tool, please use this citation:
 
 ```
-Samapriya Roy, & Tyson L. Swetnam. (2021, March 29). tyson-swetnam/porder: porder: Simple CLI for Planet ordersV2 API (Version 0.8.1). Zenodo.
-https://doi.org/10.5281/zenodo.4646280
+Samapriya Roy, & Tyson L. Swetnam. (2021, July 7). tyson-swetnam/porder: porder: Simple CLI for Planet ordersV2 API (Version 0.8.1). Zenodo.
+https://doi.org/10.5281/zenodo.5079783
 ```
 
 ### **[Read the Guided Docs here](https://tyson-swetnam.github.io/porder/)**
