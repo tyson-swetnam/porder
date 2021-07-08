@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.8.4
+- Resolved [Issue 49](https://github.com/tyson-swetnam/porder/issues/49)
+- Download now contains manifest.json for cross checking delivery
+
 ### v0.8.3
 - Fixed bundle parsing
 - Updated based bundles

@@ -138,8 +138,8 @@ def funct(url, final, ext):
                             print(e)
                 else:
                     print(resp.status_code)
-            else:
-                local_path = os.path.join(final, str(os.path.split(items["name"])[-1]))
+
+            local_path = os.path.join(final, str(os.path.split(items["name"])[-1]))
             filenames = [os.path.join(final, files) for files in filenames]
             if not local_path in filenames:
                 url_to_check = url if url.startswith("https") else "http://%s" % url
