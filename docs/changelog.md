@@ -1,5 +1,8 @@
 # Changelog
 
+### v0.8.5
+- Fixed minor issue with import error checking for GDAL
+
 ### v0.8.4
 - Resolved [Issue 49](https://github.com/tyson-swetnam/porder/issues/49)
 - Download now contains manifest.json for cross checking delivery
