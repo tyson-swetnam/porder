@@ -77,9 +77,9 @@ if str(platform.system().lower()) == "windows":
         print(e)
     try:
         import gdal
-    except ImportError or ModuleNotFoundError:
+    except ModuleNotFoundError or ImportError:
         from osgeo import gdal
-    except ImportError or ModuleNotFoundError:
+    except ModuleNotFoundError or ImportError:
         subprocess.call("pipwin install gdal", shell=True)
     except Exception as e:
         print(e)
