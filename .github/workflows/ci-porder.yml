@@ -31,6 +31,8 @@ jobs:
         pip install -U pip setuptools
         pip install pipwin==0.5.0
         pip install pandas wheel numpy
+        pipwin refresh
+        pipwin install gdal
       if: matrix.os == 'windows-latest'
     - name: Install Dependencies (Windows)
       continue-on-error: true
