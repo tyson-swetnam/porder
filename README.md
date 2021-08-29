@@ -404,7 +404,7 @@ composite | Composite number of images in a given order
 zip | Zip bundles together and creates downloads (each asset has a single bundle so multiple zip files)
 zipall | Create a single zip file containing all assets
 compression | Use image compression
-projection | Reproject before downloaing image
+projection | Reproject before downloading image
 aws | Option called to specify delivery to AWS
 azure | Option called to specify delivery to AZURE
 gcs | Option called to specify delivery to GCS
