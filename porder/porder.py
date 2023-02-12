@@ -19,110 +19,97 @@ __copyright__ = """
 """
 __license__ = "Apache 2.0"
 
-import subprocess
 import argparse
-import os
-import time
-import sys
-import json
 import base64
-import requests
-import webbrowser
-import clipboard
-import platform
 import datetime
-import pkg_resources
-import dateutil.parser
-from bs4 import BeautifulSoup
-from pySmartDL import SmartDL
+import json
+import os
+import platform
+import subprocess
+import sys
+import time
+import webbrowser
 from os.path import expanduser
 
+import clipboard
+import dateutil.parser
+import pkg_resources
+import requests
+from bs4 import BeautifulSoup
+from pySmartDL import SmartDL
+
 if str(platform.system().lower()) == "windows":
-    # Get python runtime version
     version = sys.version_info[0]
     try:
-        import pipwin
-
-        if pipwin.__version__ == "0.5.0":
-            pass
-        else:
-            a = subprocess.call(
-                "{} -m pip install pipwin==0.5.0".format(sys.executable),
-                shell=True,
-                stdout=subprocess.PIPE,
-            )
-            b = subprocess.call(
-                "{} -m pip install wheel".format(sys.executable),
-                shell=True,
-                stdout=subprocess.PIPE,
-            )
-            subprocess.call("pipwin refresh", shell=True)
-        """Check if the pipwin cache is old: useful if you are upgrading porder on windows
-        [This section looks if the pipwin cache is older than two weeks]
-        """
-        home_dir = expanduser("~")
-        fullpath = os.path.join(home_dir, ".pipwin")
-        file_mod_time = os.stat(fullpath).st_mtime
-        if int((time.time() - file_mod_time) / 60) > 90000:
-            print("Refreshing your pipwin cache")
-            subprocess.call("pipwin refresh", shell=True)
-    except ImportError:
-        a = subprocess.call(
-            "{} -m pip install pipwin==0.5.0".format(sys.executable),
-            shell=True,
-            stdout=subprocess.PIPE,
+        import pipgeo
+        response = requests.get('https://pypi.org/pypi/pipgeo/json')
+        latest_version = response.json()['info']['version']
+        vcheck = ob1.compareVersion(
+            latest_version,
+            pkg_resources.get_distribution("pipgeo").version,
         )
-        subprocess.call("pipwin refresh", shell=True)
+        if vcheck == 1:
+            subprocess.call(
+                f"{sys.executable}" + " -m pip install pipgeo --upgrade", shell=True
+            )
+    except ImportError:
+        subprocess.call(
+            f"{sys.executable}" + " -m pip install pipgeo", shell=True
+        )
     except Exception as e:
-        print(e)
+        logger.exception(e)
     try:
         import gdal
     except ImportError:
         try:
             from osgeo import gdal
         except ModuleNotFoundError:
-            subprocess.call("pipwin install gdal", shell=True)
+            subprocess.call("pipgeo fetch --lib gdal", shell=True)
     except ModuleNotFoundError or ImportError:
-        subprocess.call("pipwin install gdal", shell=True)
+        subprocess.call("pipgeo fetch --lib gdal", shell=True)
     except Exception as e:
-        print(e)
+        logger.exception(e)
     try:
         import pyproj
-    except ImportError:
-        subprocess.call("pipwin install pyproj", shell=True)
+    except ModuleNotFoundError or ImportError:
+        subprocess.call("pipgeo fetch --lib pyproj", shell=True)
     except Exception as e:
-        print(e)
+        logger.exception(e)
     try:
         import shapely
-    except ImportError:
-        subprocess.call("pipwin install shapely", shell=True)
+    except ModuleNotFoundError or ImportError:
+        subprocess.call("pipgeo fetch --lib shapely", shell=True)
     except Exception as e:
-        print(e)
+        logger.exception(e)
     try:
         import fiona
-    except ImportError:
-        subprocess.call("pipwin install fiona", shell=True)
+    except ModuleNotFoundError or ImportError:
+        subprocess.call("pipgeo fetch --lib fiona", shell=True)
     except Exception as e:
-        print(e)
+        logger.exception(e)
     try:
         import geopandas
     except ImportError:
-        subprocess.call("pipwin install geopandas", shell=True)
+        subprocess.call(
+            f"{sys.executable}" + " -m pip install geopandas", shell=True
+        )
     except Exception as e:
-        print(e)
+        logger.exception(e)
+
+from planet.api.auth import find_api_key
+
+from .async_downloader import asyncdownload
 from .conv2geojson import convert
-from .geojson_simplify import geosimple
+from .diffcheck import checker
+from .downloader import download
 from .geojson2id import idl
-from .text_split import idsplit
+from .geojson_simplify import geosimple
+from .idcheck import idc
 from .order_now import order
 from .order_size import ordersize
-from .downloader import download
-from .diffcheck import checker
 from .ordstat import ostat
-from .async_downloader import asyncdownload
-from .idcheck import idc
 from .resubmit import reorder
-from planet.api.auth import find_api_key
+from .text_split import idsplit
 
 if str(platform.python_version()) > "3.3.0":
     from .async_down import downloader
@@ -149,6 +136,8 @@ class Solution:
 ob1 = Solution()
 
 # Get package version
+
+
 def porder_version():
     url = "https://pypi.org/project/porder/"
     source = requests.get(url)
@@ -192,8 +181,6 @@ def porder_version():
 porder_version()
 
 
-
-
 # Go to the readMe
 def readme():
     try:
@@ -213,7 +200,6 @@ def planet_quota():
     # Get API Key: Requires user to have initialized Planet CLI
     try:
         api_key = find_api_key()
-        os.environ["PLANET_API_KEY"] = find_api_key()
     except Exception as e:
         print("Failed to get Planet Key: Try planet init")
         sys.exit()
@@ -230,7 +216,8 @@ def planet_quota():
                     print(" ")
                     print("Subscription ID: %s" % item_id["id"])
                     print("Plan ID: %s" % item_id["plan_id"])
-                    print("Allocation Name: %s" % item_id["organization"]["name"])
+                    print("Allocation Name: %s" %
+                          item_id["organization"]["name"])
                     print(
                         "Allocation active from: %s"
                         % item_id["active_from"].split("T")[0]
@@ -245,7 +232,8 @@ def planet_quota():
                     print("Total Quota used: %s" % item_id["quota_used"])
                     if (item_id["quota_sqkm"]) is not None:
                         leftquota = float(
-                            item_id["quota_sqkm"] - float(item_id["quota_used"])
+                            item_id["quota_sqkm"] -
+                            float(item_id["quota_used"])
                         )
                         print("Remaining Quota in SqKm: %s" % leftquota)
                     else:
@@ -331,7 +319,8 @@ def idlist_from_parser(args):
 
 # Convert folder with multiple shapefiles to geojsons
 def idcheck_from_parser(args):
-    idc(idlist=args.idlist, item=args.item, asset=args.asset, geometry=args.geometry)
+    idc(idlist=args.idlist, item=args.item,
+        asset=args.asset, geometry=args.geometry)
 
 
 # Check difference from local filelist
@@ -357,17 +346,22 @@ def idsplit_from_parser(args):
 
 # Get package version
 def bundles(item):
-    url = "https://developers.planet.com/theme/js/scrub_all_bundles_bundle_spec.json"
-    date_response = requests.get(url).json()
+    page_url = "https://developers.planet.com/apis/orders/product-bundles-reference/"
+    req = requests.get(page_url)
+    soup = BeautifulSoup(req.text, "html.parser")
+    for link in soup.find_all('a', href=True):
+        if link.get('href').endswith('.json'):
+            bundle_url = link.get('href')
+    date_response = requests.get(bundle_url).json()
     ref_date = dateutil.parser.parse(date_response['version'])
     with open(os.path.join(lpath, "bundles.json")) as f:
-        r=json.load(f)
-        current= r['version']
+        r = json.load(f)
+        current = r['version']
         curr_date = dateutil.parser.parse(current)
     if curr_date < ref_date:
         print("Refreshing bundles to " + "\n" + str(date_response['version']))
         try:
-            url = "https://developers.planet.com/theme/js/scrub_all_bundles_bundle_spec.json"
+            url = bundle_url
             dest = os.path.join(lpath, "bundles.json")
             obj = SmartDL(url, dest)
             obj.start()
@@ -405,8 +399,8 @@ def order_from_parser(args):
         asset=args.bundle,
         sid=args.sid,
         op=args.op,
-        anchor = args.anchor,
-        format = args.format,
+        anchor=args.anchor,
+        format=args.format,
         boundary=args.boundary,
         projection=args.projection,
         gee=args.gee,
@@ -434,7 +428,8 @@ def cancel(id):
         sys.exit()
     if id == "all":
         url = "https://api.planet.com/compute/ops/bulk/orders/v2/cancel"
-        resp = requests.post(url, data="{}", headers=headers, auth=(api_key, ""))
+        resp = requests.post(
+            url, data="{}", headers=headers, auth=(api_key, ""))
         if resp.status_code == 200:
             print(
                 "Number of orders failed to cancel: "
@@ -479,7 +474,6 @@ def stats():
     # Get API Key: Requires user to have initialized Planet CLI
     try:
         api_key = find_api_key()
-        os.environ["PLANET_API_KEY"] = find_api_key()
     except Exception as e:
         print("Failed to get Planet Key: Try planet init")
         sys.exit()
@@ -506,7 +500,8 @@ def stats():
                 + str(page["user"]["queued_orders"])
             )
             print(
-                "Total running orders for user: " + str(page["user"]["running_orders"])
+                "Total running orders for user: " +
+                str(page["user"]["running_orders"])
             )
         except Exception as e:
             print(e)
@@ -581,11 +576,14 @@ def main(args=None):
         "convert", help="Convert all shapefiles or kmls in folder to GeoJSON"
     )
     parser_convert.add_argument("--source", help="Choose Source Folder")
-    parser_convert.add_argument("--destination", help="Choose Destination Folder")
+    parser_convert.add_argument(
+        "--destination", help="Choose Destination Folder")
     parser_convert.set_defaults(func=convert_metadata_from_parser)
 
-    parser_gcs_cred = subparsers.add_parser("base64", help="Base 64 encode a JSON file")
-    required_named = parser_gcs_cred.add_argument_group("Required named arguments.")
+    parser_gcs_cred = subparsers.add_parser(
+        "base64", help="Base 64 encode a JSON file")
+    required_named = parser_gcs_cred.add_argument_group(
+        "Required named arguments.")
     required_named.add_argument(
         "--cred", help="Path to GCS credential file", required=True
     )
@@ -596,7 +594,8 @@ def main(args=None):
         help="Simplifies geometry to number of vertices specified using Visvalingam-Wyatt line simplification algorithm",
     )
     parser_simplify.add_argument("--input", help="Input GeoJSON file")
-    parser_simplify.add_argument("--output", help="Output simplified GeoJSON file")
+    parser_simplify.add_argument(
+        "--output", help="Output simplified GeoJSON file")
     parser_simplify.add_argument(
         "--number", help="Total number of vertices in output GeoJSON"
     )
@@ -605,7 +604,8 @@ def main(args=None):
     parser_idlist = subparsers.add_parser(
         "idlist", help="Get idlist using geometry & filters"
     )
-    required_named = parser_idlist.add_argument_group("Required named arguments.")
+    required_named = parser_idlist.add_argument_group(
+        "Required named arguments.")
     required_named.add_argument(
         "--input", help="Input geometry file for now geojson/json/kml", required=True
     )
@@ -623,8 +623,10 @@ def main(args=None):
     required_named.add_argument(
         "--asset", help="Asset Type analytic, analytic_sr,visual etc", default=None
     )
-    required_named.add_argument("--outfile", help="Output csv file", required=True)
-    optional_named = parser_idlist.add_argument_group("Optional named arguments")
+    required_named.add_argument(
+        "--outfile", help="Output csv file", required=True)
+    optional_named = parser_idlist.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument(
         "--cmin", help="Minimum cloud cover 0-1 represents 0 to 100", default=None
     )
@@ -653,7 +655,8 @@ def main(args=None):
         "difflist",
         help="Checks the difference between local files and available Planet assets",
     )
-    required_named = parser_difflist.add_argument_group("Required named arguments.")
+    required_named = parser_difflist.add_argument_group(
+        "Required named arguments.")
     required_named.add_argument(
         "--folder",
         help="local folder where image or metadata files are stored",
@@ -673,12 +676,15 @@ def main(args=None):
     required_named.add_argument(
         "--asset", help="Asset Type analytic, analytic_sr,visual etc", required=True
     )
-    required_named.add_argument("--start", help="Start date in format YYYY-MM-DD", required=True)
-    required_named.add_argument("--end", help="End date in format YYYY-MM-DD", required=True)
+    required_named.add_argument(
+        "--start", help="Start date in format YYYY-MM-DD", required=True)
+    required_named.add_argument(
+        "--end", help="End date in format YYYY-MM-DD", required=True)
     required_named.add_argument(
         "--outfile", help="Full path to CSV file with difference ID list", required=True
     )
-    optional_named = parser_difflist.add_argument_group("Optional named arguments")
+    optional_named = parser_difflist.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument(
         "--cmin", help="Minimum cloud cover 0-1 represents 0 to 100"
     )
@@ -705,7 +711,8 @@ def main(args=None):
     parser_idcheck.add_argument("--idlist", help="Idlist csv file")
     parser_idcheck.add_argument("--item", help="Item type")
     parser_idcheck.add_argument("--asset", help="Asset type")
-    optional_named = parser_idcheck.add_argument_group("Optional named arguments")
+    optional_named = parser_idcheck.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument(
         "--geometry", help="Geometry file for clip if any", default=None
     )
@@ -721,7 +728,8 @@ def main(args=None):
         "order",
         help='Place an order & get order url currently supports "toar","clip","composite","reproject","compression"',
     )
-    required_named = parser_order.add_argument_group("Required named arguments.")
+    required_named = parser_order.add_argument_group(
+        "Required named arguments.")
     required_named.add_argument(
         "--name", help="Order Name to be Submitted", required=True
     )
@@ -738,7 +746,8 @@ def main(args=None):
         help="Bundle Type: analytic, analytic_sr,analytic_sr_udm2",
         required=True,
     )
-    optional_named = parser_order.add_argument_group("Optional named arguments")
+    optional_named = parser_order.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument("--sid", help="Subscription ID", default=None)
     optional_named.add_argument(
         "--boundary",
@@ -793,16 +802,21 @@ def main(args=None):
 
     parser_order.set_defaults(func=order_from_parser)
 
-    parser_reorder = subparsers.add_parser("reorder", help="Reorder an existing order")
-    required_named = parser_reorder.add_argument_group("Required named arguments.")
-    required_named.add_argument("--url", help="Order url to be ordered", required=True)
-    optional_named = parser_reorder.add_argument_group("Optional named arguments")
+    parser_reorder = subparsers.add_parser(
+        "reorder", help="Reorder an existing order")
+    required_named = parser_reorder.add_argument_group(
+        "Required named arguments.")
+    required_named.add_argument(
+        "--url", help="Order url to be ordered", required=True)
+    optional_named = parser_reorder.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument(
         "--notification", help='Use "email" to get an email notification', default=None
     )
     parser_reorder.set_defaults(func=reorder_from_parser)
 
-    parser_cancel = subparsers.add_parser("cancel", help="Cancel queued order(s)")
+    parser_cancel = subparsers.add_parser(
+        "cancel", help="Cancel queued order(s)")
     parser_cancel.add_argument(
         "--id", help='order id you want to cancel use "all" to cancel all'
     )
@@ -811,7 +825,8 @@ def main(args=None):
     parser_ordersize = subparsers.add_parser(
         "ordersize", help="Estimate total download size"
     )
-    parser_ordersize.add_argument("--url", help="order url you got for your order")
+    parser_ordersize.add_argument(
+        "--url", help="order url you got for your order")
     parser_ordersize.set_defaults(func=ordersize_from_parser)
 
     parser_ostate = subparsers.add_parser(
@@ -821,9 +836,11 @@ def main(args=None):
         "--state",
         help="choose state between queued| running | success | failed | partial",
     )
-    parser_ostate.add_argument("--start", help="start date in format YYYY-MM-DD")
+    parser_ostate.add_argument(
+        "--start", help="start date in format YYYY-MM-DD")
     parser_ostate.add_argument("--end", help="end date in format YYYY-MM-DD")
-    optional_named = parser_ostate.add_argument_group("Optional named arguments")
+    optional_named = parser_ostate.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument(
         "--limit", help="Limit the maximum table size", default=None
     )
@@ -837,11 +854,13 @@ def main(args=None):
     parser_download = subparsers.add_parser(
         "download", help="Downloads all files in your order"
     )
-    parser_download.add_argument("--url", help="order url you got for your order")
+    parser_download.add_argument(
+        "--url", help="order url you got for your order")
     parser_download.add_argument(
         "--local", help="Output folder where ordered files will be exported"
     )
-    optional_named = parser_download.add_argument_group("Optional named arguments")
+    optional_named = parser_download.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument(
         "--ext", help="File Extension to download", default=None
     )
@@ -850,11 +869,13 @@ def main(args=None):
     parser_asyncdownload = subparsers.add_parser(
         "multipart", help="Uses multiprocessing to download for all files in your order"
     )
-    parser_asyncdownload.add_argument("--url", help="order url you got for your order")
+    parser_asyncdownload.add_argument(
+        "--url", help="order url you got for your order")
     parser_asyncdownload.add_argument(
         "--local", help="Output folder where ordered files will be exported"
     )
-    optional_named = parser_asyncdownload.add_argument_group("Optional named arguments")
+    optional_named = parser_asyncdownload.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument(
         "--ext", help="File Extension to download", default=None
     )
@@ -864,11 +885,13 @@ def main(args=None):
         "multiproc",
         help="Multiprocess based downloader to download for all files in your order",
     )
-    parser_multiproc.add_argument("--url", help="order url you got for your order")
+    parser_multiproc.add_argument(
+        "--url", help="order url you got for your order")
     parser_multiproc.add_argument(
         "--local", help="Output folder where ordered files will be exported"
     )
-    optional_named = parser_multiproc.add_argument_group("Optional named arguments")
+    optional_named = parser_multiproc.add_argument_group(
+        "Optional named arguments")
     optional_named.add_argument(
         "--ext", help="File Extension to download", default=None
     )

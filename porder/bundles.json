@@ -1,8 +1,8 @@
 {
   "bundles": {
     "analytic": {
-      "name": "Analytic Radiance",
-      "description": "Orthorectified product, calibrated to at-sensor radiance",
+      "name": "Analytic Radiance (TOAR)",
+      "description": "Calibrated to top of atmosphere radiance",
       "bands": "all",
       "rectification": "orthorectified",
       "radiometry": "at-sensor",
@@ -75,13 +75,13 @@
       }
     },
     "analytic_udm2": {
-      "name": "Analytic Radiance with UDM2",
-      "description": "Orthorectified product, calibrated to at-sensor radiance. Includes udm2.",
+      "name": "Analytic Radiance (TOAR)",
+      "description": "Calibrated to top of atmosphere radiance",
       "bands": "all",
       "rectification": "orthorectified",
       "radiometry": "at-sensor",
       "fileType": "GeoTIFF",
-      "auxiliaryFiles": "udm and udm2",
+      "auxiliaryFiles": "udm, udm2",
       "assets": {
         "PSOrthoTile": [
           "analytic",
@@ -95,6 +95,11 @@
           "udm",
           "udm2"
         ],
+        "PSScene": [
+          "ortho_analytic_4b",
+          "ortho_analytic_4b_xml",
+          "ortho_udm2"
+        ],
         "SkySatScene": [
           "ortho_analytic",
           "ortho_analytic_udm",
@@ -107,9 +112,74 @@
         ]
       }
     },
+    "analytic_3b_udm2": {
+      "name": "Analytic Radiance (TOAR) 3b",
+      "description": "Calibrated to top of atmosphere radiance, 3 band",
+      "bands": "3-band",
+      "rectification": "orthorectified",
+      "radiometry": "at-sensor",
+      "fileType": "GeoTIFF",
+      "auxiliaryFiles": "udm2",
+      "assets": {
+        "PSScene": [
+          "ortho_analytic_3b",
+          "ortho_analytic_3b_xml",
+          "ortho_udm2"
+        ]
+      }
+    },
+    "analytic_5b": {
+      "name": "Analytic Radiance (TOAR) 5b",
+      "description": "Calibrated to top of atmosphere radiance, 5 band",
+      "bands": "all",
+      "rectification": "orthorectified",
+      "radiometry": "at-sensor",
+      "fileType": "GeoTIFF",
+      "auxiliaryFiles": "udm",
+      "assets": {
+        "PSOrthoTile": [
+          "analytic_5b",
+          "analytic_5b_xml",
+          "udm"
+        ]
+      }
+    },
+    "analytic_5b_udm2": {
+      "name": "Analytic Radiance (TOAR) 5b",
+      "description": "Calibrated to top of atmosphere radiance, 5 band",
+      "bands": "all",
+      "rectification": "orthorectified",
+      "radiometry": "at-sensor",
+      "fileType": "GeoTIFF",
+      "auxiliaryFiles": "udm, udm2",
+      "assets": {
+        "PSOrthoTile": [
+          "analytic_5b",
+          "analytic_5b_xml",
+          "udm",
+          "udm2"
+        ]
+      }
+    },
+    "analytic_8b_udm2": {
+      "name": "Analytic Radiance (TOAR) 8b",
+      "description": "Calibrated to top of atmosphere radiance, 8 band",
+      "bands": "8-band",
+      "rectification": "orthorectified",
+      "radiometry": "at-sensor",
+      "fileType": "GeoTIFF",
+      "auxiliaryFiles": "udm2",
+      "assets": {
+        "PSScene": [
+          "ortho_analytic_8b",
+          "ortho_analytic_8b_xml",
+          "ortho_udm2"
+        ]
+      }
+    },
     "visual": {
       "name": "Visual",
-      "description": "Orthorectified product, visually enhanced for optimal appearance",
+      "description": "RGB only -- color corrected and optimized for visual analysis",
       "bands": "3-band",
       "rectification": "orthorectified",
       "radiometry": "visual",
@@ -125,6 +195,9 @@
         "PSScene3Band": [
           "visual",
           "visual_xml"
+        ],
+        "PSScene": [
+          "ortho_visual"
         ],
         "REOrthoTile": [
           "visual",
@@ -143,7 +216,7 @@
     },
     "uncalibrated_dn": {
       "name": "Uncalibrated DN",
-      "description": "Orthorectified product, non-radiometrically-calibrated, raw digital number",
+      "description": "Uncalibrated digital numbers, suitable for custom radiometric processing",
       "bands": "all",
       "rectification": "orthorectified",
       "radiometry": "digital numbers",
@@ -176,13 +249,13 @@
       }
     },
     "uncalibrated_dn_udm2": {
-      "name": "Uncalibrated DN with UDM2",
-      "description": "Orthorectified product, non-radiometrically-calibrated, raw digital number. Includes udm2.",
+      "name": "Uncalibrated DN",
+      "description": "Uncalibrated digital numbers, suitable for custom radiometric processing",
       "bands": "all",
       "rectification": "orthorectified",
       "radiometry": "digital numbers",
       "fileType": "GeoTIFF",
-      "auxiliaryFiles": "udm and udm2",
+      "auxiliaryFiles": "udm, udm2",
       "assets": {
         "PSOrthoTile": [
           "analytic_dn",
@@ -209,8 +282,8 @@
       }
     },
     "basic_analytic": {
-      "name": "Non-Orthorectified Analytic Radiance",
-      "description": "Non-orthorectified, calibrated to at-sensor radiance",
+      "name": "Basic Analytic Radiance (TOAR)",
+      "description": "Calibrated to top of atmosphere radiance - includes RPC text file for georeferencing",
       "bands": "all",
       "rectification": "non-orthorectified",
       "radiometry": "at-sensor",
@@ -249,13 +322,13 @@
       }
     },
     "basic_analytic_udm2": {
-      "name": "Non-Orthorectified Analytic Radiance with UDM2",
-      "description": "Non-orthorectified, calibrated to at-sensor radiance. Includes udm2.",
+      "name": "Basic Analytic Radiance (TOAR)",
+      "description": "Calibrated to top of atmosphere radiance - includes RPC text file for georeferencing",
       "bands": "all",
       "rectification": "non-orthorectified",
       "radiometry": "at-sensor",
       "fileType": "TIFF and RPCs",
-      "auxiliaryFiles": "udm and udm2",
+      "auxiliaryFiles": "udm, udm2",
       "assets": {
         "PSScene4Band": [
           "basic_analytic",
@@ -264,16 +337,40 @@
           "basic_analytic_rpc",
           "basic_analytic_xml"
         ],
+        "PSScene": [
+          "basic_analytic_4b",
+          "basic_udm2",
+          "basic_analytic_4b_rpc",
+          "basic_analytic_4b_xml"
+        ],
         "SkySatScene": [
           "basic_analytic",
           "basic_analytic_rpc",
-          "basic_analytic_udm"
+          "basic_analytic_udm",
+          "basic_analytic_udm2"
+        ]
+      }
+    },
+    "basic_analytic_8b_udm2": {
+      "name": "Basic Analytic Radiance (TOAR) 8b",
+      "description": "Calibrated to top of atmosphere radiance - includes RPC text file for georeferencing",
+      "bands": "8-band",
+      "rectification": "non-orthorectified",
+      "radiometry": "at-sensor",
+      "fileType": "TIFF and RPCs",
+      "auxiliaryFiles": "udm2",
+      "assets": {
+        "PSScene": [
+          "basic_analytic_8b",
+          "basic_udm2",
+          "basic_analytic_4b_rpc",
+          "basic_analytic_8b_xml"
         ]
       }
     },
     "basic_uncalibrated_dn": {
-      "name": "Non-Orthorectified, Uncalibrated DN",
-      "description": "Non-orthorectified, non-radiometrically-calibrated, raw digital number",
+      "name": "Basic Uncalibrated DN",
+      "description": "Uncalibrated digital numbers - includes RPC text file for georeferencing",
       "bands": "all",
       "rectification": "non-orthorectified",
       "radiometry": "digital numbers",
@@ -300,13 +397,13 @@
       }
     },
     "basic_uncalibrated_dn_udm2": {
-      "name": "Non-Orthorectified, Uncalibrated DN with UDM2",
-      "description": "Non-orthorectified, non-radiometrically-calibrated, raw digital number. Includes udm2.",
+      "name": "Basic Uncalibrated DN",
+      "description": "Uncalibrated digital numbers - includes RPC text file for georeferencing",
       "bands": "all",
       "rectification": "non-orthorectified",
       "radiometry": "digital numbers",
       "fileType": "TIFF and RPCs",
-      "auxiliaryFiles": "udm and udm2",
+      "auxiliaryFiles": "udm, udm2",
       "assets": {
         "PSScene4Band": [
           "basic_analytic_dn",
@@ -318,13 +415,14 @@
         "SkySatScene": [
           "basic_analytic_dn",
           "basic_analytic_dn_rpc",
-          "basic_analytic_udm"
+          "basic_analytic_udm",
+          "basic_analytic_udm2"
         ]
       }
     },
     "analytic_sr": {
-      "name": "Analytic Surface Reflectance",
-      "description": "Orthorectified product, radiometrically calibrated and atmospherically corrected to surface reflectance",
+      "name": "Surface Reflectance",
+      "description": "Corrected for surface reflectance – recommended for most analytic applications",
       "bands": "all",
       "rectification": "orthorectified",
       "radiometry": "surface reflectance",
@@ -332,6 +430,16 @@
       "auxiliaryFiles": "udm",
       "assets": {
         "PSScene4Band": [
+          "analytic_sr",
+          "udm",
+          "analytic_xml"
+        ],
+        "PSOrthoTile": [
+          "analytic_sr",
+          "udm",
+          "analytic_xml"
+        ],
+        "REOrthoTile": [
           "analytic_sr",
           "udm",
           "analytic_xml"
@@ -403,29 +511,74 @@
           "analytic_obscov_500m",
           "analytic_iobs_res",
           "analytic_q_scan"
+        ],
+        "SkySatCollect": [
+          "ortho_analytic_sr",
+          "ortho_analytic_udm"
+        ],
+        "SkySatScene": [
+          "ortho_analytic_sr",
+          "ortho_analytic_udm"
         ]
       }
     },
     "analytic_sr_udm2": {
-      "name": "Analytic Surface Reflectance with UDM2",
-      "description": "Orthorectified product, radiometrically calibrated and atmospherically corrected to surface reflectance. Includes udm2.",
+      "name": "Surface Reflectance 4b",
+      "description": "Corrected for surface reflectance – recommended for most analytic applications, 4 band",
       "bands": "all",
       "rectification": "orthorectified",
       "radiometry": "surface reflectance",
       "fileType": "GeoTIFF",
-      "auxiliaryFiles": "udm and udm2",
+      "auxiliaryFiles": "udm, udm2",
       "assets": {
         "PSScene4Band": [
           "analytic_sr",
           "analytic_xml",
           "udm",
           "udm2"
+        ],
+        "PSScene": [
+          "ortho_analytic_4b_sr",
+          "ortho_analytic_4b_xml",
+          "ortho_udm2"
+        ],
+        "PSOrthoTile": [
+          "analytic_sr",
+          "udm",
+          "udm2",
+          "analytic_xml"
+        ],
+        "SkySatCollect": [
+          "ortho_analytic_sr",
+          "ortho_analytic_udm",
+          "ortho_analytic_udm2"
+        ],
+        "SkySatScene": [
+          "ortho_analytic_sr",
+          "ortho_analytic_udm",
+          "ortho_analytic_udm2"
+        ]
+      }
+    },
+    "analytic_8b_sr_udm2": {
+      "name": "Surface Reflectance 8b",
+      "description": "Corrected for surface reflectance – recommended for most analytic applications, 8 band",
+      "bands": "8-band",
+      "rectification": "orthorectified",
+      "radiometry": "surface reflectance",
+      "fileType": "GeoTIFF",
+      "auxiliaryFiles": "udm2",
+      "assets": {
+        "PSScene": [
+          "ortho_analytic_8b_sr",
+          "ortho_analytic_8b_xml",
+          "ortho_udm2"
         ]
       }
     },
     "basic_uncalibrated_dn_nitf": {
-      "name": "Non-Orthorectified, Uncalibrated DN NITF",
-      "description": "Non-orthorectified, non-radiometrically-calibrated, raw digital number in NITF format",
+      "name": "Basic Uncalibrated DN - NITF",
+      "description": "Uncalibrated digital numbers - includes RPC text file for georeferencing",
       "bands": "all",
       "rectification": "non-orthorectified",
       "radiometry": "digital numbers",
@@ -441,13 +594,13 @@
       }
     },
     "basic_uncalibrated_dn_nitf_udm2": {
-      "name": "Non-Orthorectified, Uncalibrated DN NITF with UDM2",
-      "description": "Non-orthorectified, non-radiometrically-calibrated, raw digital number in NITF format. Includes udm2.",
+      "name": "Basic Uncalibrated DN - NITF",
+      "description": "Uncalibrated digital numbers - includes RPC text file for georeferencing",
       "bands": "all",
       "rectification": "non-orthorectified",
       "radiometry": "digital numbers",
       "fileType": "NITF",
-      "auxiliaryFiles": "udm and udm2",
+      "auxiliaryFiles": "udm, udm2",
       "assets": {
         "PSScene4Band": [
           "basic_analytic_dn_nitf",
@@ -459,8 +612,8 @@
       }
     },
     "basic_analytic_nitf": {
-      "name": "Non-Orthorectified Analytic Radiance NITF",
-      "description": "Non-orthorectified, calibrated to at-sensor radiance, in NITF format",
+      "name": "Basic Analytic Radiance (TOAR) – NITF",
+      "description": " Calibrated to top of atmosphere radiance - includes RPC text file for georeferencing",
       "bands": "all",
       "rectification": "non-orthorectified",
       "radiometry": "at-sensor",
@@ -488,13 +641,13 @@
       }
     },
     "basic_analytic_nitf_udm2": {
-      "name": "Non-Orthorectified Analytic Radiance NITF with UDM2",
-      "description": "Non-orthorectified, calibrated to at-sensor radiance, in NITF format. Includes udm2.",
+      "name": "Basic Analytic Radiance (TOAR) – NITF",
+      "description": " Calibrated to top of atmosphere radiance - includes RPC text file for georeferencing",
       "bands": "all",
       "rectification": "non-orthorectified",
       "radiometry": "at-sensor",
       "fileType": "NITF",
-      "auxiliaryFiles": "udm and udm2",
+      "auxiliaryFiles": "udm, udm2",
       "assets": {
         "PSScene4Band": [
           "basic_analytic_nitf",
@@ -506,8 +659,8 @@
       }
     },
     "basic_panchromatic": {
-      "name": "Non-orthorectified, scaled radiance image",
-      "description": "Non-orthorectified radiometrically-calibrated panchromatic imagery",
+      "name": "Basic Panchromatic",
+      "description": "Unrectified panchromatic band - includes RPC text file for georeferencing",
       "bands": "panchromatic",
       "rectification": "non-orthorectified",
       "radiometry": "at-sensor",
@@ -515,13 +668,14 @@
       "assets": {
         "SkySatScene": [
           "basic_panchromatic",
-          "basic_panchromatic_rpc"
+          "basic_panchromatic_rpc",
+          "basic_panchromatic_udm2"
         ]
       }
     },
     "basic_panchromatic_dn": {
-      "name": "Non-orthorectified panchromatic imagery, non-radiometrically calibrated, raw digital number",
-      "description": "Unorthorectified panchromatic imagery, non-radiometrically calibrated, raw digital number",
+      "name": "Basic Panchromatic DN",
+      "description": "Unrectified, panchromatic band, uncalibrated digital numbers - includes RPC text file for georeferencing",
       "bands": "panchromatic",
       "rectification": "non-orthorectified",
       "radiometry": "digital numbers",
@@ -529,13 +683,14 @@
       "assets": {
         "SkySatScene": [
           "basic_panchromatic_dn",
-          "basic_panchromatic_dn_rpc"
+          "basic_panchromatic_dn_rpc",
+          "basic_panchromatic_udm2"
         ]
       }
     },
     "panchromatic": {
       "name": "Panchromatic",
-      "description": "Orthorectified radiometrically-calibrated panchromatic image stored as 16-bit scaled radiance",
+      "description": "Panchromatic band, calibrated to top of atmosphere radiance",
       "bands": "panchromatic",
       "rectification": "orthorectified",
       "radiometry": "at-sensor",
@@ -554,7 +709,7 @@
     },
     "panchromatic_dn": {
       "name": "Panchromatic DN",
-      "description": "Orthorectified panchromatic imagery, non-radiometrically calibrated, raw digital number",
+      "description": "Uncalibrated panchromatic band - suitable for custom radiometric processing",
       "bands": "panchromatic",
       "rectification": "orthorectified",
       "radiometry": "digital numbers",
@@ -572,8 +727,8 @@
       }
     },
     "panchromatic_dn_udm2": {
-      "name": "Panchromatic DN with UDM2",
-      "description": "Orthorectified panchromatic imagery, non-radiometrically calibrated, raw digital number",
+      "name": "Panchromatic DN",
+      "description": "Uncalibrated panchromatic band - suitable for custom radiometric processing",
       "bands": "panchromatic",
       "rectification": "orthorectified",
       "radiometry": "digital numbers",
@@ -593,8 +748,8 @@
       }
     },
     "pansharpened": {
-      "name": "Pansharpened",
-      "description": "Orthorectifed, pan-sharpened imagery, non-radiometrically calibrated, raw digital number",
+      "name": "Ortho-pansharpened",
+      "description": "Pansharpened, color corrected, 4-band multispectral data",
       "bands": "all",
       "rectification": "orthorectified",
       "radiometry": "digital numbers",
@@ -613,8 +768,8 @@
       }
     },
     "pansharpened_udm2": {
-      "name": "Pansharpened with UDM2",
-      "description": "Orthorectifed, pan-sharpened imagery, non-radiometrically calibrated, raw digital number",
+      "name": "Ortho-pansharpened",
+      "description": "Pansharpened, color corrected, 4-band multispectral data",
       "bands": "all",
       "rectification": "orthorectified",
       "radiometry": "digital numbers",
@@ -635,8 +790,8 @@
       }
     },
     "basic_l1a_dn": {
-      "name": "Non-Orthorectified, Level 1A Uncalibrated DN",
-      "description": "Non-orthorectified, non-radiometrically-calibrated, raw digital number, Level 1A",
+      "name": "Basic L1A",
+      "description": "Unrectified, uncalibrated panchromatic band only, no super resolution applied - includes RPC text file for georeferencing",
       "bands": "panchromatic",
       "rectification": "non-orthorectified",
       "radiometry": "digital numbers",
@@ -645,9 +800,12 @@
         "SkySatScene": [
           "basic_l1a_panchromatic_dn",
           "basic_l1a_panchromatic_dn_rpc"
+        ],
+        "SkySatCollect": [
+          "basic_l1a_all_frames"
         ]
       }
     }
   },
-  "version": "02-20-20"
+  "version": "2022-04-20"
 }
