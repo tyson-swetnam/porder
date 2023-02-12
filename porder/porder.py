@@ -100,6 +100,7 @@ if str(platform.system().lower()) == "windows":
         import pyproj
     except ModuleNotFoundError or ImportError:
         subprocess.call("pipgeo fetch --lib pyproj", shell=True)
+        import pyproj
     except Exception as e:
         logger.exception(e)
     try:

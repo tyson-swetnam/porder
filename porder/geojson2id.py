@@ -29,15 +29,12 @@ import sys
 from datetime import datetime, timezone
 from time import mktime
 
-import pyproj
 from planet import api
 from planet.api import filters
 from planet.api.auth import find_api_key
 from planet.api.utils import strp_lenient
 from shapely.geometry import shape
 from shapely.ops import transform
-
-from .kml2ee import kml2coord
 
 try:
     PL_API_KEY = find_api_key()
@@ -117,6 +114,7 @@ def multipoly(poly):
 
 # Function to use the client and then search
 def idl(**kwargs):
+    import pyproj
     for key, value in kwargs.items():
         if key == "infile" and value is not None:
             infile = value
@@ -159,9 +157,6 @@ def idl(**kwargs):
                     with open(infile) as aoi:
                         aoi_resp = json.load(aoi)
                         aoi_geom = aoi_resp["config"][0]["config"]["coordinates"]
-                elif infile.endswith(".kml"):
-                    getcoord = kml2coord(infile)
-                    aoi_geom = getcoord["features"][0]["geometry"]["coordinates"]
             except Exception as e:
                 print("Could not parse geometry")
                 print(e)
