@@ -18,25 +18,25 @@ __copyright__ = """
 __license__ = "Apache 2.0"
 
 import csv
-import sys
 import json
-import yaml
-import requests
-import shapely
-import clipboard
-import visvalingamwyatt as vw
+import sys
 from datetime import date
-from shapely.geometry import shape
-from prettytable import PrettyTable
-from planet.api.utils import read_planet_json
-from planet.api.auth import find_api_key
 
+import clipboard
+import requests
+import visvalingamwyatt as vw
+import yaml
+from planet.api.auth import find_api_key
+from planet.api.utils import read_planet_json
+from prettytable import PrettyTable
 
 x = PrettyTable()
 
 ovall = []
 
 # get coordinates list depth
+
+
 def list_depth(dic, level=1):
     counter = 0
     str_dic = str(dic)
@@ -49,7 +49,7 @@ def list_depth(dic, level=1):
     return counter
 
 
-##Setup for bundles
+# Setup for bundles
 dbundle = {
     "name": [],
     "subscription_id": [],
@@ -162,6 +162,8 @@ def vertexcount(input):
 
 
 def order(**kwargs):
+    import shapely
+    from shapely.geometry import shape
     for key, value in kwargs.items():
         if key == "name":
             dbundle["name"] = value
@@ -225,23 +227,29 @@ def order(**kwargs):
                 elif items == "projection":
                     dbundle["tools"].append(dreproject)
                 elif items == "ndvi":
-                    dndvi = {"pixel_type": "32R", "ndvi": "(b4 - b3) / (b4 + b3)"}
+                    dndvi = {"pixel_type": "32R",
+                             "ndvi": "(b4 - b3) / (b4 + b3)"}
                     dbmath["bandmath"].update(dndvi)
                 elif items == "gndvi":
-                    dgndvi = {"pixel_type": "32R", "gndvi": "(b4 - b2) / (b4 + b2)"}
+                    dgndvi = {"pixel_type": "32R",
+                              "gndvi": "(b4 - b2) / (b4 + b2)"}
                     dbmath["bandmath"].update(dgndvi)
                 elif items == "ndwi":
-                    dndwi = {"pixel_type": "32R", "ndwi": "(b2 - b4) / (b4 + b2)"}
+                    dndwi = {"pixel_type": "32R",
+                             "ndwi": "(b2 - b4) / (b4 + b2)"}
                     dbmath["bandmath"].update(dndwi)
                 elif items == "bndvi":
-                    bndvi = {"pixel_type": "32R", "bndvi": "(b4 - b1) / (b4 + b1)"}
+                    bndvi = {"pixel_type": "32R",
+                             "bndvi": "(b4 - b1) / (b4 + b1)"}
                     dbmath["bandmath"].update(bndvi)
                 elif items == "tvi_deering":
-                    dtvi_deering = {"pixel_type": "32R", "tvi_deering": "(((b4 - b3) / (b4 + b3)) + 0.5) ** 0.5"}
+                    dtvi_deering = {
+                        "pixel_type": "32R", "tvi_deering": "(((b4 - b3) / (b4 + b3)) + 0.5) ** 0.5"}
                     dbmath["bandmath"].update(dtvi_deering)
                 elif items == "tvi_brogeleblanc":
-                    dtvi_brogeleblanc = {"pixel_type": "32R", "tvi_brogeleblanc": "0.5 * ((120 * (b4 - b2) / 10000) - (200 * (b3 - b2) / 10000))"}
-                    dbmath["bandmath"].update(dtvi_brogeleblanc)                   
+                    dtvi_brogeleblanc = {
+                        "pixel_type": "32R", "tvi_brogeleblanc": "0.5 * ((120 * (b4 - b2) / 10000) - (200 * (b3 - b2) / 10000))"}
+                    dbmath["bandmath"].update(dtvi_brogeleblanc)
                 elif items == "osavi":
                     dosavi = {
                         "pixel_type": "32R",
@@ -275,10 +283,12 @@ def order(**kwargs):
                             aoi_resp = multipoly(value)
                             try:
                                 for things in aoi_resp["features"]:
-                                    ovall.append(things["geometry"]["coordinates"])
+                                    ovall.append(
+                                        things["geometry"]["coordinates"])
                             except Exception:
                                 for things in json.loads(aoi_resp)["features"]:
-                                    ovall.append(things["geometry"]["coordinates"])
+                                    ovall.append(
+                                        things["geometry"]["coordinates"])
 
                             aoi_geom = ovall
                             if (
@@ -468,7 +478,8 @@ def order(**kwargs):
 
     rg = len(bnames)
     if rg < 6:
-        dck = ["b" + str(el) for el in range(1, rg + 1)]  # get serialized bands
+        dck = ["b" + str(el)
+               for el in range(1, rg + 1)]  # get serialized bands
         plist = [list(pair) for pair in zip(dck, bnames)]
         x.field_names = ["Band Number", "Band Name"]
         for items in plist:
@@ -492,7 +503,7 @@ def order(**kwargs):
     # print('')
     # print(dbmath)
 
-    #print(payload)
+    # print(payload)
     ordname = k["name"]
     payload = payload.replace(
         "{{name}}_{{order_id}}.zip",
