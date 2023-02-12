@@ -373,12 +373,6 @@ def idlist_from_parser(args):
     )
 
 
-# Convert folder with multiple shapefiles to geojsons
-def idcheck_from_parser(args):
-    idc(idlist=args.idlist, item=args.item,
-        asset=args.asset, geometry=args.geometry)
-
-
 # Check difference from local filelist
 def difflist_from_parser(args):
     checker(
@@ -760,19 +754,6 @@ def main(args=None):
         "--local", help="Output folder where split files will be exported"
     )
     parser_idsplit.set_defaults(func=idsplit_from_parser)
-
-    parser_idcheck = subparsers.add_parser(
-        "idcheck", help="Check idlist for estimating clipped area"
-    )
-    parser_idcheck.add_argument("--idlist", help="Idlist csv file")
-    parser_idcheck.add_argument("--item", help="Item type")
-    parser_idcheck.add_argument("--asset", help="Asset type")
-    optional_named = parser_idcheck.add_argument_group(
-        "Optional named arguments")
-    optional_named.add_argument(
-        "--geometry", help="Geometry file for clip if any", default=None
-    )
-    parser_idcheck.set_defaults(func=idcheck_from_parser)
 
     parser_bundles = subparsers.add_parser(
         "bundles", help="Check bundles of assets for given tiem type"
