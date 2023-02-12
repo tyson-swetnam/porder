@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest,macos-latest,ubuntu-latest]
-        python-version: [3.7,3.8,3.9]
+        python-version: ["3.8","3.9"]
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -37,6 +37,18 @@ jobs:
         brew install gdal
         brew install proj
       if: matrix.os == 'macos-latest'
+    - name: Install Dependencies (Ubuntu)
+      continue-on-error: true
+      run:
+        sudo apt-get update
+        sudo apt-get install proj-bin
+        sudo add-apt-repository --yes ppa:ubuntugis/ppa && sudo apt-get update
+        sudo apt-get update
+        sudo apt-get install gdal-bin
+        sudo apt-get install libgdal-dev
+        export CPLUS_INCLUDE_PATH=/usr/include/gdal
+        export C_INCLUDE_PATH=/usr/include/gdal
+      if: matrix.os == 'ubuntu-latest'
     - name: Test package
       run: |
         python setup.py install
