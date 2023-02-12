@@ -1,11 +1,11 @@
-import sys
 import os
 import sys
+from distutils.version import StrictVersion
+
 import setuptools
+from setuptools import __version__ as setuptools_version
 from setuptools import find_packages
 from setuptools.command.test import test as TestCommand
-from distutils.version import StrictVersion
-from setuptools import __version__ as setuptools_version
 
 if StrictVersion(setuptools_version) < StrictVersion('38.3.0'):
     raise SystemExit(
@@ -18,13 +18,15 @@ if StrictVersion(setuptools_version) < StrictVersion('38.3.0'):
 def readme():
     with open('README.md') as f:
         return f.read()
+
+
 setuptools.setup(
     name='porder',
     version='0.8.7',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},
-    install_requires=['requests>=2.21.1','planet>=1.4.5','retrying>=1.3.3',
+    install_requires=['requests>=2.21.1', 'planet==1.5.2', 'retrying>=1.3.3',
                       'progressbar2>=3.38.0',
                       'visvalingamwyatt>=0.1.2',
                       'DateTimeRange>=0.6.1',
@@ -35,7 +37,7 @@ setuptools.setup(
                       'shapely>=1.6.4;platform_system!="Windows"',
                       'fiona>=1.8.6;platform_system!="Windows"',
                       'geopandas>=0.5.0;platform_system!="Windows"',
-                      'clipboard>=0.0.4','pyyaml>=3.12','prettytable>=0.7.2',],
+                      'clipboard>=0.0.4', 'pyyaml>=3.12', 'prettytable>=0.7.2', ],
     license='Apache 2.0',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
