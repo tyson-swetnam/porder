@@ -7,7 +7,6 @@ from .async_downloader import asyncdownload
 from .diffcheck import checker
 from .downloader import download
 from .geojson2id import idl
-from .idcheck import idc
 from .order_now import order
 from .order_size import ordersize
 from .ordstat import ostat
