@@ -31,6 +31,7 @@ setuptools.setup(
                       'visvalingamwyatt>=0.1.2',
                       'DateTimeRange>=0.6.1',
                       'beautifulsoup4',
+                      'logzero',
                       'pySmartDL==1.2.5;python_version<"3.4"',
                       'pySmartDL>=1.3.1;python_version>"3.4"',
                       'pyproj>=1.9.5.1;platform_system!="Windows"',
