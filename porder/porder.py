@@ -1,5 +1,20 @@
 from __future__ import print_function
 
+import visvalingamwyatt as vw
+from planet.api.auth import find_api_key
+
+from .async_downloader import asyncdownload
+from .conv2geojson import convert
+from .diffcheck import checker
+from .downloader import download
+from .geojson2id import idl
+from .idcheck import idc
+from .order_now import order
+from .order_size import ordersize
+from .ordstat import ostat
+from .resubmit import reorder
+from .text_split import idsplit
+
 __copyright__ = """
 
     Copyright 2021 Samapriya Roy
@@ -36,7 +51,25 @@ import dateutil.parser
 import pkg_resources
 import requests
 from bs4 import BeautifulSoup
+from logzero import logger
 from pySmartDL import SmartDL
+
+
+class Solution:
+    def compareVersion(self, version1, version2):
+        versions1 = [int(v) for v in version1.split(".")]
+        versions2 = [int(v) for v in version2.split(".")]
+        for i in range(max(len(versions1), len(versions2))):
+            v1 = versions1[i] if i < len(versions1) else 0
+            v2 = versions2[i] if i < len(versions2) else 0
+            if v1 > v2:
+                return 1
+            elif v1 < v2:
+                return -1
+        return 0
+
+
+ob1 = Solution()
 
 if str(platform.system().lower()) == "windows":
     version = sys.version_info[0]
@@ -59,12 +92,7 @@ if str(platform.system().lower()) == "windows":
     except Exception as e:
         logger.exception(e)
     try:
-        import gdal
-    except ImportError:
-        try:
-            from osgeo import gdal
-        except ModuleNotFoundError:
-            subprocess.call("pipgeo fetch --lib gdal", shell=True)
+        from osgeo import gdal
     except ModuleNotFoundError or ImportError:
         subprocess.call("pipgeo fetch --lib gdal", shell=True)
     except Exception as e:
@@ -88,7 +116,7 @@ if str(platform.system().lower()) == "windows":
     except Exception as e:
         logger.exception(e)
     try:
-        import geopandas
+        import geopandas as gpd
     except ImportError:
         subprocess.call(
             f"{sys.executable}" + " -m pip install geopandas", shell=True
@@ -96,20 +124,6 @@ if str(platform.system().lower()) == "windows":
     except Exception as e:
         logger.exception(e)
 
-from planet.api.auth import find_api_key
-
-from .async_downloader import asyncdownload
-from .conv2geojson import convert
-from .diffcheck import checker
-from .downloader import download
-from .geojson2id import idl
-from .geojson_simplify import geosimple
-from .idcheck import idc
-from .order_now import order
-from .order_size import ordersize
-from .ordstat import ostat
-from .resubmit import reorder
-from .text_split import idsplit
 
 if str(platform.python_version()) > "3.3.0":
     from .async_down import downloader
@@ -118,34 +132,15 @@ lpath = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(lpath)
 
 
-# Get package version
-class Solution:
-    def compareVersion(self, version1, version2):
-        versions1 = [int(v) for v in version1.split(".")]
-        versions2 = [int(v) for v in version2.split(".")]
-        for i in range(max(len(versions1), len(versions2))):
-            v1 = versions1[i] if i < len(versions1) else 0
-            v2 = versions2[i] if i < len(versions2) else 0
-            if v1 > v2:
-                return 1
-            elif v1 < v2:
-                return -1
-        return 0
-
-
-ob1 = Solution()
-
-# Get package version
+def version_latest(package):
+    response = requests.get(f'https://pypi.org/pypi/{package}/json')
+    latest_version = response.json()['info']['version']
+    return latest_version
 
 
 def porder_version():
-    url = "https://pypi.org/project/porder/"
-    source = requests.get(url)
-    html_content = source.text
-    soup = BeautifulSoup(html_content, "html.parser")
-    company = soup.find("h1")
     vcheck = ob1.compareVersion(
-        company.string.strip().split(" ")[-1],
+        version_latest('porder'),
         pkg_resources.get_distribution("porder").version,
     )
     if vcheck == 1:
@@ -156,7 +151,7 @@ def porder_version():
         print(
             "Current version of porder is {} upgrade to lastest version: {}".format(
                 pkg_resources.get_distribution("porder").version,
-                company.string.strip().split(" ")[-1],
+                version_latest('porder'),
             )
         )
         print(
@@ -170,7 +165,7 @@ def porder_version():
         print(
             "Possibly running staging code {} compared to pypi release {}".format(
                 pkg_resources.get_distribution("porder").version,
-                company.string.strip().split(" ")[-1],
+                version_latest('porder'),
             )
         )
         print(
@@ -278,7 +273,34 @@ def gcs_cred_from_parser(args):
     gcs_cred(cred=args.cred)
 
 
+def vertexcount(inp):
+    gdf = gpd.read_file(inp)
+    nodes = []
+    for index, row in gdf.iterrows():
+        for pt in list(row['geometry'].exterior.coords):
+            nodes.append(pt)
+
+    return len(nodes)
+
+
+def geosimple(inp, output, num):
+    gdf = gpd.read_file(inp)
+    print(f"Vertex count {vertexcount(inp)}")
+    ft = gdf.to_json()
+    ft = json.loads(ft).get('features')[0]
+    try:
+        b = vw.simplify_feature(ft, number=num-1)
+        ft["geometry"]["coordinates"] = b["geometry"]["coordinates"]
+        with open(output, "w") as g:
+            json.dump(ft, g)
+        print(f"Write Completed to: {output}")
+        print(f"New vertex count {vertexcount(output)}")
+    except Exception as e:
+        print(e)
+
 # Simplify geojson by vertex count
+
+
 def simplify_from_parser(args):
     geosimple(inp=args.input, output=args.output, num=args.number)
 

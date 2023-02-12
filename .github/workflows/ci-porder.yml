@@ -1,56 +1,51 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-
 name: CI porder
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest,macos-latest,ubuntu-latest]
-        python-version: ["3.8","3.9"]
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ["3.9", "3.10"]
       fail-fast: false
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies (Windows)
-      continue-on-error: true
-      run:
-        python -m pip install --upgrade pip
-        pip install -U pip setuptools
-        pip install wheel
-      if: matrix.os == 'windows-latest'
-    - name: Install Dependencies (Mac)
-      continue-on-error: true
-      run:
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        brew install gdal
-        brew install proj
-      if: matrix.os == 'macos-latest'
-    - name: Install Dependencies (Ubuntu)
-      continue-on-error: true
-      run:
-        sudo apt-get update
-        sudo apt-get install proj-bin
-        sudo add-apt-repository --yes ppa:ubuntugis/ppa && sudo apt-get update
-        sudo apt-get update
-        sudo apt-get install gdal-bin
-        sudo apt-get install libgdal-dev
-        export CPLUS_INCLUDE_PATH=/usr/include/gdal
-        export C_INCLUDE_PATH=/usr/include/gdal
-      if: matrix.os == 'ubuntu-latest'
-    - name: Test package
-      run: |
-        python setup.py install
-        porder -h
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies (Windows)
+        continue-on-error: true
+        run: python -m pip install --upgrade pip
+          pip install -U pip setuptools
+          pip install wheel
+        if: matrix.os == 'windows-latest'
+      - name: Install Dependencies (Mac)
+        continue-on-error: true
+        run: brew install gdal
+          brew install proj
+        if: matrix.os == 'macos-latest'
+      - name: Install Dependencies (Ubuntu)
+        continue-on-error: true
+        run: sudo apt-get update
+          sudo apt-get install proj-bin
+          sudo add-apt-repository --yes ppa:ubuntugis/ppa && sudo apt-get update
+          sudo apt-get update
+          sudo apt-get install gdal-bin
+          sudo apt-get install libgdal-dev
+          export CPLUS_INCLUDE_PATH=/usr/include/gdal
+          export C_INCLUDE_PATH=/usr/include/gdal
+        if: matrix.os == 'ubuntu-latest'
+      - name: Test package
+        run: |
+          python setup.py install
+          porder -h

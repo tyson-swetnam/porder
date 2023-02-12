@@ -22,21 +22,22 @@ __license__ = "Apache 2.0"
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
-import json
 import csv
+import json
 import os
+import sys
+from datetime import datetime, timezone
+from time import mktime
+
 import pyproj
-from .kml2ee import kml2coord
 from planet import api
 from planet.api import filters
 from planet.api.auth import find_api_key
+from planet.api.utils import strp_lenient
 from shapely.geometry import shape
 from shapely.ops import transform
-from datetime import datetime
-from datetime import timezone
-from time import mktime
-from planet.api.utils import strp_lenient
+
+from .kml2ee import kml2coord
 
 try:
     PL_API_KEY = find_api_key()
@@ -50,7 +51,8 @@ client = api.ClientV1(PL_API_KEY)
 temp = {"coordinates": [], "type": "MultiPolygon"}
 tempsingle = {"coordinates": [], "type": "Polygon"}
 stbase = {"config": [], "field_name": [], "type": "StringInFilter"}
-rbase = {"config": {"gte": [], "lte": []}, "field_name": [], "type": "RangeFilter"}
+rbase = {"config": {"gte": [], "lte": []},
+         "field_name": [], "type": "RangeFilter"}
 
 
 # Get time right
@@ -89,7 +91,7 @@ far = []
 ovall = []
 
 
-## Handle MultiPolygon
+# Handle MultiPolygon
 def multipoly(poly):
     multipoly_empty = {
         "type": "FeatureCollection",
@@ -272,7 +274,8 @@ def idl(**kwargs):
             date_filter, cloud_filter, asset_filter, sgeom, rbase
         )
     elif len(rbase["field_name"]) == 0 and len(stbase["field_name"]) == 0:
-        and_filter = filters.and_filter(date_filter, cloud_filter, asset_filter, sgeom)
+        and_filter = filters.and_filter(
+            date_filter, cloud_filter, asset_filter, sgeom)
     item_types = [item]
     req = filters.build_search_request(and_filter, item_types)
     res = client.quick_search(req)
@@ -290,16 +293,12 @@ def idl(**kwargs):
                 itemid = things["id"]
                 footprint = things["geometry"]
                 s = shape(footprint)
-                if item.startswith("SkySat"):
-                    epsgcode = "3857"
-                else:
-                    epsgcode = things["properties"]["epsg_code"]
                 if aoi_shape.area > s.area:
                     intersect = (s).intersection(aoi_shape)
                 elif s.area >= aoi_shape.area:
                     intersect = (aoi_shape).intersection(s)
                 proj_transform = pyproj.Transformer.from_proj(
-                    pyproj.Proj(4326), pyproj.Proj(epsgcode), always_xy=True
+                    pyproj.Proj(4326), pyproj.Proj(3857), always_xy=True
                 ).transform  # always_xy determines correct coord order
                 print(
                     "Processing "
@@ -318,7 +317,8 @@ def idl(**kwargs):
                         / transform(proj_transform, s).area
                         * 100
                     ) >= ovp:
-                        ar.append(transform(proj_transform, intersect).area / 1000000)
+                        ar.append(transform(proj_transform,
+                                  intersect).area / 1000000)
                         far.append(transform(proj_transform, s).area / 1000000)
                         with open(outfile, "a") as csvfile:
                             writer = csv.writer(
@@ -334,7 +334,8 @@ def idl(**kwargs):
                         / transform(proj_transform, aoi_shape).area
                         * 100
                     ) >= ovp:
-                        ar.append(transform(proj_transform, intersect).area / 1000000)
+                        ar.append(transform(proj_transform,
+                                  intersect).area / 1000000)
                         far.append(transform(proj_transform, s).area / 1000000)
                         with open(outfile, "a") as csvfile:
                             writer = csv.writer(
@@ -348,11 +349,13 @@ def idl(**kwargs):
         except (KeyboardInterrupt, SystemExit) as e:
             print("\n" + "Program escaped by User")
             sys.exit()
-    num_lines = sum(1 for line in open(os.path.join(head, tail.split(".")[0] + ".csv")))
+    num_lines = sum(1 for line in open(
+        os.path.join(head, tail.split(".")[0] + ".csv")))
     print(
         "Total number of item ids written to "
         + str(
-            os.path.join(head, tail.split(".")[0] + ".csv") + " ===> " + str(num_lines)
+            os.path.join(head, tail.split(".")[
+                         0] + ".csv") + " ===> " + str(num_lines)
         )
     )
     print(
