@@ -31,9 +31,10 @@ jobs:
         pip install -U pip setuptools
         pip install wheel
       if: matrix.os == 'windows-latest'
-    - name: Install Dependencies (Windows)
+    - name: Install Dependencies (Mac)
       continue-on-error: true
       run:
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         brew install gdal
         brew install proj
       if: matrix.os == 'macos-latest'
