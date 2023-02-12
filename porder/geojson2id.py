@@ -33,8 +33,6 @@ from planet import api
 from planet.api import filters
 from planet.api.auth import find_api_key
 from planet.api.utils import strp_lenient
-from shapely.geometry import shape
-from shapely.ops import transform
 
 try:
     PL_API_KEY = find_api_key()
@@ -115,6 +113,8 @@ def multipoly(poly):
 # Function to use the client and then search
 def idl(**kwargs):
     import pyproj
+    from shapely.geometry import shape
+    from shapely.ops import transform
     for key, value in kwargs.items():
         if key == "infile" and value is not None:
             infile = value
