@@ -4,7 +4,6 @@ import visvalingamwyatt as vw
 from planet.api.auth import find_api_key
 
 from .async_downloader import asyncdownload
-from .conv2geojson import convert
 from .diffcheck import checker
 from .downloader import download
 from .geojson2id import idl
@@ -121,6 +120,8 @@ if str(platform.system().lower()) == "windows":
         subprocess.call(
             f"{sys.executable}" + " -m pip install geopandas", shell=True
         )
+        import geopandas as gpd
+        gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
     except Exception as e:
         logger.exception(e)
 
@@ -249,7 +250,40 @@ def planet_quota_from_parser(args):
     planet_quota()
 
 
+def convert(folder, export):
+    for items in os.listdir(folder):
+        if items.endswith(".shp"):
+            inD = gpd.read_file(os.path.join(folder, items), encoding="utf-8")
+            # Reproject to EPSG 4326
+            try:
+                data_proj = inD.copy()
+                data_proj["geometry"] = data_proj["geometry"].to_crs(epsg=4326)
+                data_proj.to_file(
+                    os.path.join(export, str(
+                        items).replace(".shp", ".geojson")),
+                    driver="GeoJSON",
+                )
+                print(
+                    f"Export completed to {os.path.join(export, str(items).replace('.shp', '.geojson'))}")
+            except Exception as e:
+                print(e)
+        elif items.endswith(".kml"):
+            try:
+                gdf = gpd.read_file(
+                    os.path.join(folder, items), driver='KML')
+                gdf.to_file(
+                    os.path.join(export, str(
+                        items).replace(".kml", ".geojson")),
+                    driver="GeoJSON",
+                )
+                print(
+                    f"Export completed to {os.path.join(export, str(items).replace('.kml', '.geojson'))}")
+            except Exception as e:
+                print(e)
+
 # Convert folder with multiple shapefiles to geojsons
+
+
 def convert_metadata_from_parser(args):
     convert(folder=args.source, export=args.destination)
 
