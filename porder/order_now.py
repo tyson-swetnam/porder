@@ -380,9 +380,6 @@ def order(**kwargs):
                                 items["clip"]["aoi"]["coordinates"] = aoi_resp[
                                     "config"
                                 ][0]["config"]["coordinates"]
-                        elif value.endswith(".kml"):
-                            getcoord = kml2coord(value)
-                            items["clip"]["aoi"]["coordinates"] = getcoord
                     except Exception as e:
                         print(e)
                         # print('Could not parse geometry')

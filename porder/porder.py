@@ -121,7 +121,6 @@ if str(platform.system().lower()) == "windows":
             f"{sys.executable}" + " -m pip install geopandas", shell=True
         )
         import geopandas as gpd
-        gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
     except Exception as e:
         logger.exception(e)
 
@@ -265,19 +264,6 @@ def convert(folder, export):
                 )
                 print(
                     f"Export completed to {os.path.join(export, str(items).replace('.shp', '.geojson'))}")
-            except Exception as e:
-                print(e)
-        elif items.endswith(".kml"):
-            try:
-                gdf = gpd.read_file(
-                    os.path.join(folder, items), driver='KML')
-                gdf.to_file(
-                    os.path.join(export, str(
-                        items).replace(".kml", ".geojson")),
-                    driver="GeoJSON",
-                )
-                print(
-                    f"Export completed to {os.path.join(export, str(items).replace('.kml', '.geojson'))}")
             except Exception as e:
                 print(e)
 
@@ -623,7 +609,7 @@ def main(args=None):
     parser_planet_quota.set_defaults(func=planet_quota_from_parser)
 
     parser_convert = subparsers.add_parser(
-        "convert", help="Convert all shapefiles or kmls in folder to GeoJSON"
+        "convert", help="Convert all shapefiles in folder to GeoJSON"
     )
     parser_convert.add_argument("--source", help="Choose Source Folder")
     parser_convert.add_argument(
@@ -657,7 +643,7 @@ def main(args=None):
     required_named = parser_idlist.add_argument_group(
         "Required named arguments.")
     required_named.add_argument(
-        "--input", help="Input geometry file for now geojson/json/kml", required=True
+        "--input", help="Input geometry file for now geojson/json", required=True
     )
     required_named.add_argument(
         "--start", help="Start Date &/or Time yyyy-mm-ddTHH:MM:SS", required=True
@@ -788,7 +774,7 @@ def main(args=None):
     optional_named.add_argument("--sid", help="Subscription ID", default=None)
     optional_named.add_argument(
         "--boundary",
-        help="Boundary/geometry for clip operation geojson|json|kml",
+        help="Boundary/geometry for clip operation geojson|json",
         default=None,
     )
     optional_named.add_argument(
@@ -942,5 +928,5 @@ def main(args=None):
     func(args)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
