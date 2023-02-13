@@ -26,7 +26,7 @@ setuptools.setup(
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},
-    install_requires=['requests>=2.21.1', 'planet==1.5.2', 'retrying>=1.3.3',
+    install_requires=['requests>=2.21.1', 'retrying>=1.3.3',
                       'progressbar2>=3.38.0',
                       'visvalingamwyatt>=0.1.2',
                       'DateTimeRange>=0.6.1',

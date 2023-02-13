@@ -30,25 +30,24 @@ from datetime import datetime, timezone
 from time import mktime
 
 import jwt
-from planet.api import filters
-from planet.api.utils import strp_lenient
-
-try:
-    if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
-        os.system('porder init')
-    else:
-        with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
-            token_data = json.load(json_file)
-            encoded = token_data["token"]
-            api_key = jwt.decode(encoded, options={"verify_signature": False})[
-                'api_key']
-    PL_API_KEY = api_key
-except:
-    print("Failed to get Planet Key")
-    sys.exit()
+from planet import data_filter as filters
 
 
-client = api.ClientV1(PL_API_KEY)
+def fetch_api():
+    try:
+        if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
+            init()
+        else:
+            with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
+                token_data = json.load(json_file)
+                encoded = token_data["token"]
+                api_key = jwt.decode(encoded, options={"verify_signature": False})[
+                    'api_key']
+        PL_API_KEY = api_key
+    except:
+        print("Failed to get Planet Key")
+        sys.exit()
+    return PL_API_KEY
 
 
 temp = {"coordinates": [], "type": "MultiPolygon"}
@@ -67,7 +66,7 @@ def time2epoch(st):
 
 
 def time2utc(st):
-    st_time = strp_lenient(st)
+    st_time = st
     if st_time is not None:
         dt_ts = datetime.fromtimestamp(time2epoch(st_time), tz=timezone.utc)
         return dt_ts.isoformat().replace("+00:00", "Z")
@@ -123,6 +122,8 @@ def idl(**kwargs):
     import pyproj
     from shapely.geometry import shape
     from shapely.ops import transform
+    PL_API_KEY = fetch_api()
+    client = api.ClientV1(PL_API_KEY)
     for key, value in kwargs.items():
         if key == "infile" and value is not None:
             infile = value
