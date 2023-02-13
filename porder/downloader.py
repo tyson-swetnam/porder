@@ -29,8 +29,6 @@ from os.path import expanduser
 import jwt
 import progressbar
 import requests
-from planet.api.auth import find_api_key
-from planet.api.utils import read_planet_json
 from retrying import retry
 
 # Get Planet API and Authenticate SESSION
