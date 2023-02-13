@@ -1,14 +1,12 @@
 from __future__ import print_function
 
 import visvalingamwyatt as vw
-from planet.api.auth import find_api_key
 
 from .async_downloader import asyncdownload
 from .diffcheck import checker
 from .downloader import download
 from .geojson2id import idl
 from .order_now import order
-from .order_size import ordersize
 from .ordstat import ostat
 from .resubmit import reorder
 from .text_split import idsplit
@@ -34,7 +32,7 @@ __license__ = "Apache 2.0"
 
 import argparse
 import base64
-import datetime
+import getpass
 import json
 import os
 import platform
@@ -46,6 +44,7 @@ from os.path import expanduser
 
 import clipboard
 import dateutil.parser
+import jwt
 import pkg_resources
 import requests
 from bs4 import BeautifulSoup
@@ -189,20 +188,60 @@ def readme():
 def read_from_parser(args):
     readme()
 
+# Initialize planet auth & save the token
+
+
+def init():
+    try:
+        url = "https://api.planet.com/auth/v1/experimental/public/users/authenticate"
+        payload = json.dumps({
+            "email": input("Email address:  "),
+            "password": getpass.getpass("Password:  ")
+        })
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(url, headers=headers, data=payload)
+        if response.status_code == 200:
+            with open(os.path.join(expanduser("~"), "planet.auth.json"), "w") as outfile:
+                json.dump(response.json(), outfile)
+        else:
+            print(f'Failed with status code {response.status_code}')
+    except Exception as error:
+        print(error)
+
+
+def init_from_parser(args):
+    init()
+
+# Get Planet API and Authenticate SESSION
+
+
+def authenticate_session():
+    try:
+        if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
+            init()
+        else:
+            with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
+                token_data = json.load(json_file)
+                encoded = token_data["token"]
+                api_key = jwt.decode(encoded, options={"verify_signature": False})[
+                    'api_key']
+        PL_API_KEY = api_key
+    except:
+        print("Failed to get Planet Key")
+        sys.exit()
+    SESSION = requests.Session()
+    SESSION.auth = (PL_API_KEY, "")
+    return SESSION
+
 
 # Function to get user's quota
 def planet_quota():
     # Get API Key: Requires user to have initialized Planet CLI
-    try:
-        api_key = find_api_key()
-    except Exception as e:
-        print("Failed to get Planet Key: Try planet init")
-        sys.exit()
+    SESSION = authenticate_session()
     """Print allocation and remaining quota in Sqkm."""
     try:
-        main = requests.get(
-            "https://api.planet.com/auth/v1/experimental/public/my/subscriptions",
-            auth=(api_key, ""),
+        main = SESSION.get(
+            "https://api.planet.com/auth/v1/experimental/public/my/subscriptions"
         )
         if main.status_code == 200:
             content = main.json()
@@ -336,13 +375,7 @@ def idlist_from_parser(args):
                 for item_types in mydict:
                     if args.item == item_types:
                         print(
-                            "Assets for item "
-                            + str(args.item)
-                            + " of Bundle type "
-                            + str(key)
-                            + ": "
-                            + str(", ".join(mydict[args.item]))
-                        )
+                            f"Assets for item {args.item} of Bundle type {key} : {', '.join(mydict[args.item])}")
         sys.exit()
     idl(
         infile=args.input,
@@ -499,8 +532,40 @@ def cancel(id):
 def cancel_from_parser(args):
     cancel(id=args.id)
 
-
 # Get size of order in human size
+
+
+size_list = []
+suffixes = ["B", "KB", "MB", "GB", "TB", "PB"]
+
+
+def humansize(nbytes):
+    i = 0
+    while nbytes >= 1024 and i < len(suffixes) - 1:
+        nbytes /= 1024.0
+        i += 1
+    f = ("%.2f" % nbytes).rstrip("0").rstrip(".")
+    return "%s %s" % (f, suffixes[i])
+
+
+def ordersize(url):
+    SESSION = authenticate_session()
+    response = SESSION.get(url).json()
+    if response["state"] == "success" or response["state"] == "partial":
+        print("")
+        print("Order completed with status: " + str(response["state"]))
+        for files in response["_links"]["results"]:
+            if files["name"].endswith("manifest.json"):
+                time.sleep(0.2)
+                resp = SESSION.get(files["location"]).json()
+                for things in resp["files"]:
+                    size_list.append(things["size"])
+        print("Estimated Download Size for order: {}".format(
+            humansize(sum(size_list))))
+    else:
+        print(f'Order size can only be estimated ')
+
+
 def ordersize_from_parser(args):
     ordersize(url=args.url)
 
@@ -602,6 +667,10 @@ def main(args=None):
         "readme", help="Go the web based porder readme page"
     )
     parser_read.set_defaults(func=read_from_parser)
+
+    parser_init = subparsers.add_parser(
+        "init", help="Initialize tool & store authentication token")
+    parser_init.set_defaults(func=init_from_parser)
 
     parser_planet_quota = subparsers.add_parser(
         "quota", help="Prints your Planet Quota Details"
