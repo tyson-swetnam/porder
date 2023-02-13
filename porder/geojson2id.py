@@ -29,16 +29,24 @@ import sys
 from datetime import datetime, timezone
 from time import mktime
 
-from planet import api
+import jwt
 from planet.api import filters
-from planet.api.auth import find_api_key
 from planet.api.utils import strp_lenient
 
 try:
-    PL_API_KEY = find_api_key()
-except Exception as e:
+    if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
+        os.system('porder init')
+    else:
+        with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
+            token_data = json.load(json_file)
+            encoded = token_data["token"]
+            api_key = jwt.decode(encoded, options={"verify_signature": False})[
+                'api_key']
+    PL_API_KEY = api_key
+except:
     print("Failed to get Planet Key")
     sys.exit()
+
 
 client = api.ClientV1(PL_API_KEY)
 

@@ -1,6 +1,7 @@
 beautifulsoup4
 Shapely>=1.6.4.post1
 requests>=2.19.1
+planet==1.5.2
 PyJWT==2.6.0
 progressbar2>=3.38.0
 DateTimeRange>=0.6.1
