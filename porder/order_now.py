@@ -23,11 +23,10 @@ import sys
 from datetime import date
 
 import clipboard
+import jwt
 import requests
 import visvalingamwyatt as vw
 import yaml
-from planet.api.auth import find_api_key
-from planet.api.utils import read_planet_json
 from prettytable import PrettyTable
 
 x = PrettyTable()
@@ -112,11 +111,28 @@ dszip = {
         "single_archive": True,
     }
 }
-try:
-    PL_API_KEY = find_api_key()
-except:
-    print("Failed to get Planet Key")
-    sys.exit()
+
+
+def authenticate_session():
+    try:
+        if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
+            os.system("porder init")
+        else:
+            with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
+                token_data = json.load(json_file)
+                encoded = token_data["token"]
+                api_key = jwt.decode(encoded, options={"verify_signature": False})[
+                    'api_key']
+        PL_API_KEY = api_key
+    except Exception as error:
+        print(error)
+        print("Failed to get Planet Key")
+        sys.exit()
+    SESSION = requests.Session()
+    SESSION.auth = (PL_API_KEY, "")
+    return SESSION
+
+
 url = "https://api.planet.com/compute/ops/orders/v2"
 
 
@@ -164,6 +180,7 @@ def vertexcount(input):
 def order(**kwargs):
     import shapely
     from shapely.geometry import shape
+    SESSION = authenticate_session()
     for key, value in kwargs.items():
         if key == "name":
             dbundle["name"] = value
@@ -508,9 +525,8 @@ def order(**kwargs):
     )
     # print(payload)
     headers = {"content-type": "application/json", "cache-control": "no-cache"}
-    response = requests.request(
-        "POST", url, data=payload, headers=headers, auth=(PL_API_KEY, "")
-    )
+    SESSION.headers.update(headers)
+    response = SESSION.post(url, data=payload)
     if response.status_code == 202:
         content = response.json()
         try:
