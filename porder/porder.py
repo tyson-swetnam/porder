@@ -490,11 +490,8 @@ def reorder_from_parser(args):
 def cancel(id):
     headers = {"Content-Type": "application/json"}
     # Get API Key: Requires user to have initialized Planet CLI
-    try:
-        api_key = find_api_key()
-    except Exception as e:
-        print("Failed to get Planet Key: Try planet init")
-        sys.exit()
+    SESSION = authenticate_session()
+    SESSION.headers.update(headers)
     if id == "all":
         url = "https://api.planet.com/compute/ops/bulk/orders/v2/cancel"
         resp = requests.post(
@@ -572,15 +569,7 @@ def ordersize_from_parser(args):
 
 # Get concurrent orders that are running
 def stats():
-    # Get API Key: Requires user to have initialized Planet CLI
-    try:
-        api_key = find_api_key()
-    except Exception as e:
-        print("Failed to get Planet Key: Try planet init")
-        sys.exit()
-
-    SESSION = requests.Session()
-    SESSION.auth = (api_key, "")
+    SESSION = authenticate_session()
     print("Checking on all running orders...")
     result = SESSION.get("https://api.planet.com/compute/ops/stats/orders/v2")
     if int(result.status_code) == 200:
@@ -636,22 +625,8 @@ def asyncdownload_from_parser(args):
 def multiproc_from_parser(args):
     if str(platform.python_version()) > "3.3.0":
         downloader(url=args.url, final=args.local, ext=args.ext)
-    elif str(platform.python_version()) <= "3.3.0":
-        if args.ext == None:
-            subprocess.call(
-                "python multiproc_pydl.py " + args.url + " " + args.local + " ",
-                shell=True,
-            )
-        else:
-            subprocess.call(
-                "python multiproc_pydl.py "
-                + args.url
-                + " "
-                + args.local
-                + " "
-                + args.ext,
-                shell=True,
-            )
+    else:
+        print('Python version too old')
 
 
 print("")

@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 __copyright__ = """
-    Copyright 2019 Samapriya Roy
+    Copyright 2023 Samapriya Roy
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
@@ -14,27 +14,40 @@ __copyright__ = """
 """
 __license__ = "Apache 2.0"
 
-import requests
 import asyncio
-import os
-import json
 import glob
-import progressbar
+import json
+import os
 import sys
 import time
+from os.path import expanduser
 from concurrent.futures import ThreadPoolExecutor
 from timeit import default_timer
-from retrying import retry
-from planet.api.auth import find_api_key
 
-# Get Planet API and Authenticate SESSION
-try:
-    PL_API_KEY = find_api_key()
-except:
-    print("Failed to get Planet Key")
-    sys.exit()
-SESSION = requests.Session()
-SESSION.auth = (PL_API_KEY, "")
+import jwt
+import progressbar
+import requests
+from retrying import retry
+
+
+def authenticate_session():
+    try:
+        if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
+            init()
+        else:
+            with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
+                token_data = json.load(json_file)
+                encoded = token_data["token"]
+                api_key = jwt.decode(encoded, options={"verify_signature": False})[
+                    'api_key']
+        PL_API_KEY = api_key
+    except:
+        print("Failed to get Planet Key")
+        sys.exit()
+    SESSION = requests.Session()
+    SESSION.auth = (PL_API_KEY, "")
+    return SESSION
+
 
 suffixes = ["B", "KB", "MB", "GB", "TB", "PB"]
 
@@ -49,9 +62,9 @@ def humansize(nbytes):
 
 
 @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
-def check_for_redirects(url):
+def check_for_redirects(session, url):
     try:
-        r = SESSION.get(url, allow_redirects=False, timeout=0.5)
+        r = session.get(url, allow_redirects=False, timeout=0.5)
         if 300 <= r.status_code < 400:
             return r.headers["location"]
         elif r.status_code == 429:
@@ -93,12 +106,12 @@ urls = []
 size_list = []
 
 
-def funct(url, final, ext):
+def funct(url, final, ext, session):
     filenames = glob.glob1(final, "*")
     if not os.path.exists(final):
         os.makedirs(final)
     os.chdir(final)
-    response = SESSION.get(url).json()
+    response = session.get(url).json()
     print("Polling with exponential backoff..")
     while (
         response["state"] == "queued"
@@ -108,24 +121,25 @@ def funct(url, final, ext):
         bar = progressbar.ProgressBar()
         for z in bar(range(60)):
             time.sleep(1)
-        response = SESSION.get(url).json()
+        response = session.get(url).json()
     if response["state"] == "success" or response["state"] == "partial":
         print("Order completed with status: " + str(response["state"]))
         print("")
         for files in response["_links"]["results"]:
             if files["name"].endswith("manifest.json"):
                 time.sleep(0.2)
-                resp = SESSION.get(files["location"]).json()
+                resp = session.get(files["location"]).json()
                 for things in resp["files"]:
                     size_list.append(things["size"])
-        print("Estimated Download Size for order: {}".format(humansize(sum(size_list))))
+        print("Estimated Download Size for order: {}".format(
+            humansize(sum(size_list))))
         print("")
         for items in response["_links"]["results"]:
             url = items["location"]
             name = items["name"]
             if name.endswith("manifest.json"):
                 time.sleep(0.2)
-                resp = SESSION.get(url)
+                resp = session.get(url)
                 if int(resp.status_code) == 200:
                     r = resp.content
                     inp = json.loads(r)
@@ -139,18 +153,21 @@ def funct(url, final, ext):
                 else:
                     print(resp.status_code)
 
-            local_path = os.path.join(final, str(os.path.split(items["name"])[-1]))
+            local_path = os.path.join(final, str(
+                os.path.split(items["name"])[-1]))
             filenames = [os.path.join(final, files) for files in filenames]
             if not local_path in filenames:
-                url_to_check = url if url.startswith("https") else "http://%s" % url
-                redirect_url = check_for_redirects(url_to_check)
+                url_to_check = url if url.startswith(
+                    "https") else "http://%s" % url
+                redirect_url = check_for_redirects(session, url_to_check)
                 if not os.path.isfile(local_path) and ext is None:
                     urls.append(str(redirect_url) + "|" + local_path)
                     print("Processing total URLs " + str(len(urls)), end="\r")
                 if not os.path.isfile(local_path) and ext is not None:
                     if local_path.endswith(ext):
                         urls.append(str(redirect_url) + "|" + local_path)
-                        print("Processing total URLs " + str(len(urls)), end="\r")
+                        print("Processing total URLs " +
+                              str(len(urls)), end="\r")
     else:
         print("Order Failed with state: " + str(response["state"]))
     print("Processing a url list with " + str(len(urls)) + " items")
@@ -159,10 +176,11 @@ def funct(url, final, ext):
 
 
 async def get_data_asynchronous(url, final, ext):
-    urllist = funct(url=url, final=final, ext=ext)
+    authenticated = authenticate_session()
+    urllist = funct(url=url, final=final, ext=ext, session=authenticated)
     print("{0:100} {1:20}".format("File", "Completed at"))
     with ThreadPoolExecutor(max_workers=10) as executor:
-        with requests.Session() as session:
+        with authenticated as session:
             # Set any session parameters here before calling `fetch`
             loop = asyncio.get_event_loop()
             START_TIME = default_timer()

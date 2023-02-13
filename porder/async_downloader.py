@@ -17,29 +17,40 @@ __copyright__ = """
 """
 __license__ = "Apache 2.0"
 
-import requests
-import time
-import progressbar
+import csv
+import glob
 import json
 import os
 import sys
-import csv
-import glob
-from retrying import retry
-from pySmartDL import SmartDL
-from planet.api.utils import read_planet_json
-from planet.api.auth import find_api_key
+import time
 from datetime import datetime
+from os.path import expanduser
+
+import jwt
+import progressbar
+import requests
+from pySmartDL import SmartDL
+from retrying import retry
 
 
 # Get Planet API and Authenticate SESSION
-try:
-    PL_API_KEY = find_api_key()
-except:
-    print("Failed to get Planet Key")
-    sys.exit()
-SESSION = requests.Session()
-SESSION.auth = (PL_API_KEY, "")
+def authenticate_session():
+    try:
+        if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
+            init()
+        else:
+            with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
+                token_data = json.load(json_file)
+                encoded = token_data["token"]
+                api_key = jwt.decode(encoded, options={"verify_signature": False})[
+                    'api_key']
+        PL_API_KEY = api_key
+    except:
+        print("Failed to get Planet Key")
+        sys.exit()
+    SESSION = requests.Session()
+    SESSION.auth = (PL_API_KEY, "")
+    return SESSION
 
 
 suffixes = ["B", "KB", "MB", "GB", "TB", "PB"]
@@ -58,7 +69,7 @@ i = 1
 
 
 @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
-def check_for_redirects(url):
+def check_for_redirects(SESSION, url):
     try:
         r = SESSION.get(url, allow_redirects=False, timeout=0.5)
         if 300 <= r.status_code < 400:
@@ -75,21 +86,23 @@ def check_for_redirects(url):
 
 
 @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
-def downonly(redirect_url, local_path, ext, items, ulength):
+def downonly(SESSION, redirect_url, local_path, ext, items, ulength):
     global i
     result = SESSION.get(redirect_url)
     if not os.path.exists(local_path) and result.status_code == 200:
         if ext is not None:
             if local_path.endswith(ext):
                 print(
-                    str(ulength - i) + " remaining ==> Downloading: " + str(local_path)
+                    str(ulength - i) +
+                    " remaining ==> Downloading: " + str(local_path)
                 )
                 i = i + 1
                 obj = SmartDL(redirect_url, local_path)
                 obj.start()
                 path = obj.get_dest()
         elif ext is None:
-            print(str(ulength - i) + " remaining ==> Downloading: " + str(local_path))
+            print(str(ulength - i) +
+                  " remaining ==> Downloading: " + str(local_path))
             i = i + 1
             obj = SmartDL(redirect_url, local_path)
             obj.start()
@@ -115,7 +128,7 @@ def downonly(redirect_url, local_path, ext, items, ulength):
             i = i + 1
 
 
-def get_session_response(url):
+def get_session_response(SESSION, url):
     response = SESSION.get(url).json()
     print("Polling ...")
     while (
@@ -133,9 +146,12 @@ def get_session_response(url):
 
 size_list = []
 # Get the redirects and download
+
+
 def asyncdownload(url, local, ext):
+    SESSION = authenticate_session()
     filenames = glob.glob1(local, "*")
-    response = get_session_response(url)
+    response = get_session_response(SESSION, url)
     if response["state"] == "success" or response["state"] == "partial":
         print("Order completed with status: " + str(response["state"]))
         ulength = len(response["_links"]["results"]) - len(filenames)
@@ -146,7 +162,8 @@ def asyncdownload(url, local, ext):
                 resp = SESSION.get(files["location"]).json()
                 for things in resp["files"]:
                     size_list.append(things["size"])
-        print("Estimated Download Size for order: {}".format(humansize(sum(size_list))))
+        print("Estimated Download Size for order: {}".format(
+            humansize(sum(size_list))))
         print("")
         for index, items in enumerate(response["_links"]["results"]):
             expiration_time = datetime.strptime(
@@ -154,7 +171,7 @@ def asyncdownload(url, local, ext):
             )
             if datetime.now() > expiration_time:
                 print("The URL links have expired.  Refreshing.")
-                response[:] = get_session_response(url)
+                response[:] = get_session_response(SESSION, url)
                 if response["state"] == "success" or response["state"] == "partial":
                     items = response["_links"]["results"][index]
                 else:
@@ -178,14 +195,17 @@ def asyncdownload(url, local, ext):
                 else:
                     print(resp.status_code)
 
-            local_path = os.path.join(local, str(os.path.split(items["name"])[-1]))
+            local_path = os.path.join(local, str(
+                os.path.split(items["name"])[-1]))
             filenames = [os.path.join(local, files) for files in filenames]
             if not local_path in filenames:
-                url_to_check = url if url.startswith("https") else "http://%s" % url
-                redirect_url = check_for_redirects(url_to_check)
+                url_to_check = url if url.startswith(
+                    "https") else "http://%s" % url
+                redirect_url = check_for_redirects(SESSION, url_to_check)
                 if redirect_url.startswith("https"):
                     try:
-                        downonly(redirect_url, local_path, ext, items, ulength)
+                        downonly(SESSION, redirect_url,
+                                 local_path, ext, items, ulength)
                     except Exception as e:
                         print(e)
                     except (KeyboardInterrupt, SystemExit) as e:
@@ -197,5 +217,5 @@ def asyncdownload(url, local, ext):
         print("Order Failed with state: " + str(response["state"]))
 
 
-##download(url="https://api.planet.com/compute/ops/orders/v2/0ee9e923-59fc-4c31-8632-9882cb342708",
-##         local=r"C:\planet_demo\terra",errorlog=r"C:\planet_demo\errorlog.csv")
+# download(url="https://api.planet.com/compute/ops/orders/v2/0ee9e923-59fc-4c31-8632-9882cb342708",
+# local=r"C:\planet_demo\terra",errorlog=r"C:\planet_demo\errorlog.csv")

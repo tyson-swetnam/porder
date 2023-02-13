@@ -20,23 +20,35 @@ __license__ = "Apache 2.0"
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import requests
-import time
 import sys
+import time
 from datetime import datetime
+
+import jwt
+import requests
 from datetimerange import DateTimeRange
-from planet.api.auth import find_api_key
 from prettytable import PrettyTable
 
 x = PrettyTable()
 
-try:
-    PL_API_KEY = find_api_key()
-except Exception as e:
-    print("Failed to get Planet Key")
-    sys.exit()
-SESSION = requests.Session()
-SESSION.auth = (PL_API_KEY, "")
+
+def authenticate_session():
+    try:
+        if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
+            init()
+        else:
+            with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
+                token_data = json.load(json_file)
+                encoded = token_data["token"]
+                api_key = jwt.decode(encoded, options={"verify_signature": False})[
+                    'api_key']
+        PL_API_KEY = api_key
+    except:
+        print("Failed to get Planet Key")
+        sys.exit()
+    SESSION = requests.Session()
+    SESSION.auth = (PL_API_KEY, "")
+    return SESSION
 
 
 def handle_page(page, start, end):
@@ -58,6 +70,7 @@ def handle_page(page, start, end):
 
 
 def ostat(state, start, end, limit):
+    SESSION = authenticate_session()
     start = datetime.strptime(start, "%Y-%m-%d")
     end = datetime.strptime(end, "%Y-%m-%d")
     mpage = "https://api.planet.com/compute/ops/orders/v2?state=" + str(state)

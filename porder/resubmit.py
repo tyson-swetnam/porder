@@ -20,22 +20,36 @@ __copyright__ = """
 __license__ = "Apache 2.0"
 
 
-import requests
 import json
-import time
-import clipboard
 import sys
+import time
 from datetime import date
-from planet.api.auth import find_api_key
+
+import clipboard
+import jwt
+import requests
 
 # Get Planet API and Authenticate SESSION
-try:
-    PL_API_KEY = find_api_key()
-except:
-    print("Failed to get Planet Key")
-    sys.exit()
-SESSION = requests.Session()
-SESSION.auth = (PL_API_KEY, "")
+
+
+def authenticate_session():
+    try:
+        if not os.path.exists(os.path.join(expanduser("~"), "planet.auth.json")):
+            init()
+        else:
+            with open(os.path.join(expanduser("~"), "planet.auth.json")) as json_file:
+                token_data = json.load(json_file)
+                encoded = token_data["token"]
+                api_key = jwt.decode(encoded, options={"verify_signature": False})[
+                    'api_key']
+        PL_API_KEY = api_key
+    except:
+        print("Failed to get Planet Key")
+        sys.exit()
+    SESSION = requests.Session()
+    SESSION.auth = (PL_API_KEY, "")
+    return SESSION
+
 
 base_payload = {
     "name": [],
@@ -51,6 +65,9 @@ idlist = []
 
 
 def reorder(url, notification):
+    SESSION = authenticate_session()
+    headers = {"content-type": "application/json", "cache-control": "no-cache"}
+    SESSION.headers.update(headers)
     submitted_order = SESSION.get(url)
     if submitted_order.status_code == 200 and (
         submitted_order.json()["state"] == "partial"
@@ -103,7 +120,6 @@ def reorder(url, notification):
             base_payload["notifications"] = payload["notifications"]
         payload_final = json.dumps(base_payload)
         time.sleep(1)
-        headers = {"content-type": "application/json", "cache-control": "no-cache"}
         response = SESSION.post(order_url, data=payload_final, headers=headers)
         if response.status_code == 202:
             content = response.json()
