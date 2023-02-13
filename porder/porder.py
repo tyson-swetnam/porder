@@ -3,7 +3,6 @@ from __future__ import print_function
 import visvalingamwyatt as vw
 
 from .async_downloader import asyncdownload
-from .diffcheck import checker
 from .downloader import download
 from .geojson2id import idl
 from .order_now import order
@@ -392,22 +391,6 @@ def idlist_from_parser(args):
     )
 
 
-# Check difference from local filelist
-def difflist_from_parser(args):
-    checker(
-        folder=args.folder,
-        typ=args.typ,
-        infile=args.input,
-        item=args.item,
-        asset=args.asset,
-        start=args.start,
-        end=args.end,
-        cmin=args.cmin,
-        cmax=args.cmax,
-        outfile=args.outfile,
-    )
-
-
 # Offcourse all good merge sometimes needs a split
 def idsplit_from_parser(args):
     idsplit(infile=args.idlist, linenum=args.lines, output=args.local)
@@ -730,48 +713,6 @@ def main(args=None):
         default=None,
     )
     parser_idlist.set_defaults(func=idlist_from_parser)
-
-    parser_difflist = subparsers.add_parser(
-        "difflist",
-        help="Checks the difference between local files and available Planet assets",
-    )
-    required_named = parser_difflist.add_argument_group(
-        "Required named arguments.")
-    required_named.add_argument(
-        "--folder",
-        help="local folder where image or metadata files are stored",
-        required=True,
-    )
-    required_named.add_argument(
-        "--typ", help="File type image or metadata", required=True
-    )
-    required_named.add_argument(
-        "--input", help="Input boundary to search (geojson, json)", required=True
-    )
-    required_named.add_argument(
-        "--item",
-        help="Planet Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc",
-        required=True,
-    )
-    required_named.add_argument(
-        "--asset", help="Asset Type analytic, analytic_sr,visual etc", required=True
-    )
-    required_named.add_argument(
-        "--start", help="Start date in format YYYY-MM-DD", required=True)
-    required_named.add_argument(
-        "--end", help="End date in format YYYY-MM-DD", required=True)
-    required_named.add_argument(
-        "--outfile", help="Full path to CSV file with difference ID list", required=True
-    )
-    optional_named = parser_difflist.add_argument_group(
-        "Optional named arguments")
-    optional_named.add_argument(
-        "--cmin", help="Minimum cloud cover 0-1 represents 0 to 100"
-    )
-    optional_named.add_argument(
-        "--cmax", help="Maximum cloud cover 0-1 represents 0 to 100"
-    )
-    parser_difflist.set_defaults(func=difflist_from_parser)
 
     parser_idsplit = subparsers.add_parser(
         "idsplit", help="Splits ID list incase you want to run them in small batches"
