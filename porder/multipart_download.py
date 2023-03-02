@@ -148,7 +148,7 @@ size_list = []
 # Get the redirects and download
 
 
-def asyncdownload(url, local, ext):
+def multidl(url, local, ext):
     SESSION = authenticate_session()
     filenames = glob.glob1(local, "*")
     response = get_session_response(SESSION, url)

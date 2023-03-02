@@ -22,7 +22,7 @@ def readme():
 
 setuptools.setup(
     name='porder',
-    version='0.8.7',
+    version='0.9.0',
     packages=['porder'],
     url='https://github.com/samapriya/porder',
     package_data={'': ['bundles.json']},

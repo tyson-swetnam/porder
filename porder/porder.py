@@ -2,13 +2,11 @@ from __future__ import print_function
 
 import visvalingamwyatt as vw
 
-from .async_downloader import asyncdownload
 from .downloader import download
 from .geojson2id import idl
+from .multipart_download import multidl
 from .order_now import order
-from .ordstat import ostat
 from .resubmit import reorder
-from .text_split import idsplit
 
 __copyright__ = """
 
@@ -39,6 +37,7 @@ import subprocess
 import sys
 import time
 import webbrowser
+from datetime import datetime
 from os.path import expanduser
 
 import clipboard
@@ -47,8 +46,12 @@ import jwt
 import pkg_resources
 import requests
 from bs4 import BeautifulSoup
+from datetimerange import DateTimeRange
 from logzero import logger
+from prettytable import PrettyTable
 from pySmartDL import SmartDL
+
+x = PrettyTable()
 
 
 class Solution:
@@ -391,7 +394,25 @@ def idlist_from_parser(args):
     )
 
 
-# Offcourse all good merge sometimes needs a split
+# Function to split the idlist
+def idsplit(infile, linenum, output):
+    lines_per_file = int(linenum)
+    smallfile = None
+    with open(infile) as bigfile:
+        basename = os.path.basename(infile).split(".")[0]
+        for lineno, line in enumerate(bigfile):
+            if lineno % lines_per_file == 0:
+                if smallfile:
+                    smallfile.close()
+                small_filename = basename + \
+                    "_{}.csv".format(str(lineno + int(linenum)))
+                smallfile = open(os.path.join(output, small_filename), "w")
+            smallfile.write(line)
+        if smallfile:
+            smallfile.close()
+    print("IDlist split at " + str(output))
+
+
 def idsplit_from_parser(args):
     idsplit(infile=args.idlist, linenum=args.lines, output=args.local)
 
@@ -591,6 +612,52 @@ def stats_from_parser(args):
 
 
 # Get order list by state and date
+def handle_stats_page(page, start, end):
+    for things in page["orders"]:
+        s = datetime.strptime(things["created_on"].split("T")[0], "%Y-%m-%d")
+        if s in DateTimeRange(start, end):
+            try:
+                x.field_names = ["name", "items", "url", "created_on"]
+                x.add_row(
+                    [
+                        things["name"],
+                        len(things["products"][0]["item_ids"]),
+                        things["_links"]["_self"],
+                        things["created_on"].split("T")[0],
+                    ]
+                )
+            except Exception as e:
+                print(e)
+
+
+def ostat(state, start, end, limit):
+    SESSION = authenticate_session()
+    start = datetime.strptime(start, "%Y-%m-%d")
+    end = datetime.strptime(end, "%Y-%m-%d")
+    mpage = "https://api.planet.com/compute/ops/orders/v2?state=" + str(state)
+    result = SESSION.get(mpage)
+    if result.status_code == 200:
+        page = result.json()
+        final_list = handle_stats_page(page, start, end)
+        while page["_links"].get("next") is not None:
+            page_url = page["_links"].get("next")
+            result = SESSION.get(page_url)
+            if result.status_code == 200:
+                page = result.json()
+                ids = handle_stats_page(page, start, end)
+            elif result.status_code == 429:
+                time.sleep(1)
+                result = SESSION.get(page_url)
+                page = result.json()
+                ids = handle_stats_page(page, start, end)
+            else:
+                print(result.status_code)
+    if limit is not None:
+        print(x.get_string(start=0, end=int(limit)))
+    else:
+        print(x)
+
+
 def ostate_from_parser(args):
     ostat(state=args.state, start=args.start, end=args.end, limit=args.limit)
 
@@ -601,8 +668,8 @@ def download_from_parser(args):
 
 
 # Multithreaded downloader
-def asyncdownload_from_parser(args):
-    asyncdownload(url=args.url, local=args.local, ext=args.ext)
+def multipart_from_parser(args):
+    multidl(url=args.url, local=args.local, ext=args.ext)
 
 
 def multiproc_from_parser(args):
@@ -874,20 +941,20 @@ def main(args=None):
     )
     parser_download.set_defaults(func=download_from_parser)
 
-    parser_asyncdownload = subparsers.add_parser(
+    parser_multipart = subparsers.add_parser(
         "multipart", help="Uses multiprocessing to download for all files in your order"
     )
-    parser_asyncdownload.add_argument(
+    parser_multipart.add_argument(
         "--url", help="order url you got for your order")
-    parser_asyncdownload.add_argument(
+    parser_multipart.add_argument(
         "--local", help="Output folder where ordered files will be exported"
     )
-    optional_named = parser_asyncdownload.add_argument_group(
+    optional_named = parser_multipart.add_argument_group(
         "Optional named arguments")
     optional_named.add_argument(
         "--ext", help="File Extension to download", default=None
     )
-    parser_asyncdownload.set_defaults(func=asyncdownload_from_parser)
+    parser_multipart.set_defaults(func=multipart_from_parser)
 
     parser_multiproc = subparsers.add_parser(
         "multiproc",
