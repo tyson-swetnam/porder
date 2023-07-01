@@ -372,6 +372,3 @@ def idl(**kwargs):
         + str("{:,}".format(round(sum(ar))))
         + " sqkm"
     )
-
-
-# idl(infile=r"C:\Users\samapriya\Downloads\vertex.geojson",item='PSScene4Band',asset='analytic',cmin=0.0,cmax=0.9,start='2018-01-01',end='2019-12-31',ovp=8,num=40,outfile=r'C:\planet_demo\vertexidl.csv')

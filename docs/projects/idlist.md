@@ -18,11 +18,11 @@ To run an experiment to add additional filter, you can now pass an additional st
 <b>
   
 ```
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
 
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" --number 20
 
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
 ```
 
 </b>
@@ -30,9 +30,9 @@ porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM
 The search tool now allows the user to pass Hours , Minutes and seconds and utilizes the local timezone on the users computer to search. This including the format HH:MM:SS seperated from yyyy-mm-dd by T. An example would be the following, while noting that passing time is purely optional and you can still search by simply passing YYYY-MM-DD.
 
 ```
-porder idlist --input "Path to geojson file" --start "yyyy-mm-ddTHH:MM:SS" --end "yyyy-mm-ddTHH:MM:SS" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
+porder idlist --input "Path to geojson file" --start "yyyy-mm-ddTHH:MM:SS" --end "yyyy-mm-ddTHH:MM:SS" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
 
-porder idlist --input "Path to geojson file" --start "2021-01-01T14:12:10" --end "2021-03-01T16:20:20" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --number 20
+porder idlist --input "Path to geojson file" --start "2021-01-01T14:12:10" --end "2021-03-01T16:20:20" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --number 20
 ```
 
 The idlist tool can now use a multipolygon and iteratively look for scenes.
