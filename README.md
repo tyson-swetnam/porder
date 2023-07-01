@@ -295,11 +295,11 @@ A simple setup would be
 To run an experiment to add additional filter, you can now pass an additional string or range filter or both flag for string and range filters, a setup would be. The additional filters are optional
 
 ```
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
 
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" --number 20
 
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
 ```
 
 The idlist tool can now use a multipolygon and iteratively look for scenes.
@@ -324,11 +324,11 @@ To run an experiment to add additional filter, you can now pass an additional st
 <b>
 
 ```
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
 
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" --number 20
 
-porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
+porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM-DD" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters string:satellite_id:"1003,1006,1012,1020,1038" range:clear_percent:55:100 --number 20
 ```
 
 </b>
@@ -336,9 +336,9 @@ porder idlist --input "Path to geojson file" --start "YYYY-MM-DD" --end "YYYY-MM
 The search tool now allows the user to pass Hours , Minutes and seconds and utilizes the local timezone on the users computer to search. This including the format HH:MM:SS seperated from yyyy-mm-dd by T. An example would be the following, while noting that passing time is purely optional and you can still search by simply passing YYYY-MM-DD.
 
 ```
-porder idlist --input "Path to geojson file" --start "yyyy-mm-ddTHH:MM:SS" --end "yyyy-mm-ddTHH:MM:SS" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
+porder idlist --input "Path to geojson file" --start "yyyy-mm-ddTHH:MM:SS" --end "yyyy-mm-ddTHH:MM:SS" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --filters range:clear_percent:55:100 --number 20
 
-porder idlist --input "Path to geojson file" --start "2021-01-01T14:12:10" --end "2021-03-01T16:20:20" --item "PSScene4Band" --asset "analytic" --outfile "Path to idlist.csv" --number 20
+porder idlist --input "Path to geojson file" --start "2021-01-01T14:12:10" --end "2021-03-01T16:20:20" --item "PSScene" --asset "analytic_sr_udm2" --outfile "Path to idlist.csv" --number 20
 ```
 
 The idlist tool can now use a multipolygon and iteratively look for scenes.
@@ -373,14 +373,14 @@ A simple setup would be
 ![porder_idcheck_setup](https://user-images.githubusercontent.com/6677629/57543933-d5d3fc00-7323-11e9-946f-200a4791f5e8.png)
 
 ### bundles
-Ordering using ordersv2 uses the concept of bundles. A bundle is a combination of multiple assets for an item that come together and are delivered as part of the overall fulfillment of the order. For example an analytic asset for PSScene4Band is a single tif file, however the analytic bundle for PSScene4Band includes analytic tiff file, the analytic_xml metadata and the udm data mask file as part of the bundle. You can find more information about [bundles here](https://developers.planet.com/docs/orders/product-bundles-reference/). Thus the concept of bundles bring together single function to order and download multiple related assets. Since the list of bundles is long, this tool simply allows you to get every bundle type based on item type. The setup is simple
+Ordering using ordersv2 uses the concept of bundles. A bundle is a combination of multiple assets for an item that come together and are delivered as part of the overall fulfillment of the order. For example an analytic asset for PSScene is a single tif file, however the analytic_sr_udm2 bundle for PSScene includes analytic tiff file, the analytic_xml metadata and the udm2 data mask file as part of the bundle. You can find more information about [bundles here](https://developers.planet.com/docs/orders/product-bundles-reference/). Thus the concept of bundles bring together single function to order and download multiple related assets. Since the list of bundles is long, this tool simply allows you to get every bundle type based on item type. The setup is simple
 
 ![porder_bundles](https://user-images.githubusercontent.com/6677629/61171622-48da3880-a548-11e9-829f-d8c71dc39ce5.png)
 
 A simple setup would be
 
 ```
-porder bundles --item "PSScene4Band"
+porder bundles --item "PSScene"
 ```
 
 ### order

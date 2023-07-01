@@ -747,7 +747,7 @@ def main(args=None):
     )
     required_named.add_argument(
         "--item",
-        help="Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc",
+        help="Item Type PSScene|PSOrthoTile|REOrthoTile etc",
         required=True,
     )
     required_named.add_argument(
@@ -813,7 +813,7 @@ def main(args=None):
     )
     required_named.add_argument(
         "--item",
-        help="Item Type PSScene4Band|PSOrthoTile|REOrthoTile etc",
+        help="Item Type PSScene|PSOrthoTile|REOrthoTile etc",
         required=True,
     )
     required_named.add_argument(
